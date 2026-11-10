@@ -40,5 +40,8 @@ websockets==12.0
 # Environment
 python-dotenv==1.0.0
 
+# Windows Integration
+win10toast==0.9
+
 # Build
 pyinstaller==6.3.0

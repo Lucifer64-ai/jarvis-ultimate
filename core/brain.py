@@ -28,6 +28,11 @@ class JarvisBrain:
         # Модули обучения
         self.learning_manager = None
         
+        # Windows интеграция
+        self.windows_integration = None
+        self.toast_notifications = None
+        self.wake_word_service = None
+        
         # Системные модули
         self.modules = {}
         
@@ -58,6 +63,9 @@ class JarvisBrain:
         # Инициализация модулей обучения
         self._init_learning_modules()
         
+        # Инициализация Windows интеграции
+        self._init_windows_integration()
+        
         # Инициализация системных модулей
         self._init_system_modules()
         
@@ -75,6 +83,35 @@ class JarvisBrain:
         except Exception as e:
             self.logger.error(f"Ошибка загрузки модулей обучения: {e}")
             self.learning_manager = None
+
+    def _init_windows_integration(self):
+        """Инициализация Windows интеграции."""
+        # Windows интеграция
+        try:
+            from modules.windows_integration import WindowsIntegration
+            self.windows_integration = WindowsIntegration(self)
+            self.logger.info("✓ Windows интеграция загружена")
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки Windows интеграции: {e}")
+            self.windows_integration = None
+        
+        # Toast уведомления
+        try:
+            from modules.toast_notifications import ToastNotifications
+            self.toast_notifications = ToastNotifications(self)
+            self.logger.info("✓ Toast уведомления загружены")
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки toast уведомлений: {e}")
+            self.toast_notifications = None
+        
+        # Wake word сервис
+        try:
+            from modules.wake_word_service import WakeWordService
+            self.wake_word_service = WakeWordService(self)
+            self.logger.info("✓ Wake word сервис загружен")
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки wake word сервиса: {e}")
+            self.wake_word_service = None
 
     def _init_system_modules(self):
         """Инициализация системных модулей."""
@@ -198,6 +235,24 @@ class JarvisBrain:
             if "network" in self.modules:
                 return self.modules["network"].speed_test()
         
+        # Windows интеграция
+        elif "автозапуск" in text_lower:
+            if self.windows_integration:
+                if "включи" in text_lower:
+                    return self.windows_integration.enable_autostart()
+                elif "выключи" in text_lower:
+                    return self.windows_integration.disable_autostart()
+                elif "статус" in text_lower:
+                    status = self.windows_integration.get_integration_status()
+                    return {"status": "ok", "message": f"Автозапуск: {'включен' if status['autostart_enabled'] else 'отключен'}"}
+        
+        elif "wake word" in text_lower or "пробуждение" in text_lower:
+            if self.wake_word_service:
+                if "включи" in text_lower or "запусти" in text_lower:
+                    return self.wake_word_service.start()
+                elif "выключи" in text_lower or "останови" in text_lower:
+                    return self.wake_word_service.stop()
+        
         # Обучение - новые команды
         elif "научись" in text_lower or "запомни" in text_lower:
             return self._handle_learning_command(text)
@@ -255,23 +310,56 @@ class JarvisBrain:
         if self.learning_manager:
             greeting = self.learning_manager.get_greeting()
             self.logger.info(greeting)
+            
+            # Toast уведомление
+            if self.toast_notifications:
+                self.toast_notifications.show_info(greeting)
         else:
             self.logger.info("Здравствуйте, сэр. JARVIS готов к работе.")
         
+        # Автозапуск wake word сервиса если включен
+        if self.wake_word_service and self.config.get("windows.wake_word_enabled", False):
+            self.wake_word_service.start(callback=self._on_wake_word)
+        
         # Публикация события запуска
         self.event_bus.publish("jarvis_started", {"timestamp": "now"})
+
+    def _on_wake_word(self, text: str):
+        """Обработчик wake word."""
+        self.logger.info(f"Wake word активирован: {text}")
+        
+        # Уведомление
+        if self.toast_notifications:
+            self.toast_notifications.show_info("Слушаю...")
+        
+        # Здесь можно добавить дальнейшую обработку
 
     def stop(self):
         """Остановка JARVIS."""
         self.logger.info("Остановка JARVIS...")
         self.running = False
+        
+        # Остановка wake word сервиса
+        if self.wake_word_service and self.wake_word_service.is_running():
+            self.wake_word_service.stop()
+        
         self.event_bus.publish("jarvis_stopped", {"timestamp": "now"})
 
     def get_status(self) -> Dict:
         """Получение статуса системы."""
-        return {
+        status = {
             "running": self.running,
             "modules_loaded": len(self.modules),
             "plugins_loaded": len(self.plugin_manager.plugins),
-            "learning_enabled": self.learning_manager is not None
+            "learning_enabled": self.learning_manager is not None,
+            "windows_integration": {
+                "enabled": self.windows_integration is not None,
+                "toast_enabled": self.toast_notifications is not None,
+                "wake_word_enabled": self.wake_word_service is not None and self.wake_word_service.is_running()
+            }
         }
+        
+        if self.windows_integration:
+            status["windows_integration"]["autostart"] = self.windows_integration.is_autostart_enabled()
+        
+        return status
