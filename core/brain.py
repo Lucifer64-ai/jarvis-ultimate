@@ -38,6 +38,11 @@ class JarvisBrain:
         # HUD интерфейс
         self.hud = None
         
+        # Информационные модули
+        self.weather_module = None
+        self.currency_module = None
+        self.news_module = None
+        
         # Системные модули
         self.modules = {}
         
@@ -73,6 +78,9 @@ class JarvisBrain:
         
         # Инициализация HUD
         self._init_hud()
+        
+        # Инициализация информационных модулей
+        self._init_info_modules()
         
         # Инициализация системных модулей
         self._init_system_modules()
@@ -148,6 +156,35 @@ class JarvisBrain:
         except Exception as e:
             self.logger.error(f"Ошибка загрузки HUD: {e}")
             self.hud = None
+
+    def _init_info_modules(self):
+        """Инициализация информационных модулей."""
+        # Погода
+        try:
+            from modules.weather import WeatherModule
+            self.weather_module = WeatherModule(self)
+            self.logger.info("✓ Модуль погоды загружен")
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки модуля погоды: {e}")
+            self.weather_module = None
+        
+        # Валюты
+        try:
+            from modules.currency import CurrencyModule
+            self.currency_module = CurrencyModule(self)
+            self.logger.info("✓ Модуль валют загружен")
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки модуля валют: {e}")
+            self.currency_module = None
+        
+        # Новости
+        try:
+            from modules.news import NewsModule
+            self.news_module = NewsModule(self)
+            self.logger.info("✓ Модуль новостей загружен")
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки модуля новостей: {e}")
+            self.news_module = None
 
     def _init_system_modules(self):
         """Инициализация системных модулей."""
@@ -244,8 +281,20 @@ class JarvisBrain:
         """Выполнение команды."""
         text_lower = text.lower().strip()
         
-        # HUD команды
-        if "покажи hud" in text_lower or "включи интерфейс" in text_lower:
+        # === ПОГОДА ===
+        if any(word in text_lower for word in ["погода", "температура", "прогноз"]):
+            return self._handle_weather_command(text_lower)
+        
+        # === ВАЛЮТЫ ===
+        elif any(word in text_lower for word in ["курс", "валют", "доллар", "евро", "рубл", "биткоин", "bitcoin"]):
+            return self._handle_currency_command(text_lower)
+        
+        # === НОВОСТИ ===
+        elif any(word in text_lower for word in ["новост", "что случилось", "что произошло", "headline"]):
+            return self._handle_news_command(text_lower)
+        
+        # === HUD команды ===
+        elif "покажи hud" in text_lower or "включи интерфейс" in text_lower:
             if self.hud:
                 self.hud.show()
                 return {"status": "ok", "message": "HUD активирован"}
@@ -255,7 +304,7 @@ class JarvisBrain:
                 self.hud.hide()
                 return {"status": "ok", "message": "HUD деактивирован"}
         
-        # Clean Desktop режим
+        # === Clean Desktop ===
         elif "чистый рабочий стол" in text_lower or "скрой иконки" in text_lower:
             if self.clean_desktop:
                 return self.clean_desktop.enable_clean_mode()
@@ -264,7 +313,7 @@ class JarvisBrain:
             if self.clean_desktop:
                 return self.clean_desktop.disable_clean_mode()
         
-        # Запуск приложений
+        # === Запуск приложений ===
         elif "открой" in text_lower or "запусти" in text_lower:
             if self.app_launcher:
                 app_name = text_lower.replace("открой", "").replace("запусти", "").strip()
@@ -274,7 +323,7 @@ class JarvisBrain:
             if self.app_launcher:
                 return self.app_launcher.list_apps()
         
-        # Системные команды
+        # === Системные команды ===
         elif any(word in text_lower for word in ["выключи", "заверши работу"]):
             if "system" in self.modules:
                 return self.modules["system"].shutdown()
@@ -287,7 +336,7 @@ class JarvisBrain:
             if "system" in self.modules:
                 return self.modules["system"].lock_screen()
         
-        # Информация
+        # === Информация ===
         elif "час" in text_lower or "время" in text_lower:
             if "system" in self.modules:
                 return self.modules["system"].get_time()
@@ -296,12 +345,12 @@ class JarvisBrain:
             if "system" in self.modules:
                 return self.modules["system"].get_date()
         
-        # Статус системы
+        # === Статус системы ===
         elif "статус" in text_lower or "состояние" in text_lower:
             if "hardware" in self.modules:
                 return self.modules["hardware"].get_system_info()
         
-        # Сеть
+        # === Сеть ===
         elif "ip" in text_lower or "айпи" in text_lower:
             if "network" in self.modules:
                 return self.modules["network"].get_ip()
@@ -310,7 +359,7 @@ class JarvisBrain:
             if "network" in self.modules:
                 return self.modules["network"].speed_test()
         
-        # Windows интеграция
+        # === Windows интеграция ===
         elif "автозапуск" in text_lower:
             if self.windows_integration:
                 if "включи" in text_lower:
@@ -318,7 +367,7 @@ class JarvisBrain:
                 elif "выключи" in text_lower:
                     return self.windows_integration.disable_autostart()
         
-        # Обучение
+        # === Обучение ===
         elif "научись" in text_lower or "запомни" in text_lower:
             return self._handle_learning_command(text)
         
@@ -333,6 +382,86 @@ class JarvisBrain:
             "message": "Команда не распознана",
             "text": text
         }
+
+    def _handle_weather_command(self, text: str) -> Dict:
+        """Обработка команд погоды."""
+        if not self.weather_module:
+            return {"status": "error", "message": "Модуль погоды не загружен"}
+        
+        # Извлечение города
+        city = "Москва"  # По умолчанию
+        cities = ["москва", "санкт-петербург", "питер", "новосибирск", "екатеринбург", 
+                  "казань", "нижний новгород", "самара", "омск", "челябинск", "уфа", "ростов"]
+        
+        for c in cities:
+            if c in text:
+                city = c.capitalize()
+                if city == "Питер":
+                    city = "Санкт-Петербург"
+                break
+        
+        # Прогноз или текущая погода
+        if "прогноз" in text:
+            forecast = self.weather_module.get_forecast(city)
+            message = self.weather_module.format_forecast_message(forecast)
+            return {"status": "ok", "message": message, "data": forecast}
+        else:
+            weather = self.weather_module.get_weather(city)
+            message = self.weather_module.format_weather_message(weather)
+            return {"status": "ok", "message": message, "data": weather}
+
+    def _handle_currency_command(self, text: str) -> Dict:
+        """Обработка команд валют."""
+        if not self.currency_module:
+            return {"status": "error", "message": "Модуль валют не загружен"}
+        
+        # Конвертация
+        if "конверт" in text or "переведи" in text or "сколько" in text:
+            # Простая конвертация
+            if "доллар" in text or "usd" in text:
+                rate = self.currency_module.get_usd_rub()
+                if rate["status"] == "ok":
+                    return {"status": "ok", "message": f"Один доллар стоит {rate['rate']} рублей"}
+            elif "евро" in text or "eur" in text:
+                rate = self.currency_module.get_eur_rub()
+                if rate["status"] == "ok":
+                    return {"status": "ok", "message": f"Одно евро стоит {rate['rate']} рублей"}
+            elif "биткоин" in text or "bitcoin" in text or "btc" in text:
+                rate = self.currency_module.get_btc_usd()
+                if rate["status"] == "ok":
+                    return {"status": "ok", "message": f"Один биткоин стоит ${rate['rate']}"}
+        
+        # Все курсы
+        rates = self.currency_module.get_multiple_rates()
+        message = self.currency_module.format_multiple_rates_message(rates)
+        return {"status": "ok", "message": message, "data": rates}
+
+    def _handle_news_command(self, text: str) -> Dict:
+        """Обработка команд новостей."""
+        if not self.news_module:
+            return {"status": "error", "message": "Модуль новостей не загружен"}
+        
+        # Поиск новостей
+        if "найди" in text or "поиск" in text or "про" in text:
+            # Извлечение запроса
+            query = text.replace("найди новости про", "").replace("новости про", "").replace("найди", "").strip()
+            if query:
+                news = self.news_module.search_news(query)
+                message = self.news_module.format_news_message(news)
+                return {"status": "ok", "message": message, "data": news}
+        
+        # Категории
+        if "технолог" in text or "tech" in text:
+            news = self.news_module.get_tech_news()
+        elif "бизнес" in text or "финанс" in text or "эконом" in text:
+            news = self.news_module.get_business_news()
+        elif "спорт" in text:
+            news = self.news_module.get_sports_news()
+        else:
+            news = self.news_module.get_top_headlines()
+        
+        message = self.news_module.format_news_message(news)
+        return {"status": "ok", "message": message, "data": news}
 
     def _handle_learning_command(self, text: str) -> Dict:
         """Обработка команд обучения."""
@@ -418,6 +547,11 @@ class JarvisBrain:
             "plugins_loaded": len(self.plugin_manager.plugins),
             "learning_enabled": self.learning_manager is not None,
             "hud_enabled": self.hud is not None,
+            "info_modules": {
+                "weather": self.weather_module is not None,
+                "currency": self.currency_module is not None,
+                "news": self.news_module is not None
+            },
             "windows_integration": {
                 "enabled": self.windows_integration is not None,
                 "toast_enabled": self.toast_notifications is not None,
