@@ -46,30 +46,19 @@ jobs:
         }
       shell: pwsh
     
-    - name: Build EXE with PyInstaller (onefile)
+    - name: Build EXE with PyInstaller (onefile, no icon)
       run: |
-        pyinstaller --onefile --windowed --name JARVIS --icon=assets/jarvis.ico main.py
+        pyinstaller --onefile --windowed --name JARVIS main.py
       shell: pwsh
-      continue-on-error: true
-    
-    - name: Build EXE with PyInstaller (onedir fallback)
-      if: failure()
-      run: |
-        pyinstaller --onedir --windowed --name JARVIS main.py
-      shell: pwsh
-      continue-on-error: true
     
     - name: Copy built files to dist
       run: |
         if (Test-Path "dist\JARVIS.exe") {
           Move-Item dist\JARVIS.exe dist\JARVIS\JARVIS.exe -Force
-        } elseif (Test-Path "dist\JARVIS\JARVIS.exe") {
-          Write-Host "EXE already in dist\JARVIS"
+          Write-Host "EXE copied to dist\JARVIS"
         } else {
-          Write-Host "Warning: EXE not found, checking build directory"
-          if (Test-Path "build\JARVIS") {
-            Copy-Item -Recurse build\JARVIS\* dist\JARVIS\ -Force
-          }
+          Write-Host "Error: EXE not found"
+          exit 1
         }
       shell: pwsh
     
