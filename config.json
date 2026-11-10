@@ -9,7 +9,7 @@
   },
   "hud": {
     "enabled": true,
-    "position": "top-right"
+    "position": "fullscreen"
   },
   "startup": {
     "greeting": true,
@@ -30,18 +30,7 @@
     "wake_word_enabled": false,
     "context_menu": false,
     "toast_notifications": true,
-    "clean_desktop_on_start": false
-  },
-  "hardware": {
-    "enabled": false,
-    "display_type": "projector",
-    "display_resolution": "1920x1080",
-    "servo_pan_pin": 17,
-    "servo_tilt_pin": 27,
-    "led_pins": [18, 23, 24],
-    "motion_sensor_pin": 22,
-    "ultrasonic_trig_pin": 23,
-    "ultrasonic_echo_pin": 24,
-    "dht_pin": 17
+    "clean_desktop_on_start": false,
+    "hud_on_start": false
   }
 }

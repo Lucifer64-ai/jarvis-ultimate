@@ -34,6 +34,7 @@ class JarvisBrain:
         self.wake_word_service = None
         self.clean_desktop = None
         self.app_launcher = None
+        self.hud = None
         
         # Системные модули
         self.modules = {}
@@ -132,6 +133,15 @@ class JarvisBrain:
         except Exception as e:
             self.logger.error(f"Ошибка загрузки App Launcher: {e}")
             self.app_launcher = None
+        
+        # HUD
+        try:
+            from modules.hud import JarvisHUD
+            self.hud = JarvisHUD(self)
+            self.logger.info("✓ JARVIS HUD загружен")
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки HUD: {e}")
+            self.hud = None
 
     def _init_system_modules(self):
         """Инициализация системных модулей."""
@@ -195,6 +205,10 @@ class JarvisBrain:
         """Обработка команды с использованием модулей обучения."""
         self.logger.info(f"Обработка команды: {text}")
         
+        # Обновление HUD
+        if self.hud:
+            self.hud.update_command(text)
+        
         # Обработка через модули обучения
         if self.learning_manager:
             learning_result = self.learning_manager.process_command(text)
@@ -218,6 +232,22 @@ class JarvisBrain:
     def _execute_command(self, text: str) -> Dict:
         """Выполнение команды."""
         text_lower = text.lower().strip()
+        
+        # HUD команды
+        if "покажи hud" in text_lower or "включи hud" in text_lower:
+            if self.hud:
+                self.hud.show_hud()
+                return {"status": "ok", "message": "HUD включен"}
+        
+        elif "скрой hud" in text_lower or "выключи hud" in text_lower:
+            if self.hud:
+                self.hud.hide_hud()
+                return {"status": "ok", "message": "HUD выключен"}
+        
+        elif "переключи hud" in text_lower:
+            if self.hud:
+                self.hud.toggle_hud()
+                return {"status": "ok", "message": "HUD переключен"}
         
         # Clean Desktop режим
         if "чистый рабочий стол" in text_lower or "скрой иконки" in text_lower:
@@ -245,7 +275,6 @@ class JarvisBrain:
         
         elif "добавь приложение" in text_lower:
             if self.app_launcher:
-                # Пример: "добавь приложение фото для C:\\Photos\\app.exe"
                 return {"status": "ok", "message": "Используйте: добавь приложение [имя] для [путь]"}
         
         elif "список приложений" in text_lower:
@@ -375,6 +404,10 @@ class JarvisBrain:
         if self.clean_desktop and self.config.get("windows.clean_desktop_on_start", False):
             self.clean_desktop.enable_clean_mode()
         
+        # Показ HUD если настроено
+        if self.hud and self.config.get("windows.hud_on_start", False):
+            self.hud.show_hud()
+        
         # Публикация события запуска
         self.event_bus.publish("jarvis_started", {"timestamp": "now"})
 
@@ -385,6 +418,10 @@ class JarvisBrain:
         # Уведомление
         if self.toast_notifications:
             self.toast_notifications.show_info("Слушаю...")
+        
+        # Анимация HUD
+        if self.hud:
+            self.hud.set_voice_level(0.8)
 
     def stop(self):
         """Остановка JARVIS."""
@@ -413,7 +450,8 @@ class JarvisBrain:
                 "toast_enabled": self.toast_notifications is not None,
                 "wake_word_enabled": self.wake_word_service is not None and self.wake_word_service.is_running(),
                 "clean_desktop": self.clean_desktop is not None and self.clean_desktop.is_hidden(),
-                "apps_count": self.app_launcher.get_apps_count() if self.app_launcher else 0
+                "apps_count": self.app_launcher.get_apps_count() if self.app_launcher else 0,
+                "hud_enabled": self.hud is not None
             }
         }
         
