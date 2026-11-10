@@ -29,6 +29,7 @@
     "autostart": false,
     "wake_word_enabled": false,
     "context_menu": false,
-    "toast_notifications": true
+    "toast_notifications": true,
+    "clean_desktop_on_start": false
   }
 }

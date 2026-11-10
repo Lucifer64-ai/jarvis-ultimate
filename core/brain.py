@@ -32,6 +32,8 @@ class JarvisBrain:
         self.windows_integration = None
         self.toast_notifications = None
         self.wake_word_service = None
+        self.clean_desktop = None
+        self.app_launcher = None
         
         # Системные модули
         self.modules = {}
@@ -112,6 +114,24 @@ class JarvisBrain:
         except Exception as e:
             self.logger.error(f"Ошибка загрузки wake word сервиса: {e}")
             self.wake_word_service = None
+        
+        # Clean Desktop
+        try:
+            from modules.clean_desktop import CleanDesktop
+            self.clean_desktop = CleanDesktop(self)
+            self.logger.info("✓ Clean Desktop загружен")
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки Clean Desktop: {e}")
+            self.clean_desktop = None
+        
+        # App Launcher
+        try:
+            from modules.app_launcher import AppLauncher
+            self.app_launcher = AppLauncher(self)
+            self.logger.info("✓ App Launcher загружен")
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки App Launcher: {e}")
+            self.app_launcher = None
 
     def _init_system_modules(self):
         """Инициализация системных модулей."""
@@ -199,8 +219,41 @@ class JarvisBrain:
         """Выполнение команды."""
         text_lower = text.lower().strip()
         
+        # Clean Desktop режим
+        if "чистый рабочий стол" in text_lower or "скрой иконки" in text_lower:
+            if self.clean_desktop:
+                return self.clean_desktop.enable_clean_mode()
+        
+        elif "покажи иконки" in text_lower or "обычный рабочий стол" in text_lower:
+            if self.clean_desktop:
+                return self.clean_desktop.disable_clean_mode()
+        
+        elif "скрой панель задач" in text_lower:
+            if self.clean_desktop:
+                return self.clean_desktop.hide_taskbar()
+        
+        elif "покажи панель задач" in text_lower:
+            if self.clean_desktop:
+                return self.clean_desktop.show_taskbar()
+        
+        # Запуск приложений
+        elif "открой" in text_lower or "запусти" in text_lower:
+            if self.app_launcher:
+                # Извлекаем имя приложения
+                app_name = text_lower.replace("открой", "").replace("запусти", "").strip()
+                return self.app_launcher.launch(app_name)
+        
+        elif "добавь приложение" in text_lower:
+            if self.app_launcher:
+                # Пример: "добавь приложение фото для C:\\Photos\\app.exe"
+                return {"status": "ok", "message": "Используйте: добавь приложение [имя] для [путь]"}
+        
+        elif "список приложений" in text_lower:
+            if self.app_launcher:
+                return self.app_launcher.list_apps()
+        
         # Системные команды
-        if any(word in text_lower for word in ["выключи", "заверши работу"]):
+        elif any(word in text_lower for word in ["выключи", "заверши работу"]):
             if "system" in self.modules:
                 return self.modules["system"].shutdown()
         
@@ -276,8 +329,6 @@ class JarvisBrain:
         if not self.learning_manager or not self.learning_manager.adaptive_ml:
             return {"status": "error", "message": "Модуль обучения не загружен"}
         
-        # Пример: "научись команда 'открой фото' это открыть приложение фотографии"
-        # Простая реализация - можно улучшить
         return {
             "status": "ok",
             "message": "Команда обучения принята. Используйте: научись [команда] это [категория]"
@@ -288,7 +339,6 @@ class JarvisBrain:
         if not self.learning_manager or not self.learning_manager.alias_system:
             return {"status": "error", "message": "Система алиасов не загружена"}
         
-        # Пример: "создай алиас 'фото' для 'открой приложение фотографии'"
         return {
             "status": "ok",
             "message": "Команда алиаса принята. Используйте: создай алиас [алиас] для [команда]"
@@ -321,6 +371,10 @@ class JarvisBrain:
         if self.wake_word_service and self.config.get("windows.wake_word_enabled", False):
             self.wake_word_service.start(callback=self._on_wake_word)
         
+        # Включение чистого режима если настроено
+        if self.clean_desktop and self.config.get("windows.clean_desktop_on_start", False):
+            self.clean_desktop.enable_clean_mode()
+        
         # Публикация события запуска
         self.event_bus.publish("jarvis_started", {"timestamp": "now"})
 
@@ -331,8 +385,6 @@ class JarvisBrain:
         # Уведомление
         if self.toast_notifications:
             self.toast_notifications.show_info("Слушаю...")
-        
-        # Здесь можно добавить дальнейшую обработку
 
     def stop(self):
         """Остановка JARVIS."""
@@ -342,6 +394,10 @@ class JarvisBrain:
         # Остановка wake word сервиса
         if self.wake_word_service and self.wake_word_service.is_running():
             self.wake_word_service.stop()
+        
+        # Восстановление рабочего стола если был чистый режим
+        if self.clean_desktop and self.clean_desktop.is_hidden():
+            self.clean_desktop.disable_clean_mode()
         
         self.event_bus.publish("jarvis_stopped", {"timestamp": "now"})
 
@@ -355,7 +411,9 @@ class JarvisBrain:
             "windows_integration": {
                 "enabled": self.windows_integration is not None,
                 "toast_enabled": self.toast_notifications is not None,
-                "wake_word_enabled": self.wake_word_service is not None and self.wake_word_service.is_running()
+                "wake_word_enabled": self.wake_word_service is not None and self.wake_word_service.is_running(),
+                "clean_desktop": self.clean_desktop is not None and self.clean_desktop.is_hidden(),
+                "apps_count": self.app_launcher.get_apps_count() if self.app_launcher else 0
             }
         }
         
