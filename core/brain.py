@@ -34,6 +34,8 @@ class JarvisBrain:
         self.wake_word_service = None
         self.clean_desktop = None
         self.app_launcher = None
+        
+        # HUD интерфейс
         self.hud = None
         
         # Системные модули
@@ -68,6 +70,9 @@ class JarvisBrain:
         
         # Инициализация Windows интеграции
         self._init_windows_integration()
+        
+        # Инициализация HUD
+        self._init_hud()
         
         # Инициализация системных модулей
         self._init_system_modules()
@@ -133,12 +138,13 @@ class JarvisBrain:
         except Exception as e:
             self.logger.error(f"Ошибка загрузки App Launcher: {e}")
             self.app_launcher = None
-        
-        # HUD
+
+    def _init_hud(self):
+        """Инициализация HUD интерфейса."""
         try:
-            from modules.hud import JarvisHUD
-            self.hud = JarvisHUD(self)
-            self.logger.info("✓ JARVIS HUD загружен")
+            from hud.holographic_ui import HolographicHUD
+            self.hud = HolographicHUD(self)
+            self.logger.info("✓ HUD интерфейс загружен")
         except Exception as e:
             self.logger.error(f"Ошибка загрузки HUD: {e}")
             self.hud = None
@@ -205,16 +211,16 @@ class JarvisBrain:
         """Обработка команды с использованием модулей обучения."""
         self.logger.info(f"Обработка команды: {text}")
         
-        # Обновление HUD
+        # Обновление HUD статуса
         if self.hud:
-            self.hud.update_command(text)
+            self.hud.set_status("PROCESSING")
+            self.hud.set_voice_active(True)
         
         # Обработка через модули обучения
         if self.learning_manager:
             learning_result = self.learning_manager.process_command(text)
             processed_text = learning_result.get("processed", text)
             
-            # Если есть предложение обучения
             if learning_result.get("learning_suggestion"):
                 self.logger.info(f"Предложение обучения: {learning_result['learning_suggestion']}")
         else:
@@ -227,6 +233,11 @@ class JarvisBrain:
         # Объединение результатов
         result["learning_info"] = learning_result
         
+        # Обновление HUD
+        if self.hud:
+            self.hud.set_status("READY")
+            self.hud.set_voice_active(False)
+        
         return result
 
     def _execute_command(self, text: str) -> Dict:
@@ -234,23 +245,18 @@ class JarvisBrain:
         text_lower = text.lower().strip()
         
         # HUD команды
-        if "покажи hud" in text_lower or "включи hud" in text_lower:
+        if "покажи hud" in text_lower or "включи интерфейс" in text_lower:
             if self.hud:
-                self.hud.show_hud()
-                return {"status": "ok", "message": "HUD включен"}
+                self.hud.show()
+                return {"status": "ok", "message": "HUD активирован"}
         
-        elif "скрой hud" in text_lower or "выключи hud" in text_lower:
+        elif "скрой hud" in text_lower or "выключи интерфейс" in text_lower:
             if self.hud:
-                self.hud.hide_hud()
-                return {"status": "ok", "message": "HUD выключен"}
-        
-        elif "переключи hud" in text_lower:
-            if self.hud:
-                self.hud.toggle_hud()
-                return {"status": "ok", "message": "HUD переключен"}
+                self.hud.hide()
+                return {"status": "ok", "message": "HUD деактивирован"}
         
         # Clean Desktop режим
-        if "чистый рабочий стол" in text_lower or "скрой иконки" in text_lower:
+        elif "чистый рабочий стол" in text_lower or "скрой иконки" in text_lower:
             if self.clean_desktop:
                 return self.clean_desktop.enable_clean_mode()
         
@@ -258,24 +264,11 @@ class JarvisBrain:
             if self.clean_desktop:
                 return self.clean_desktop.disable_clean_mode()
         
-        elif "скрой панель задач" in text_lower:
-            if self.clean_desktop:
-                return self.clean_desktop.hide_taskbar()
-        
-        elif "покажи панель задач" in text_lower:
-            if self.clean_desktop:
-                return self.clean_desktop.show_taskbar()
-        
         # Запуск приложений
         elif "открой" in text_lower or "запусти" in text_lower:
             if self.app_launcher:
-                # Извлекаем имя приложения
                 app_name = text_lower.replace("открой", "").replace("запусти", "").strip()
                 return self.app_launcher.launch(app_name)
-        
-        elif "добавь приложение" in text_lower:
-            if self.app_launcher:
-                return {"status": "ok", "message": "Используйте: добавь приложение [имя] для [путь]"}
         
         elif "список приложений" in text_lower:
             if self.app_launcher:
@@ -324,26 +317,14 @@ class JarvisBrain:
                     return self.windows_integration.enable_autostart()
                 elif "выключи" in text_lower:
                     return self.windows_integration.disable_autostart()
-                elif "статус" in text_lower:
-                    status = self.windows_integration.get_integration_status()
-                    return {"status": "ok", "message": f"Автозапуск: {'включен' if status['autostart_enabled'] else 'отключен'}"}
         
-        elif "wake word" in text_lower or "пробуждение" in text_lower:
-            if self.wake_word_service:
-                if "включи" in text_lower or "запусти" in text_lower:
-                    return self.wake_word_service.start()
-                elif "выключи" in text_lower or "останови" in text_lower:
-                    return self.wake_word_service.stop()
-        
-        # Обучение - новые команды
+        # Обучение
         elif "научись" in text_lower or "запомни" in text_lower:
             return self._handle_learning_command(text)
         
-        # Алиасы
         elif "алиас" in text_lower or "псевдоним" in text_lower:
             return self._handle_alias_command(text)
         
-        # Статус обучения
         elif "статус обучения" in text_lower or "чему ты научился" in text_lower:
             return self._get_learning_status()
         
@@ -360,7 +341,7 @@ class JarvisBrain:
         
         return {
             "status": "ok",
-            "message": "Команда обучения принята. Используйте: научись [команда] это [категория]"
+            "message": "Команда обучения принята"
         }
 
     def _handle_alias_command(self, text: str) -> Dict:
@@ -370,7 +351,7 @@ class JarvisBrain:
         
         return {
             "status": "ok",
-            "message": "Команда алиаса принята. Используйте: создай алиас [алиас] для [команда]"
+            "message": "Команда алиаса принята"
         }
 
     def _get_learning_status(self) -> Dict:
@@ -389,12 +370,13 @@ class JarvisBrain:
         if self.learning_manager:
             greeting = self.learning_manager.get_greeting()
             self.logger.info(greeting)
-            
-            # Toast уведомление
-            if self.toast_notifications:
-                self.toast_notifications.show_info(greeting)
         else:
-            self.logger.info("Здравствуйте, сэр. JARVIS готов к работе.")
+            greeting = "Здравствуйте, сэр. JARVIS готов к работе."
+            self.logger.info(greeting)
+        
+        # Обновление HUD
+        if self.hud:
+            self.hud.set_status("ONLINE")
         
         # Автозапуск wake word сервиса если включен
         if self.wake_word_service and self.config.get("windows.wake_word_enabled", False):
@@ -404,10 +386,6 @@ class JarvisBrain:
         if self.clean_desktop and self.config.get("windows.clean_desktop_on_start", False):
             self.clean_desktop.enable_clean_mode()
         
-        # Показ HUD если настроено
-        if self.hud and self.config.get("windows.hud_on_start", False):
-            self.hud.show_hud()
-        
         # Публикация события запуска
         self.event_bus.publish("jarvis_started", {"timestamp": "now"})
 
@@ -415,24 +393,18 @@ class JarvisBrain:
         """Обработчик wake word."""
         self.logger.info(f"Wake word активирован: {text}")
         
-        # Уведомление
-        if self.toast_notifications:
-            self.toast_notifications.show_info("Слушаю...")
-        
-        # Анимация HUD
         if self.hud:
-            self.hud.set_voice_level(0.8)
+            self.hud.set_status("LISTENING")
+            self.hud.set_voice_active(True)
 
     def stop(self):
         """Остановка JARVIS."""
         self.logger.info("Остановка JARVIS...")
         self.running = False
         
-        # Остановка wake word сервиса
         if self.wake_word_service and self.wake_word_service.is_running():
             self.wake_word_service.stop()
         
-        # Восстановление рабочего стола если был чистый режим
         if self.clean_desktop and self.clean_desktop.is_hidden():
             self.clean_desktop.disable_clean_mode()
         
@@ -440,22 +412,17 @@ class JarvisBrain:
 
     def get_status(self) -> Dict:
         """Получение статуса системы."""
-        status = {
+        return {
             "running": self.running,
             "modules_loaded": len(self.modules),
             "plugins_loaded": len(self.plugin_manager.plugins),
             "learning_enabled": self.learning_manager is not None,
+            "hud_enabled": self.hud is not None,
             "windows_integration": {
                 "enabled": self.windows_integration is not None,
                 "toast_enabled": self.toast_notifications is not None,
                 "wake_word_enabled": self.wake_word_service is not None and self.wake_word_service.is_running(),
                 "clean_desktop": self.clean_desktop is not None and self.clean_desktop.is_hidden(),
-                "apps_count": self.app_launcher.get_apps_count() if self.app_launcher else 0,
-                "hud_enabled": self.hud is not None
+                "apps_count": self.app_launcher.get_apps_count() if self.app_launcher else 0
             }
         }
-        
-        if self.windows_integration:
-            status["windows_integration"]["autostart"] = self.windows_integration.is_autostart_enabled()
-        
-        return status
