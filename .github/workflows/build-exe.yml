@@ -22,7 +22,7 @@ jobs:
         python-version: '3.11'
     
     - name: Cache pip packages
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~\AppData\Local\pip\Cache
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
@@ -32,21 +32,46 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        pip install pyinstaller
         pip install -r requirements.txt
+      shell: pwsh
     
-    - name: Build EXE with PyInstaller
+    - name: Prepare build directory
       run: |
-        cd build
-        pyinstaller jarvis.spec --clean --noconfirm
-    
-    - name: Prepare distribution
-      run: |
-        mkdir dist\JARVIS
-        copy config.json dist\JARVIS\
-        copy .env.example dist\JARVIS\.env
+        New-Item -ItemType Directory -Force -Path dist\JARVIS
+        Copy-Item config.json dist\JARVIS\
+        Copy-Item .env.example dist\JARVIS\.env
         if (Test-Path "assets") {
-          xcopy /E /I /Y assets dist\JARVIS\assets
+          Copy-Item -Recurse -Force assets dist\JARVIS\assets
         }
+      shell: pwsh
+    
+    - name: Build EXE with PyInstaller (onefile)
+      run: |
+        pyinstaller --onefile --windowed --name JARVIS --icon=assets/jarvis.ico main.py
+      shell: pwsh
+      continue-on-error: true
+    
+    - name: Build EXE with PyInstaller (onedir fallback)
+      if: failure()
+      run: |
+        pyinstaller --onedir --windowed --name JARVIS main.py
+      shell: pwsh
+      continue-on-error: true
+    
+    - name: Copy built files to dist
+      run: |
+        if (Test-Path "dist\JARVIS.exe") {
+          Move-Item dist\JARVIS.exe dist\JARVIS\JARVIS.exe -Force
+        } elseif (Test-Path "dist\JARVIS\JARVIS.exe") {
+          Write-Host "EXE already in dist\JARVIS"
+        } else {
+          Write-Host "Warning: EXE not found, checking build directory"
+          if (Test-Path "build\JARVIS") {
+            Copy-Item -Recurse build\JARVIS\* dist\JARVIS\ -Force
+          }
+        }
+      shell: pwsh
     
     - name: Upload artifact
       uses: actions/upload-artifact@v4
@@ -57,7 +82,7 @@ jobs:
     
     - name: Create Release (on tag)
       if: startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         files: dist/JARVIS/JARVIS.exe
         draft: false
@@ -83,13 +108,15 @@ jobs:
     - name: Install Inno Setup
       run: |
         choco install innosetup -y
+      shell: pwsh
     
     - name: Build Installer
       run: |
         iscc installer\jarvis_installer.iss
+      shell: pwsh
     
     - name: Upload Installer
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         files: installer/output/JARVIS_Ultimate_Setup.exe
       env:
