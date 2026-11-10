@@ -14,5 +14,15 @@
   "startup": {
     "greeting": true,
     "sound": true
+  },
+  "learning": {
+    "enabled": true,
+    "confidence_threshold": 0.7,
+    "auto_suggest": true
+  },
+  "local_llm": {
+    "enabled": false,
+    "ollama_url": "http://localhost:11434",
+    "model": "llama3.2"
   }
 }

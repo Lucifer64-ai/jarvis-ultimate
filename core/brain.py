@@ -1,0 +1,277 @@
+"""
+JARVIS Brain - Главный контроллер системы
+"""
+
+import logging
+from typing import Dict, Optional, Any
+from core.config import Config
+from core.event_bus import EventBus
+from core.plugin_manager import PluginManager
+
+
+class JarvisBrain:
+    """Центральный контроллер JARVIS."""
+
+    def __init__(self):
+        self.logger = self._setup_logging()
+        self.logger.info("Инициализация JARVIS Brain...")
+        
+        # Конфигурация
+        self.config = Config()
+        
+        # Шина событий
+        self.event_bus = EventBus()
+        
+        # Менеджер плагинов
+        self.plugin_manager = PluginManager(self)
+        
+        # Модули обучения
+        self.learning_manager = None
+        
+        # Системные модули
+        self.modules = {}
+        
+        # Состояние
+        self.running = False
+        
+        self.logger.info("JARVIS Brain инициализирован")
+
+    def _setup_logging(self) -> logging.Logger:
+        """Настройка логирования."""
+        logger = logging.getLogger("JARVIS")
+        logger.setLevel(logging.INFO)
+        
+        if not logger.handlers:
+            handler = logging.StreamHandler()
+            formatter = logging.Formatter(
+                '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+            )
+            handler.setFormatter(formatter)
+            logger.addHandler(handler)
+        
+        return logger
+
+    def initialize(self):
+        """Инициализация всех модулей."""
+        self.logger.info("Запуск инициализации модулей...")
+        
+        # Инициализация модулей обучения
+        self._init_learning_modules()
+        
+        # Инициализация системных модулей
+        self._init_system_modules()
+        
+        # Загрузка плагинов
+        self.plugin_manager.load_plugins()
+        
+        self.logger.info("Все модули инициализированы")
+
+    def _init_learning_modules(self):
+        """Инициализация модулей обучения."""
+        try:
+            from ai.learning_manager import LearningManager
+            self.learning_manager = LearningManager(self)
+            self.logger.info("✓ Модули обучения загружены")
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки модулей обучения: {e}")
+            self.learning_manager = None
+
+    def _init_system_modules(self):
+        """Инициализация системных модулей."""
+        # Системные операции
+        try:
+            from modules.system import SystemModule
+            self.modules["system"] = SystemModule(self)
+            self.logger.info("✓ Системный модуль загружен")
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки системного модуля: {e}")
+        
+        # Управление процессами
+        try:
+            from modules.processes import ProcessModule
+            self.modules["processes"] = ProcessModule(self)
+            self.logger.info("✓ Модуль процессов загружен")
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки модуля процессов: {e}")
+        
+        # Работа с файлами
+        try:
+            from modules.files import FileModule
+            self.modules["files"] = FileModule(self)
+            self.logger.info("✓ Модуль файлов загружен")
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки модуля файлов: {e}")
+        
+        # Управление окнами
+        try:
+            from modules.windows import WindowModule
+            self.modules["windows"] = WindowModule(self)
+            self.logger.info("✓ Модуль окон загружен")
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки модуля окон: {e}")
+        
+        # Сетевые операции
+        try:
+            from modules.network import NetworkModule
+            self.modules["network"] = NetworkModule(self)
+            self.logger.info("✓ Сетевой модуль загружен")
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки сетевого модуля: {e}")
+        
+        # Мониторинг оборудования
+        try:
+            from modules.hardware import HardwareModule
+            self.modules["hardware"] = HardwareModule(self)
+            self.logger.info("✓ Модуль оборудования загружен")
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки модуля оборудования: {e}")
+        
+        # Управление питанием
+        try:
+            from modules.power import PowerModule
+            self.modules["power"] = PowerModule(self)
+            self.logger.info("✓ Модуль питания загружен")
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки модуля питания: {e}")
+
+    def process_command(self, text: str) -> Dict:
+        """Обработка команды с использованием модулей обучения."""
+        self.logger.info(f"Обработка команды: {text}")
+        
+        # Обработка через модули обучения
+        if self.learning_manager:
+            learning_result = self.learning_manager.process_command(text)
+            processed_text = learning_result.get("processed", text)
+            
+            # Если есть предложение обучения
+            if learning_result.get("learning_suggestion"):
+                self.logger.info(f"Предложение обучения: {learning_result['learning_suggestion']}")
+        else:
+            processed_text = text
+            learning_result = {"original": text, "processed": text}
+        
+        # Выполнение команды
+        result = self._execute_command(processed_text)
+        
+        # Объединение результатов
+        result["learning_info"] = learning_result
+        
+        return result
+
+    def _execute_command(self, text: str) -> Dict:
+        """Выполнение команды."""
+        text_lower = text.lower().strip()
+        
+        # Системные команды
+        if any(word in text_lower for word in ["выключи", "заверши работу"]):
+            if "system" in self.modules:
+                return self.modules["system"].shutdown()
+        
+        elif any(word in text_lower for word in ["перезагрузи", "рестарт"]):
+            if "system" in self.modules:
+                return self.modules["system"].restart()
+        
+        elif any(word in text_lower for word in ["заблокируй", "лок"]):
+            if "system" in self.modules:
+                return self.modules["system"].lock_screen()
+        
+        # Информация
+        elif "час" in text_lower or "время" in text_lower:
+            if "system" in self.modules:
+                return self.modules["system"].get_time()
+        
+        elif "дата" in text_lower or "число" in text_lower:
+            if "system" in self.modules:
+                return self.modules["system"].get_date()
+        
+        # Статус системы
+        elif "статус" in text_lower or "состояние" in text_lower:
+            if "hardware" in self.modules:
+                return self.modules["hardware"].get_system_info()
+        
+        # Сеть
+        elif "ip" in text_lower or "айпи" in text_lower:
+            if "network" in self.modules:
+                return self.modules["network"].get_ip()
+        
+        elif "скорость" in text_lower and "интернет" in text_lower:
+            if "network" in self.modules:
+                return self.modules["network"].speed_test()
+        
+        # Обучение - новые команды
+        elif "научись" in text_lower or "запомни" in text_lower:
+            return self._handle_learning_command(text)
+        
+        # Алиасы
+        elif "алиас" in text_lower or "псевдоним" in text_lower:
+            return self._handle_alias_command(text)
+        
+        # Статус обучения
+        elif "статус обучения" in text_lower or "чему ты научился" in text_lower:
+            return self._get_learning_status()
+        
+        return {
+            "status": "ok",
+            "message": "Команда не распознана",
+            "text": text
+        }
+
+    def _handle_learning_command(self, text: str) -> Dict:
+        """Обработка команд обучения."""
+        if not self.learning_manager or not self.learning_manager.adaptive_ml:
+            return {"status": "error", "message": "Модуль обучения не загружен"}
+        
+        # Пример: "научись команда 'открой фото' это открыть приложение фотографии"
+        # Простая реализация - можно улучшить
+        return {
+            "status": "ok",
+            "message": "Команда обучения принята. Используйте: научись [команда] это [категория]"
+        }
+
+    def _handle_alias_command(self, text: str) -> Dict:
+        """Обработка команд алиасов."""
+        if not self.learning_manager or not self.learning_manager.alias_system:
+            return {"status": "error", "message": "Система алиасов не загружена"}
+        
+        # Пример: "создай алиас 'фото' для 'открой приложение фотографии'"
+        return {
+            "status": "ok",
+            "message": "Команда алиаса принята. Используйте: создай алиас [алиас] для [команда]"
+        }
+
+    def _get_learning_status(self) -> Dict:
+        """Получение статуса обучения."""
+        if not self.learning_manager:
+            return {"status": "error", "message": "Модули обучения не загружены"}
+        
+        return self.learning_manager.get_learning_status()
+
+    def start(self):
+        """Запуск JARVIS."""
+        self.logger.info("Запуск JARVIS...")
+        self.running = True
+        
+        # Приветствие
+        if self.learning_manager:
+            greeting = self.learning_manager.get_greeting()
+            self.logger.info(greeting)
+        else:
+            self.logger.info("Здравствуйте, сэр. JARVIS готов к работе.")
+        
+        # Публикация события запуска
+        self.event_bus.publish("jarvis_started", {"timestamp": "now"})
+
+    def stop(self):
+        """Остановка JARVIS."""
+        self.logger.info("Остановка JARVIS...")
+        self.running = False
+        self.event_bus.publish("jarvis_stopped", {"timestamp": "now"})
+
+    def get_status(self) -> Dict:
+        """Получение статуса системы."""
+        return {
+            "running": self.running,
+            "modules_loaded": len(self.modules),
+            "plugins_loaded": len(self.plugin_manager.plugins),
+            "learning_enabled": self.learning_manager is not None
+        }

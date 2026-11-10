@@ -1,80 +1,82 @@
 """
-JARVIS Ultimate — главный файл приложения
-Точка входа для сборки в exe
+JARVIS Ultimate - Точка входа
 """
 
 import sys
-import os
-from pathlib import Path
-
-
-def resource_path(relative_path: str) -> str:
-    """Путь к ресурсам (для PyInstaller bundle)."""
-    if hasattr(sys, "_MEIPASS"):
-        return os.path.join(sys._MEIPASS, relative_path)
-    return os.path.join(os.path.abspath("."), relative_path)
-
-
-def setup_environment():
-    """Настройка окружения."""
-    if getattr(sys, "frozen", False):
-        app_dir = Path(sys.executable).parent
-    else:
-        app_dir = Path(__file__).parent
-
-    os.chdir(app_dir)
-
-    (app_dir / "logs").mkdir(exist_ok=True)
-    (app_dir / "macros").mkdir(exist_ok=True)
-    (app_dir / "plugins").mkdir(exist_ok=True)
-    (app_dir / "data").mkdir(exist_ok=True)
-    (app_dir / "models").mkdir(exist_ok=True)
-    (app_dir / "assets" / "sounds").mkdir(parents=True, exist_ok=True)
+import time
+from core.brain import JarvisBrain
 
 
 def main():
     """Главная функция."""
-    setup_environment()
-
-    try:
-        from core.config import Config
-        from core.brain import JarvisBrain
-    except ImportError as e:
-        print(f"Ошибка импорта: {e}")
-        print("Установите зависимости: pip install -r requirements.txt")
-        input("Нажмите Enter для выхода...")
-        sys.exit(1)
-
     print("=" * 50)
-    print("  JARVIS Ultimate v2.0")
-    print("  Инициализация системы...")
+    print("  JARVIS Ultimate v2.0.0")
+    print("  AI Assistant with Learning Capabilities")
     print("=" * 50)
-
+    print()
+    
+    # Инициализация
+    brain = JarvisBrain()
+    
     try:
-        config = Config("config.json")
-
-        if config.openai_api_key:
-            print("  ✓ OpenAI API подключен")
-        else:
-            print("  ✗ OpenAI API не настроен (опционально)")
-
-        if config.home_assistant_url:
-            print("  ✓ Home Assistant подключен")
-        else:
-            print("  ✗ Home Assistant не настроен (опционально)")
-
-        brain = JarvisBrain(config)
+        # Инициализация всех модулей
+        brain.initialize()
+        
+        # Запуск
         brain.start()
-    except KeyboardInterrupt:
-        print("\nОстановка по запросу пользователя...")
-        if "brain" in locals():
-            brain.stop()
+        
+        # Главный цикл
+        print("\nJARVIS готов к работе. Введите команду или 'выход' для завершения.\n")
+        
+        while brain.running:
+            try:
+                # Ввод команды
+                command = input("Вы: ").strip()
+                
+                if not command:
+                    continue
+                
+                # Выход
+                if command.lower() in ["выход", "exit", "quit", "стоп"]:
+                    print("Завершение работы...")
+                    break
+                
+                # Обработка команды
+                result = brain.process_command(command)
+                
+                # Вывод результата
+                if result.get("status") == "ok":
+                    if "message" in result:
+                        print(f"JARVIS: {result['message']}")
+                    elif "response" in result:
+                        print(f"JARVIS: {result['response']}")
+                    else:
+                        print(f"JARVIS: Команда выполнена")
+                else:
+                    print(f"JARVIS: Ошибка - {result.get('message', 'Неизвестная ошибка')}")
+                
+                # Информация об обучении
+                if "learning_info" in result:
+                    learning = result["learning_info"]
+                    if learning.get("learning_suggestion"):
+                        print(f"\n💡 {learning['learning_suggestion']}\n")
+                
+                print()
+                
+            except KeyboardInterrupt:
+                print("\n\nПрервано пользователем")
+                break
+            except Exception as e:
+                print(f"Ошибка: {e}")
+        
     except Exception as e:
-        print(f"\nКритическая ошибка: {e}")
-        import traceback
-        traceback.print_exc()
-        input("Нажмите Enter для выхода...")
+        print(f"Критическая ошибка: {e}")
         sys.exit(1)
+    
+    finally:
+        # Остановка
+        brain.stop()
+        print("\nДо свидания!")
 
 
 if __name__ == "__main__":
