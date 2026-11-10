@@ -1,0 +1,18 @@
+{
+  "name": "JARVIS",
+  "version": "2.0.0",
+  "language": "ru",
+  "voice": {
+    "rate": 180,
+    "wake_word": "джарвис",
+    "volume": 1.0
+  },
+  "hud": {
+    "enabled": true,
+    "position": "top-right"
+  },
+  "startup": {
+    "greeting": true,
+    "sound": true
+  }
+}
