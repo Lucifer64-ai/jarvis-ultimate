@@ -57,8 +57,40 @@ jobs:
 
     - name: Build EXE with PyInstaller
       run: |
-        pyinstaller --onefile --windowed --name JARVIS --icon=assets/jarvis.ico main.py || `
-        pyinstaller --onefile --windowed --name JARVIS main.py
+        pyinstaller --onefile --windowed --name JARVIS --icon=assets/jarvis.ico `
+          --hidden-import=dotenv `
+          --hidden-import=python_dotenv `
+          --hidden-import=openai `
+          --hidden-import=aiohttp `
+          --hidden-import=websockets `
+          --hidden-import=psutil `
+          --hidden-import=pyttsx3 `
+          --hidden-import=speech_recognition `
+          --hidden-import=pyautogui `
+          --hidden-import=plyer `
+          --hidden-import=schedule `
+          --hidden-import=sklearn `
+          --hidden-import=numpy `
+          --hidden-import=PIL `
+          --collect-all dotenv `
+          main.py || `
+        pyinstaller --onefile --windowed --name JARVIS `
+          --hidden-import=dotenv `
+          --hidden-import=python_dotenv `
+          --hidden-import=openai `
+          --hidden-import=aiohttp `
+          --hidden-import=websockets `
+          --hidden-import=psutil `
+          --hidden-import=pyttsx3 `
+          --hidden-import=speech_recognition `
+          --hidden-import=pyautogui `
+          --hidden-import=plyer `
+          --hidden-import=schedule `
+          --hidden-import=sklearn `
+          --hidden-import=numpy `
+          --hidden-import=PIL `
+          --collect-all dotenv `
+          main.py
       shell: pwsh
 
     - name: Copy built files to dist
