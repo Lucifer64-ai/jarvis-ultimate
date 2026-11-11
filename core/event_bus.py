@@ -1,5 +1,5 @@
 """
-Система событий JARVIS
+Ð¡Ð¸ÑÑÐµÐ¼Ð° ÑÐ¾Ð±ÑÑÐ¸Ð¹ JARVIS
 """
 
 from typing import Dict, List, Callable
@@ -8,7 +8,7 @@ import threading
 
 
 class EventBus:
-    """Шина событий для связи между модулями."""
+    """Ð¨Ð¸Ð½Ð° ÑÐ¾Ð±ÑÑÐ¸Ð¹ Ð´Ð»Ñ ÑÐ²ÑÐ·Ð¸ Ð¼ÐµÐ¶Ð´Ñ Ð¼Ð¾Ð´ÑÐ»ÑÐ¼Ð¸."""
 
     def __init__(self):
         self._listeners: Dict[str, List[Callable]] = defaultdict(list)
@@ -27,6 +27,11 @@ class EventBus:
         with self._lock:
             self._events.append(event)
 
+
+    def publish(self, event_type: str, data: Dict = None):
+        """Алиас для emit() - публикация события."""
+        self.emit(event_type, data)
+
     def process_events(self):
         with self._lock:
             events = self._events.copy()
@@ -37,7 +42,7 @@ class EventBus:
                 try:
                     listener(event["data"])
                 except Exception as e:
-                    print(f"Ошибка обработчика события: {e}")
+                    print(f"ÐÑÐ¸Ð±ÐºÐ° Ð¾Ð±ÑÐ°Ð±Ð¾ÑÑÐ¸ÐºÐ° ÑÐ¾Ð±ÑÑÐ¸Ñ: {e}")
 
     def clear(self):
         self._listeners.clear()
