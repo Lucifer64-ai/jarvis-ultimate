@@ -9,6 +9,7 @@ a = Analysis(
     datas=[],
     hiddenimports=[
         'dotenv',
+        'python_dotenv',
         'openai',
         'requests',
         'aiohttp',
@@ -36,6 +37,13 @@ a = Analysis(
     cipher=block_cipher,
     noarchive=False,
 )
+
+# Collect all files from dotenv package
+from PyInstaller.utils.hooks import collect_all
+datas_dotenv, binaries_dotenv, hiddenimports_dotenv = collect_all('dotenv')
+a.datas += datas_dotenv
+a.binaries += binaries_dotenv
+a.hiddenimports += hiddenimports_dotenv
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
