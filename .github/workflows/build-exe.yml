@@ -1,9 +1,9 @@
-name: Build JARVIS EXE
+name: Build JARVIS Installer
 
 on:
   push:
     branches: [ main ]
-    tags: [ '*']
+    tags: [ 'v*' ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -42,78 +42,72 @@ jobs:
       shell: pwsh
       continue-on-error: true
 
-    - name: Prepare build directory
-      run: |
-        New-Item -ItemType Directory -Force -Path dist\JARVIS
-        if (Test-Path config.json) { Copy-Item config.json dist\JARVIS\ }
-        Copy-Item .env.example dist\JARVIS\.env
-        if (Test-Path "assets") {
-          Copy-Item -Recurse -Force assets dist\JARVIS\assets
-        }
-      shell: pwsh
-
     - name: Build EXE with PyInstaller
       run: |
         pyinstaller jarvis.spec
       shell: pwsh
 
-    - name: Copy built files to dist
+    - name: Prepare installer package
       run: |
-        if (Test-Path "dist\JARVIS.exe") {
-          Move-Item dist\JARVIS.exe dist\JARVIS\JARVIS.exe -Force
-          Write-Host "EXE copied to dist\JARVIS"
-        } elseif (Test-Path "build\JARVIS\JARVIS.exe") {
-          Copy-Item build\JARVIS\JARVIS.exe dist\JARVIS\JARVIS.exe -Force
-          Write-Host "EXE copied from build folder"
-        } else {
-          Write-Host "Warning: EXE not found, but continuing..."
-        }
-      shell: pwsh
-      continue-on-error: true
+        # Создаём папку для установщика
+        New-Item -ItemType Directory -Force -Path installer\package | Out-Null
 
-    - name: Upload artifact
+        # Копируем EXE
+        if (Test-Path "dist\JARVIS.exe") {
+          Copy-Item dist\JARVIS.exe installer\package\JARVIS.exe -Force
+          Write-Host "EXE copied"
+        } elseif (Test-Path "dist\JARVIS\JARVIS.exe") {
+          Copy-Item dist\JARVIS\JARVIS.exe installer\package\JARVIS.exe -Force
+          Write-Host "EXE copied from dist/JARVIS"
+        }
+
+        # Копируем все папки проекта
+        $folders = @('ai', 'core', 'modules', 'voice', 'ui', 'smart_home', 'automation', 'hardware', 'hud', 'mobile', 'scripts', 'assets')
+        foreach ($folder in $folders) {
+          if (Test-Path $folder) {
+            Copy-Item -Recurse -Force $folder installer\package\$folder
+            Write-Host "Copied $folder"
+          }
+        }
+
+        # Копируем конфиги и документацию
+        if (Test-Path "config.json") { Copy-Item config.json installer\package\ }
+        Copy-Item .env.example installer\package\.env
+        if (Test-Path "requirements.txt") { Copy-Item requirements.txt installer\package\ }
+        if (Test-Path "README.md") { Copy-Item README.md installer\package\ }
+        if (Test-Path "LICENSE") { Copy-Item LICENSE installer\package\ }
+
+        Write-Host "Package prepared"
+        Get-ChildItem installer\package -Recurse | Measure-Object | Select-Object -ExpandProperty Count
+      shell: pwsh
+
+    - name: Upload package artifact
       uses: actions/upload-artifact@v4
       with:
-        name: JARVIS-EXE
-        path: dist/JARVIS/
+        name: JARVIS-Package
+        path: installer/package/
         retention-days: 30
 
-    - name: Create Release (on tag)
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v2
-      with:
-        files: dist/JARVIS/JARVIS.exe
-        draft: false
-        prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build-installer:
-    runs-on: windows-latest
-    needs: build
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Download artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: JARVIS-EXE
-        path: dist/JARVIS/
-
-    - name: Install Inno Setup
+    - name: Build Installer with Inno Setup
       run: |
-        choco install innosetup -y
+        # Устанавливаем Inno Setup
+        choco install innosetup -y --no-progress
         Write-Host "Inno Setup installed"
-      shell: pwsh
 
-    - name: Build Installer
-      run: |
+        # Собираем установщик
         & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\jarvis_installer.iss
+        Write-Host "Installer built"
+
+        # Проверяем результат
+        if (Test-Path "installer\output\*.exe") {
+          Write-Host "Installer created successfully"
+          Get-ChildItem installer\output\*.exe | ForEach-Object { Write-Host "  $($_.Name) - $([math]::Round($_.Length / 1MB, 2)) MB" }
+        } else {
+          Write-Error "Installer not created"
+        }
       shell: pwsh
 
-    - name: Upload Installer Artifact
+    - name: Upload Installer
       uses: actions/upload-artifact@v4
       with:
         name: JARVIS-Installer
@@ -125,5 +119,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: installer/output/JARVIS_Ultimate_Setup_*.exe
+        draft: false
+        prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
