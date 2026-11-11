@@ -52,8 +52,9 @@ class PluginManager:
             self.brain.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ Ð¿Ð»Ð°Ð³Ð¸Ð½Ð° {name}: {e}")
             return {"status": "error", "message": str(e)}
 
+
     def load_plugins(self) -> List[Dict]:
-        """Загрузить все найденные плагины."""
+        """Загрузить все обнаруженные плагины."""
         results = []
         plugins = self.discover_plugins()
         for name in plugins:
