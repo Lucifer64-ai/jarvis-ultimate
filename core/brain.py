@@ -256,6 +256,14 @@ class JarvisBrain:
         except Exception as e:
             self.logger.error(f"Ошибка загрузки модуля питания: {e}")
 
+        # Анализ приложений
+        try:
+            from modules.app_analyzer import AppAnalyzer
+            self.modules["app_analyzer"] = AppAnalyzer(self)
+            self.logger.info("✓ Модуль анализа приложений загружен")
+        except Exception as e:
+            self.logger.error(f"Ошибка загрузки модуля анализа приложений: {e}")
+
     def process_command(self, text: str) -> Dict:
         """Обработка команды с использованием модулей обучения."""
         self.logger.info(f"Обработка команды: {text}")
