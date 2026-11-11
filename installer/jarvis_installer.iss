@@ -54,25 +54,12 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 6.1; Check: not IsAdminInstallMode
-Name: "autostart"; Description: "Запускать JARVIS при старте Windows"; GroupDescription: "Дополнительные настройки:"; Flags: unchecked
-Name: "cleanmode"; Description: "Включить режим чистого рабочего стола"; GroupDescription: "Дополнительные настройки:"; Flags: unchecked
+Name: "autostart"; Description: "ÐÐ°Ð¿ÑÑÐºÐ°ÑÑ JARVIS Ð¿ÑÐ¸ ÑÑÐ°ÑÑÐµ Windows"; GroupDescription: "ÐÐ¾Ð¿Ð¾Ð»Ð½Ð¸ÑÐµÐ»ÑÐ½ÑÐµ Ð½Ð°ÑÑÑÐ¾Ð¹ÐºÐ¸:"; Flags: unchecked
+Name: "cleanmode"; Description: "ÐÐºÐ»ÑÑÐ¸ÑÑ ÑÐµÐ¶Ð¸Ð¼ ÑÐ¸ÑÑÐ¾Ð³Ð¾ ÑÐ°Ð±Ð¾ÑÐµÐ³Ð¾ ÑÑÐ¾Ð»Ð°"; GroupDescription: "ÐÐ¾Ð¿Ð¾Ð»Ð½Ð¸ÑÐµÐ»ÑÐ½ÑÐµ Ð½Ð°ÑÑÑÐ¾Ð¹ÐºÐ¸:"; Flags: unchecked
 
 [Files]
-; Main Application
-Source: "dist\jarvis\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "assets\jarvis.ico"; DestDir: "{app}\assets"; Flags: ignoreversion
-
-; Configuration Files
-Source: ".env.example"; DestDir: "{app}"; DestName: ".env"; Flags: onlyifdoesntexist
-Source: "config.json"; DestDir: "{app}"; Flags: ignoreversion
-
-; Documentation
-Source: "README.md"; DestDir: "{app}\docs"; Flags: ignoreversion
-Source: "LICENSE"; DestDir: "{app}\docs"; Flags: ignoreversion
-Source: "docs\*"; DestDir: "{app}\docs"; Flags: ignoreversion recursesubdirs
-
-; Python Runtime (if bundled)
-Source: "python_runtime\*"; DestDir: "{app}\python"; Flags: ignoreversion recursesubdirs; Check: IsPythonNotInstalled
+; Main Application - all files from package
+Source: "installer\package\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
@@ -81,8 +68,8 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: quicklaunchicon
 
 [Run]
-Filename: "{app}\{#MyAppExeName}"; Description: "Запустить JARVIS Ultimate"; Flags: nowait postinstall skipifsilent
-Filename: "{app}\docs\README.md"; Description: "Открыть документацию"; Flags: shellexec skipifsilent
+Filename: "{app}\{#MyAppExeName}"; Description: "ÐÐ°Ð¿ÑÑÑÐ¸ÑÑ JARVIS Ultimate"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\docs\README.md"; Description: "ÐÑÐºÑÑÑÑ Ð´Ð¾ÐºÑÐ¼ÐµÐ½ÑÐ°ÑÐ¸Ñ"; Flags: shellexec skipifsilent
 
 [UninstallRun]
 ; Cleanup on uninstall
@@ -107,84 +94,6 @@ Name: "{app}\models"
 Name: "{app}\backups"
 
 [Code]
-var
-  PythonPage: TInputDirWizardPage;
-  PythonInstalled: Boolean;
-
-function IsPythonNotInstalled(): Boolean;
-var
-  PythonPath: String;
-begin
-  Result := not RegQueryStringValue(HKLM, 'SOFTWARE\Python\PythonCore\3.11\InstallPath', '', PythonPath) and
-            not RegQueryStringValue(HKCU, 'SOFTWARE\Python\PythonCore\3.11\InstallPath', '', PythonPath) and
-            not RegQueryStringValue(HKLM, 'SOFTWARE\Python\PythonCore\3.10\InstallPath', '', PythonPath) and
-            not RegQueryStringValue(HKCU, 'SOFTWARE\Python\PythonCore\3.10\InstallPath', '', PythonPath);
-end;
-
-procedure InitializeWizard();
-begin
-  PythonInstalled := not IsPythonNotInstalled();
-  
-  if not PythonInstalled then
-  begin
-    PythonPage := CreateInputDirPage(wpSelectDir,
-      'Python не найден', 'Укажите путь к Python 3.10+',
-      'JARVIS требует Python 3.10 или выше. Укажите путь к установке Python:',
-      False, 'Python 3.10+');
-    PythonPage.Add('');
-  end;
-end;
-
-function NextButtonClick(CurPageID: Integer): Boolean;
-var
-  PythonPath: String;
-begin
-  Result := True;
-  
-  if (CurPageID = PythonPage.ID) and not PythonInstalled then
-  begin
-    PythonPath := PythonPage.Values[0];
-    if not DirExists(PythonPath) then
-    begin
-      MsgBox('Указанный путь не существует. Пожалуйста, укажите корректный путь к Python.', mbError, MB_OK);
-      Result := False;
-    end
-    else if not FileExists(PythonPath + '\python.exe') then
-    begin
-      MsgBox('В указанной папке не найден python.exe. Пожалуйста, проверьте путь.', mbError, MB_OK);
-      Result := False;
-    end;
-  end;
-end;
-
-procedure CurStepChanged(CurStep: TSetupStep);
-var
-  ResultCode: Integer;
-  PythonPath: String;
-begin
-  if CurStep = ssPostInstall then
-  begin
-    // Install Python dependencies
-    if not PythonInstalled then
-      PythonPath := PythonPage.Values[0] + '\python.exe'
-    else
-      PythonPath := 'python';
-    
-    // Install requirements
-    if FileExists(ExpandConstant('{app}\requirements.txt')) then
-    begin
-      Exec(PythonPath, '-m pip install -r "' + ExpandConstant('{app}\requirements.txt') + '"', 
-           '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
-    end;
-    
-    // Initialize configuration
-    if not FileExists(ExpandConstant('{app}\.env')) then
-    begin
-      FileCopy(ExpandConstant('{app}\.env.example'), ExpandConstant('{app}\.env'), False);
-    end;
-  end;
-end;
-
 function InitializeUninstall(): Boolean;
 begin
   Result := MsgBox('Вы действительно хотите удалить JARVIS Ultimate?' + #13#10 + #13#10 +
@@ -198,8 +107,5 @@ begin
   begin
     // Remove auto-start entry
     RegDeleteValue(HKCU, 'Software\Microsoft\Windows\CurrentVersion\Run', 'JARVIS Ultimate');
-    
-    // Remove application settings
-    RegDeleteKeyIncludingSubkeys(HKCU, 'Software\{#MyAppName}');
   end;
 end;
