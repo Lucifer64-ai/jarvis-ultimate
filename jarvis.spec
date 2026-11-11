@@ -2,10 +2,11 @@
 
 block_cipher = None
 
-from PyInstaller.utils.hooks import collect_all
+from PyInstaller.utils.hooks import collect_all, collect_submodules
 
-# Collect all files from python-dotenv package
-datas_dotenv, binaries_dotenv, hiddenimports_dotenv = collect_all('python_dotenv')
+# Collect all files and submodules from dotenv package
+datas_dotenv, binaries_dotenv, hiddenimports_dotenv = collect_all('dotenv')
+submodules_dotenv = collect_submodules('dotenv')
 
 a = Analysis(
     ['main.py'],
@@ -33,7 +34,7 @@ a = Analysis(
         'speedtest',
         'cpuinfo',
         'joblib',
-    ] + hiddenimports_dotenv,
+    ] + hiddenimports_dotenv + submodules_dotenv,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
