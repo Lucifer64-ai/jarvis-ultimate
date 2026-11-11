@@ -1,5 +1,5 @@
 """
-Менеджер плагинов JARVIS
+ÐÐµÐ½ÐµÐ´Ð¶ÐµÑ Ð¿Ð»Ð°Ð³Ð¸Ð½Ð¾Ð² JARVIS
 """
 
 import importlib
@@ -9,7 +9,7 @@ from typing import Dict, List, Optional
 
 
 class PluginManager:
-    """Загрузка и управление плагинами."""
+    """ÐÐ°Ð³ÑÑÐ·ÐºÐ° Ð¸ ÑÐ¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð¿Ð»Ð°Ð³Ð¸Ð½Ð°Ð¼Ð¸."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -44,13 +44,22 @@ class PluginManager:
             if hasattr(module, "setup"):
                 plugin = module.setup(self.brain)
                 self.loaded[name] = plugin
-                self.brain.logger.info(f"Плагин '{name}' загружен")
+                self.brain.logger.info(f"ÐÐ»Ð°Ð³Ð¸Ð½ '{name}' Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½")
                 return {"status": "ok", "name": name}
             else:
-                return {"status": "error", "message": "Плагин не имеет функции setup()"}
+                return {"status": "error", "message": "ÐÐ»Ð°Ð³Ð¸Ð½ Ð½Ðµ Ð¸Ð¼ÐµÐµÑ ÑÑÐ½ÐºÑÐ¸Ð¸ setup()"}
         except Exception as e:
-            self.brain.logger.error(f"Ошибка загрузки плагина {name}: {e}")
+            self.brain.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ Ð¿Ð»Ð°Ð³Ð¸Ð½Ð° {name}: {e}")
             return {"status": "error", "message": str(e)}
+
+    def load_plugins(self) -> List[Dict]:
+        """Загрузить все найденные плагины."""
+        results = []
+        plugins = self.discover_plugins()
+        for name in plugins:
+            result = self.load_plugin(name)
+            results.append(result)
+        return results
 
     def unload_plugin(self, name: str) -> Dict:
         if name in self.loaded:
@@ -59,7 +68,7 @@ class PluginManager:
                 plugin.shutdown()
             del self.loaded[name]
             return {"status": "ok"}
-        return {"status": "error", "message": "Плагин не загружен"}
+        return {"status": "error", "message": "ÐÐ»Ð°Ð³Ð¸Ð½ Ð½Ðµ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½"}
 
     def list_plugins(self) -> List[Dict]:
         available = self.discover_plugins()
