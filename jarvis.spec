@@ -2,10 +2,9 @@
 
 block_cipher = None
 
-from PyInstaller.utils.hooks import collect_all, collect_submodules
+from PyInstaller.utils.hooks import collect_submodules
 
-# Collect all files and submodules from dotenv package
-datas_dotenv, binaries_dotenv, hiddenimports_dotenv = collect_all('dotenv')
+# Collect all submodules from dotenv package
 submodules_dotenv = collect_submodules('dotenv')
 
 a = Analysis(
@@ -34,7 +33,7 @@ a = Analysis(
         'speedtest',
         'cpuinfo',
         'joblib',
-    ] + hiddenimports_dotenv + submodules_dotenv,
+    ] + submodules_dotenv,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -45,9 +44,7 @@ a = Analysis(
     noarchive=False,
 )
 
-# Add collected data and binaries
-a.datas += datas_dotenv
-a.binaries += binaries_dotenv
+# No additional data/binaries needed for dotenv
 
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
