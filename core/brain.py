@@ -34,7 +34,6 @@ class JarvisBrain:
         self.wake_word_service = None
         self.clean_desktop = None
         self.app_launcher = None
-        self.app_analyzer = None
         
         # HUD интерфейс
         self.hud = None
@@ -85,9 +84,6 @@ class JarvisBrain:
         
         # Инициализация системных модулей
         self._init_system_modules()
-        
-        # Инициализация анализатора приложений
-        self._init_app_analyzer()
         
         # Загрузка плагинов
         self.plugin_manager.load_plugins()
@@ -150,7 +146,6 @@ class JarvisBrain:
         except Exception as e:
             self.logger.error(f"Ошибка загрузки App Launcher: {e}")
             self.app_launcher = None
-        self.app_analyzer = None
 
     def _init_hud(self):
         """Инициализация HUD интерфейса."""
@@ -192,15 +187,16 @@ class JarvisBrain:
             self.news_module = None
 
 
-    def _init_app_analyzer(self):
-        """Инициализация анализатора приложений."""
+    def _init_avatar_3d(self):
+        """Инициализация 3D голографического аватара."""
         try:
-            from modules.app_analyzer import AppAnalyzer
-            self.app_analyzer = AppAnalyzer(self)
-            self.logger.info("✓ Анализатор приложений загружен")
+            from modules.avatar_3d import AvatarManager
+            self.avatar_3d = AvatarManager(self)
+            self.avatar_3d.initialize()
+            self.logger.info("✓ 3D аватар загружен")
         except Exception as e:
-            self.logger.error(f"Ошибка загрузки анализатора приложений: {e}")
-            self.app_analyzer = None
+            self.logger.error(f"Ошибка загрузки 3D аватара: {e}")
+            self.avatar_3d = None
 
     def _init_system_modules(self):
         """Инициализация системных модулей."""
@@ -394,34 +390,21 @@ class JarvisBrain:
             return self._get_learning_status()
         
 
-        # === Анализ приложений ===
-        elif any(word in text_lower for word in ["анализ приложения", "проанализируй", "что за приложение", "расскажи о"]):
-            if self.app_analyzer:
-                app_name = text_lower.replace("анализ приложения", "").replace("проанализируй", "").replace("что за приложение", "").replace("расскажи о", "").strip()
-                if app_name:
-                    analysis = self.app_analyzer.analyze_app(app_name)
-                    message = self.app_analyzer.format_analysis_message(analysis)
-                    return {"status": "ok", "message": message, "data": analysis}
-                else:
-                    return {"status": "error", "message": "Укажите название приложения"}
+        # === 3D Аватар ===
+        elif any(word in text_lower for word in ["покажи аватар", "включи аватар", "аватар покажись"]):
+            if self.avatar_3d:
+                result = self.avatar_3d.show()
+                return {"status": result["status"], "message": result["message"]}
 
-        elif any(word in text_lower for word in ["список приложений", "все приложения", "установленные программы"]):
-            if self.app_analyzer:
-                report = self.app_analyzer.get_full_report()
-                message = self.app_analyzer.format_report_message(report)
-                return {"status": "ok", "message": message, "data": report}
+        elif any(word in text_lower for word in ["скрой аватар", "выключи аватар", "аватар исчезни"]):
+            if self.avatar_3d:
+                result = self.avatar_3d.hide()
+                return {"status": result["status"], "message": result["message"]}
 
-        elif any(word in text_lower for word in ["сканируй приложения", "найди приложения", "обнови список"]):
-            if self.app_analyzer:
-                result = self.app_analyzer.scan_installed_apps()
-                return {"status": "ok", "message": f"Найдено {result['count']} приложений", "data": result}
-
-        elif "закрой" in text_lower and any(word in text_lower for word in ["приложение", "программу"]):
-            if self.app_analyzer:
-                app_name = text_lower.replace("закрой", "").replace("приложение", "").replace("программу", "").strip()
-                if app_name:
-                    result = self.app_analyzer.close_app(app_name)
-                    return {"status": result["status"], "message": result["message"]}
+        elif "перемести аватар" in text_lower:
+            if self.avatar_3d:
+                # Парсинг координат (упрощённо)
+                return {"status": "ok", "message": "Используйте GUI для перемещения аватара"}
 
         return {
             "status": "ok",
