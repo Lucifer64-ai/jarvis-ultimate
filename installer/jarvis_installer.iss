@@ -31,7 +31,7 @@ WizardStyle=modern
 ; Visual Settings
 ; WizardImageFile=assets\jarvis_installer.bmp  ; Файл отсутствует
 ; WizardSmallImageFile=assets\jarvis_installer_small.bmp  ; Файл отсутствует
-SetupIconFile=assets\jarvis.ico
+SetupIconFile=..\assets\jarvis.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 
 ; Privilege & Architecture
@@ -40,7 +40,7 @@ ArchitecturesAllowed=x64
 ArchitecturesInstallIn64BitMode=x64
 
 ; License & Info
-LicenseFile=LICENSE
+LicenseFile=..\LICENSE
 InfoBeforeFile=installer\install_notes.txt
 
 ; Language
