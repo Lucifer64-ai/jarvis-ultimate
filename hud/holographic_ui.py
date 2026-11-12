@@ -3,9 +3,9 @@ Holographic HUD Interface - Виртуальное тело JARVIS
 Голографический интерфейс поверх рабочего стола в стиле Iron Man
 """
 
+import math
 import sys
 import time
-import math
 from concurrent.futures import Future, ThreadPoolExecutor
 from typing import Optional
 
@@ -20,6 +20,7 @@ class HolographicHUD(QWidget):
 
     status_requested = pyqtSignal(str)
     voice_requested = pyqtSignal(bool)
+    optimization_requested = pyqtSignal(object)
 
     def __init__(self, brain=None):
         super().__init__()
@@ -38,6 +39,7 @@ class HolographicHUD(QWidget):
         self.font_title = QFont("Arial", 12, QFont.Bold)
         self.font_panel = QFont("Arial", 14)
         self.font_status = QFont("Arial", 16, QFont.Bold)
+
         self.animation_time = 0.0
         self.pulse_phase = 0
         self.cpu_usage = 0.0
@@ -45,6 +47,8 @@ class HolographicHUD(QWidget):
         self.network_speed = 0.0
         self.status = "READY"
         self.voice_active = False
+        self.optimization_recommendations = []
+
         self._metrics_future: Optional[Future] = None
         self._last_net = None
         self._last_net_time = None
@@ -52,17 +56,21 @@ class HolographicHUD(QWidget):
 
         self.status_requested.connect(self._apply_status)
         self.voice_requested.connect(self._apply_voice_active)
+        self.optimization_requested.connect(self._apply_optimization_status)
 
         self._metrics_executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="jarvis-hud-metrics")
         self._metrics_timer = QTimer(self)
         self._metrics_timer.timeout.connect(self.update_data)
         self._metrics_timer.start(1000)
+
         self._animation_timer = QTimer(self)
         self._animation_timer.timeout.connect(self.animate)
-        self._animation_timer.start(100)  # 10 FPS: less repaint work, still smooth enough for HUD.
+        self._animation_timer.start(100)
+
         self._clock_timer = QTimer(self)
         self._clock_timer.timeout.connect(self._update_clock)
         self._clock_timer.start(1000)
+
         self._metrics_future = self._metrics_executor.submit(self._read_metrics)
         self.show()
 
@@ -91,11 +99,11 @@ class HolographicHUD(QWidget):
                 if self.brain:
                     self.brain.logger.debug("Не удалось обновить HUD метрики: %s", exc)
             self._metrics_future = None
+
         if self._metrics_future is None:
             self._metrics_future = self._metrics_executor.submit(self._read_metrics)
 
     def _update_clock(self):
-        # Limit clock repaint to its panel rather than invalidating the full-screen HUD.
         self.update(QRect(35, 35, 330, 125))
 
     def animate(self):
@@ -128,21 +136,30 @@ class HolographicHUD(QWidget):
         painter.setBrush(QBrush(gradient))
         painter.setPen(Qt.NoPen)
         painter.drawEllipse(QPointF(x, y), radius * 1.5, radius * 1.5)
+
         pen = QPen(self.color_primary, 3)
         painter.setPen(pen)
         painter.setBrush(Qt.NoBrush)
         painter.drawEllipse(QPointF(x, y), radius, radius)
+
         pen.setColor(self.color_secondary)
         pen.setWidth(2)
         painter.setPen(pen)
         painter.drawEllipse(QPointF(x, y), radius * 0.7, radius * 0.7)
+
         painter.setBrush(QBrush(self.color_accent))
         painter.setPen(Qt.NoPen)
         for i in range(8):
             angle = math.radians((self.animation_time * 50 + i * 45) % 360)
-            px = x + math.cos(angle) * radius * 0.85
-            py = y + math.sin(angle) * radius * 0.85
-            painter.drawEllipse(QPointF(px, py), 5, 5)
+            painter.drawEllipse(
+                QPointF(
+                    x + math.cos(angle) * radius * 0.85,
+                    y + math.sin(angle) * radius * 0.85,
+                ),
+                5,
+                5,
+            )
+
         painter.setPen(QPen(self.color_text))
         painter.setFont(self.font_cpu)
         painter.drawText(QRectF(x - 50, y - 30, 100, 60), Qt.AlignCenter, f"{int(self.cpu_usage)}%")
@@ -151,7 +168,8 @@ class HolographicHUD(QWidget):
         self.draw_panel(painter, 50, 50, 300, 150, "TIME", [time.strftime("%H:%M:%S"), time.strftime("%d.%m.%Y")])
         self.draw_panel(painter, width - 350, 50, 300, 150, "MEMORY", [f"RAM: {self.ram_usage:.0f}%", f"CPU: {self.cpu_usage:.0f}%"])
         self.draw_panel(painter, 50, height - 200, 300, 150, "NETWORK", [f"Speed: {self.network_speed:.1f} MB/s", "Status: ONLINE"])
-        self.draw_panel(painter, width - 350, height - 200, 300, 150, "SYSTEM", ["JARVIS v2.0", "All systems nominal"])
+        items = ["Оптимизация"] + self.optimization_recommendations[:3]
+        self.draw_panel(painter, width - 430, height - 250, 380, 200, "JARVIS / OPTIMIZATION", items)
 
     def draw_panel(self, painter: QPainter, x: int, y: int, w: int, h: int, title: str, data: list):
         painter.setPen(QPen(self.color_primary, 2))
@@ -163,7 +181,7 @@ class HolographicHUD(QWidget):
         painter.setPen(QPen(self.color_text))
         painter.setFont(self.font_panel)
         for i, text in enumerate(data):
-            painter.drawText(x + 10, y + 50 + i * 30, text)
+            painter.drawText(QRect(x + 10, y + 38 + i * 32, w - 20, 42), Qt.AlignLeft | Qt.TextWordWrap, text)
 
     def draw_voice_wave(self, painter: QPainter, x: int, y: int):
         painter.setPen(QPen(self.color_primary, 3))
@@ -197,6 +215,15 @@ class HolographicHUD(QWidget):
             self.voice_active = active
             cx, cy = self.width() // 2, self.height() // 2
             self.update(QRect(cx - 220, cy + 140, 440, 120))
+
+    def set_optimization_status(self, report: dict):
+        """Queue optimization recommendations for safe GUI-thread rendering."""
+        self.optimization_requested.emit(report or {})
+
+    def _apply_optimization_status(self, report: dict):
+        recommendations = report.get("recommendations", []) if isinstance(report, dict) else []
+        self.optimization_recommendations = [str(item) for item in recommendations[:3]]
+        self.update(QRect(self.width() - 450, self.height() - 270, 420, 230))
 
     def closeEvent(self, event):
         self._metrics_timer.stop()
