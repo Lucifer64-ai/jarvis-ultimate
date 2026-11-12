@@ -97,7 +97,7 @@ class LearningManager:
             self.user_profile.update_activity()
             result["modules_used"].append("user_profile")
 
-        # Lightweight resource sampling; optimization agents never execute actions.
+        # 4. Агенты оптимизации: анализ и рекомендация, без автоматизации.
         if self.optimization_manager and self.brain.config.get("optimization.enabled", True):
             try:
                 result["optimization"] = self.optimization_manager.analyze()
@@ -106,6 +106,14 @@ class LearningManager:
                 self.brain.logger.debug("Ошибка анализа оптимизации: %s", error)
 
         return result
+
+    def optimize_runtime(self, text: str) -> Dict:
+        """Формальная точка входа для оптимизации, безопасная и необязательная."""
+        if not self.optimization_manager:
+            return {"status": "ok", "text": text, "recommendations": []}
+        if not self.brain.config.get("optimization.enabled", True):
+            return {"status": "disabled", "text": text, "recommendations": []}
+        return self.optimization_manager.analyze()
 
     def learn_new_command(self, text: str, category: str) -> Dict:
         """Обучение новой команде."""
@@ -123,10 +131,7 @@ class LearningManager:
 
     def get_learning_status(self) -> Dict:
         """Получение статуса обучения и доступных агентов."""
-        status = {
-            "modules": {},
-            "timestamp": datetime.now().isoformat()
-        }
+        status = {"modules": {}, "timestamp": datetime.now().isoformat()}
 
         if self.adaptive_ml:
             status["modules"]["adaptive_ml"] = self.adaptive_ml.get_training_stats()
@@ -150,7 +155,7 @@ class LearningManager:
                 self.optimization_manager
                 and self.brain.config.get("optimization.enabled", True)
             ),
-            "agent_names": ["resource", "workflow"] if self.optimization_manager else [],
+            "agent_names": ["resource", "cache", "workflow", "scheduler"] if self.optimization_manager else [],
             "automatic_actions": False,
         }
         return status

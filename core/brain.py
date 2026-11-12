@@ -1,9 +1,8 @@
-"""
-JARVIS Brain - главный контроллер системы
-"""
+"""JARVIS Brain - главный контроллер системы"""
 
 import logging
-from typing import Dict, Optional, Any
+from typing import Dict
+
 from core.config import Config
 from core.event_bus import EventBus
 from core.plugin_manager import PluginManager
@@ -173,6 +172,9 @@ class JarvisBrain:
             processed_text = learning_result.get("processed", text)
             if learning_result.get("learning_suggestion"):
                 self.logger.info("Предложение обучения: %s", learning_result['learning_suggestion'])
+            optimization_result = self.learning_manager.optimize_runtime(text)
+            if optimization_result.get("recommendations"):
+                self.logger.info("Рекомендации оптимизации: %s", optimization_result['recommendations'])
         else:
             processed_text = text
             learning_result = {"original": text, "processed": text}
@@ -254,7 +256,7 @@ class JarvisBrain:
         if not self.weather_module:
             return {"status": "error", "message": "Модуль погоды не загружен"}
         city = "Москва"
-        cities = ["москва", "санкт-петербург", "питер", "новосибирск", "екатеринбург", "казань", "нижний новгород", "самара", "омск", "челябинск"]
+        cities = ["москва", "санкт-петербург", "питер", "новосибирск", "екатеринбург", "казань", "нижний новгород", "самара"]
         for city_name in cities:
             if city_name in text:
                 city = "Санкт-Петербург" if city_name == "питер" else city_name.capitalize()
