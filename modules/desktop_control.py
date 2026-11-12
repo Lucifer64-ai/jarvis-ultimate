@@ -1,7 +1,8 @@
 """Safe, allowlisted desktop controls for JARVIS.
 
-This module deliberately exposes only fixed actions (volume, desktop/window
-shortcuts and screen lock); it does not accept or execute arbitrary shell input.
+Only fixed keyboard shortcuts and system controls are exposed. Laptop Fn-key
+layers are handled by firmware/vendor software and generally cannot be emitted
+as a normal software key; F1-F12 are exposed as standard keys instead.
 """
 
 from typing import Dict
@@ -19,7 +20,9 @@ class DesktopControlModule:
             import pyautogui
             return pyautogui
         except Exception as error:
-            raise RuntimeError("Управление рабочим столом недоступно; проверьте установку pyautogui и активную сессию") from error
+            raise RuntimeError(
+                "Управление рабочим столом недоступно; проверьте установку pyautogui и активную сессию"
+            ) from error
 
     def minimize_all(self) -> Dict:
         try:
@@ -63,18 +66,33 @@ class DesktopControlModule:
             return {"status": "error", "message": str(error)}
 
     def shortcut(self, name: str) -> Dict:
-        """Run a small allowlist of common, non-destructive shortcuts."""
+        """Execute a supported non-destructive keyboard shortcut."""
         shortcuts = {
             "copy": ("ctrl", "c"),
             "paste": ("ctrl", "v"),
             "undo": ("ctrl", "z"),
             "select_all": ("ctrl", "a"),
+            "print_screen": ("printscreen",),
+            "snipping_tool": ("win", "shift", "s"),
+            "num_lock": ("numlock",),
+            "escape": ("esc",),
+            "alt_tab": ("alt", "tab"),
+            "task_manager": ("ctrl", "shift", "esc"),
+            "refresh": ("f5",),
+            "f1": ("f1",), "f2": ("f2",), "f3": ("f3",),
+            "f4": ("f4",), "f5": ("f5",), "f6": ("f6",),
+            "f7": ("f7",), "f8": ("f8",), "f9": ("f9",),
+            "f10": ("f10",), "f11": ("f11",), "f12": ("f12",),
         }
         keys = shortcuts.get(name)
         if not keys:
             return {"status": "error", "message": "Эта комбинация клавиш не разрешена"}
         try:
-            self._pyautogui().hotkey(*keys)
-            return {"status": "ok", "message": "Комбинация клавиш выполнена"}
+            pyautogui = self._pyautogui()
+            if len(keys) == 1:
+                pyautogui.press(keys[0])
+            else:
+                pyautogui.hotkey(*keys)
+            return {"status": "ok", "message": f"Выполнена команда клавиатуры: {name}"}
         except Exception as error:
             return {"status": "error", "message": str(error)}
