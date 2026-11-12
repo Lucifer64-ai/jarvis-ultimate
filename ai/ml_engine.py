@@ -2,13 +2,15 @@
 ML-движок JARVIS для распознавания команд
 """
 
-import joblib
-import numpy as np
+import json
 from pathlib import Path
 from typing import Dict, List, Optional
+
+import joblib
+import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.svm import SVC
 from sklearn.pipeline import Pipeline
+from sklearn.svm import SVC
 
 
 class MLEngine:
@@ -17,19 +19,37 @@ class MLEngine:
     def __init__(self, brain):
         self.brain = brain
         self.model_path = Path("models/command_classifier.joblib")
+        self.training_data_path = Path("data/command_training_data.json")
         self.model: Optional[Pipeline] = None
         self.classes: List[str] = []
-        
-        # Загрузка модели если существует
+        self.training_data: Dict[str, List[str]] = self._load_training_data()
+
         if self.model_path.exists():
             self._load_model()
         else:
             self._train_default_model()
 
-    def _train_default_model(self):
-        """Обучение базовой модели на примерах."""
-        # Примеры команд и их категории
-        training_data = {
+    def _load_training_data(self) -> Dict[str, List[str]]:
+        """Загрузка stored training data для доп.обучения."""
+        if self.training_data_path.exists():
+            try:
+                with open(self.training_data_path, "r", encoding="utf-8") as file:
+                    data = json.load(file)
+                if isinstance(data, dict):
+                    return data
+            except Exception as error:
+                self.brain.logger.error(f"Ошибка загрузки training data: {error}")
+        return self._get_default_training_data()
+
+    def _save_training_data(self):
+        """Сохранение training data в файл."""
+        self.training_data_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(self.training_data_path, "w", encoding="utf-8") as file:
+            json.dump(self.training_data, file, ensure_ascii=False, indent=2)
+
+    def _get_default_training_data(self) -> Dict[str, List[str]]:
+        """Базовый набор команд."""
+        return {
             "system_shutdown": ["выключи компьютер", "выключи пк", "заверши работу"],
             "system_restart": ["перезагрузи компьютер", "перезагрузи пк", "рестарт"],
             "system_lock": ["заблокируй экран", "заблокируй компьютер", "лок"],
@@ -45,68 +65,238 @@ class MLEngine:
             "network_speed": ["тест скорости", "скорость интернета", "проверь интернет"],
             "network_ip": ["какой ip адрес", "мой ip", "айпи адрес"],
         }
-        
+
+    def _build_model(self) -> Pipeline:
+        """Создание pipeline модели."""
+        return Pipeline([
+            ("tfidf", TfidfVectorizer(analyzer="char_wb", ngram_range=(2, 5))),
+            ("svm", SVC(kernel="linear", probability=True)),
+        ])
+
+    def _prepare_training_batch(self):
+        """Подготовка X/y и фильтрация пустых/невалидных данных."""
         X = []
         y = []
-        
-        for category, examples in training_data.items():
+        for category, examples in self.training_data.items():
+            if not isinstance(category, str) or not isinstance(examples, list):
+                continue
             for example in examples:
-                X.append(example)
-                y.append(category)
-        
-        # Создание pipeline
-        self.model = Pipeline([
-            ('tfidf', TfidfVectorizer(analyzer='char_wb', ngram_range=(2, 5))),
-            ('svm', SVC(kernel='linear', probability=True))
-        ])
-        
-        # Обучение
-        self.model.fit(X, y)
-        self.classes = self.model.classes_.tolist()
-        
-        # Сохранение модели
+                if isinstance(example, str) and example.strip():
+                    X.append(example.strip())
+                    y.append(category)
+        return X, y
+
+    def _train_default_model(self):
+        """Обучение базовой модели на примерах."""
+        X, y = self._prepare_training_batch()
+        if len(set(y)) < 2:
+            self.model = None
+            self.classes = []
+            self.brain.logger.warning("Недостаточно категорий для обучения модели команд")
+            return
+
+        model = self._build_model()
+        model.fit(X, y)
+        self.model = model
+        self.classes = model.classes_.tolist()
         self._save_model()
         self.brain.logger.info(f"ML модель обучена на {len(X)} примерах")
 
     def _save_model(self):
         """Сохранение модели."""
-        self.model_path.parent.mkdir(exist_ok=True)
+        if self.model is None:
+            return
+        self.model_path.parent.mkdir(parents=True, exist_ok=True)
         joblib.dump({
-            'model': self.model,
-            'classes': self.classes
+            "model": self.model,
+            "classes": self.classes,
         }, self.model_path)
 
     def _load_model(self):
         """Загрузка модели."""
         try:
             data = joblib.load(self.model_path)
-            self.model = data['model']
-            self.classes = data['classes']
+            self.model = data["model"]
+            self.classes = data.get("classes", [])
             self.brain.logger.info("ML модель загружена")
-        except Exception as e:
-            self.brain.logger.error(f"Ошибка загрузки ML модели: {e}")
+        except Exception as error:
+            self.brain.logger.error(f"Ошибка загрузки ML модели: {error}")
             self._train_default_model()
 
     def predict(self, text: str) -> Dict:
         """Предсказание категории команды."""
-        if not self.model:
+        if self.model is None:
             return {"status": "error", "message": "Модель не загружена"}
-        
+        if not isinstance(text, str) or not text.strip():
+            return {"status": "error", "message": "Текст команды пуст"}
+
         try:
-            prediction = self.model.predict([text])[0]
-            probabilities = self.model.predict_proba([text])[0]
+            cleaned = text.strip()
+            prediction = self.model.predict([cleaned])[0]
+            probabilities = self.model.predict_proba([cleaned])[0]
             confidence = float(np.max(probabilities))
-            
             return {
                 "status": "ok",
                 "category": prediction,
                 "confidence": round(confidence, 3),
-                "text": text
+                "text": cleaned,
             }
-        except Exception as e:
-            return {"status": "error", "message": str(e)}
+        except Exception as error:
+            return {"status": "error", "message": str(error)}
 
     def add_training_data(self, category: str, examples: List[str]):
-        """Добавление данных для переобучения."""
-        # В реальной реализации нужно сохранять в файл и переобучать
-        self.brain.logger.info(f"Добавлено {len(examples)} примеров для категории {category}")
+        """Добавление данных и переобучение модели."""
+        if not isinstance(category, str) or not category.strip():
+            return {"status": "error", "message": "Категория не должна быть пустой"}
+        if not isinstance(examples, list) or not any(isinstance(item, str) and item.strip() for item in examples):
+            return {"status": "error", "message": "Нужно передать хотя бы один непустой пример"}
+
+        category = category.strip()
+        cleaned_examples = []
+        for item in examples:
+            if isinstance(item, str) and item.strip():
+                cleaned_examples.append(item.strip())
+
+        cleaned_examples = list(dict.fromkeys(cleaned_examples))
+        if category not in self.training_data:
+            self.training_data[category] = []
+
+        for item in cleaned_examples:
+            if item not in self.training_data[category]:
+                self.training_data[category].append(item)
+
+        self._save_training_data()
+        X, y = self._prepare_training_batch()
+        if not X or len(set(y)) < 2:
+            self.training_data[category] = [example for example in self.training_data[category] if example not in cleaned_examples]
+            self._save_training_data()
+            return {"status": "error", "message": "Нельзя обучить модель: недостаточно данных с минимум двух категорий"}
+
+        try:
+            new_model = self._build_model()
+            new_model.fit(X, y)
+            self.model = new_model
+            self.classes = new_model.classes_.tolist()
+            self._save_model()
+            self.brain.logger.info(f"Добавлены примеры для категории '{category}' и модель переобучена")
+            return {"status": "ok", "message": f"Добавлено {len(cleaned_examples)} примеров для '{category}'"}
+        except Exception as error:
+            self.brain.logger.error(f"Ошибка переобучения модели: {error}")
+            return {"status": "error", "message": str(error)}
+
+
+# End of corrected file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
