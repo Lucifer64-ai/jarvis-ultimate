@@ -25,6 +25,15 @@
     "ollama_url": "http://localhost:11434",
     "model": "llama3.2"
   },
+  "optimization": {
+    "enabled": true,
+    "cpu_threshold_percent": 80,
+    "memory_threshold_percent": 85,
+    "max_recommendations": 3,
+    "cache_ttl_seconds": 30,
+    "max_background_tasks": 5,
+    "auto_suggest_automation": true
+  },
   "windows": {
     "autostart": false,
     "wake_word_enabled": false,
