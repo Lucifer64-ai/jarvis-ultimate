@@ -29,8 +29,8 @@ SolidCompression=yes
 WizardStyle=modern
 
 ; Visual Settings
-WizardImageFile=assets\jarvis_installer.bmp
-WizardSmallImageFile=assets\jarvis_installer_small.bmp
+; WizardImageFile=assets\jarvis_installer.bmp  ; Файл отсутствует
+; WizardSmallImageFile=assets\jarvis_installer_small.bmp  ; Файл отсутствует
 SetupIconFile=assets\jarvis.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 
@@ -54,8 +54,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 6.1; Check: not IsAdminInstallMode
-Name: "autostart"; Description: "ÐÐ°Ð¿ÑÑÐºÐ°ÑÑ JARVIS Ð¿ÑÐ¸ ÑÑÐ°ÑÑÐµ Windows"; GroupDescription: "ÐÐ¾Ð¿Ð¾Ð»Ð½Ð¸ÑÐµÐ»ÑÐ½ÑÐµ Ð½Ð°ÑÑÑÐ¾Ð¹ÐºÐ¸:"; Flags: unchecked
-Name: "cleanmode"; Description: "ÐÐºÐ»ÑÑÐ¸ÑÑ ÑÐµÐ¶Ð¸Ð¼ ÑÐ¸ÑÑÐ¾Ð³Ð¾ ÑÐ°Ð±Ð¾ÑÐµÐ³Ð¾ ÑÑÐ¾Ð»Ð°"; GroupDescription: "ÐÐ¾Ð¿Ð¾Ð»Ð½Ð¸ÑÐµÐ»ÑÐ½ÑÐµ Ð½Ð°ÑÑÑÐ¾Ð¹ÐºÐ¸:"; Flags: unchecked
+Name: "autostart"; Description: "ÃÂÃÂ°ÃÂ¿ÃÂÃÂÃÂºÃÂ°ÃÂÃÂ JARVIS ÃÂ¿ÃÂÃÂ¸ ÃÂÃÂÃÂ°ÃÂÃÂÃÂµ Windows"; GroupDescription: "ÃÂÃÂ¾ÃÂ¿ÃÂ¾ÃÂ»ÃÂ½ÃÂ¸ÃÂÃÂµÃÂ»ÃÂÃÂ½ÃÂÃÂµ ÃÂ½ÃÂ°ÃÂÃÂÃÂÃÂ¾ÃÂ¹ÃÂºÃÂ¸:"; Flags: unchecked
+Name: "cleanmode"; Description: "ÃÂÃÂºÃÂ»ÃÂÃÂÃÂ¸ÃÂÃÂ ÃÂÃÂµÃÂ¶ÃÂ¸ÃÂ¼ ÃÂÃÂ¸ÃÂÃÂÃÂ¾ÃÂ³ÃÂ¾ ÃÂÃÂ°ÃÂ±ÃÂ¾ÃÂÃÂµÃÂ³ÃÂ¾ ÃÂÃÂÃÂ¾ÃÂ»ÃÂ°"; GroupDescription: "ÃÂÃÂ¾ÃÂ¿ÃÂ¾ÃÂ»ÃÂ½ÃÂ¸ÃÂÃÂµÃÂ»ÃÂÃÂ½ÃÂÃÂµ ÃÂ½ÃÂ°ÃÂÃÂÃÂÃÂ¾ÃÂ¹ÃÂºÃÂ¸:"; Flags: unchecked
 
 [Files]
 ; Main Application - all files from package
@@ -68,8 +68,8 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: quicklaunchicon
 
 [Run]
-Filename: "{app}\{#MyAppExeName}"; Description: "ÐÐ°Ð¿ÑÑÑÐ¸ÑÑ JARVIS Ultimate"; Flags: nowait postinstall skipifsilent
-Filename: "{app}\docs\README.md"; Description: "ÐÑÐºÑÑÑÑ Ð´Ð¾ÐºÑÐ¼ÐµÐ½ÑÐ°ÑÐ¸Ñ"; Flags: shellexec skipifsilent
+Filename: "{app}\{#MyAppExeName}"; Description: "ÃÂÃÂ°ÃÂ¿ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ JARVIS Ultimate"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\docs\README.md"; Description: "ÃÂÃÂÃÂºÃÂÃÂÃÂÃÂ ÃÂ´ÃÂ¾ÃÂºÃÂÃÂ¼ÃÂµÃÂ½ÃÂÃÂ°ÃÂÃÂ¸ÃÂ"; Flags: shellexec skipifsilent
 
 [UninstallRun]
 ; Cleanup on uninstall
@@ -96,8 +96,8 @@ Name: "{app}\backups"
 [Code]
 function InitializeUninstall(): Boolean;
 begin
-  Result := MsgBox('Вы действительно хотите удалить JARVIS Ultimate?' + #13#10 + #13#10 +
-                   'Все настройки и данные будут удалены.', 
+  Result := MsgBox('ÐÑ Ð´ÐµÐ¹ÑÑÐ²Ð¸ÑÐµÐ»ÑÐ½Ð¾ ÑÐ¾ÑÐ¸ÑÐµ ÑÐ´Ð°Ð»Ð¸ÑÑ JARVIS Ultimate?' + #13#10 + #13#10 +
+                   'ÐÑÐµ Ð½Ð°ÑÑÑÐ¾Ð¹ÐºÐ¸ Ð¸ Ð´Ð°Ð½Ð½ÑÐµ Ð±ÑÐ´ÑÑ ÑÐ´Ð°Ð»ÐµÐ½Ñ.', 
                    mbConfirmation, MB_YESNO) = IDYES;
 end;
 
