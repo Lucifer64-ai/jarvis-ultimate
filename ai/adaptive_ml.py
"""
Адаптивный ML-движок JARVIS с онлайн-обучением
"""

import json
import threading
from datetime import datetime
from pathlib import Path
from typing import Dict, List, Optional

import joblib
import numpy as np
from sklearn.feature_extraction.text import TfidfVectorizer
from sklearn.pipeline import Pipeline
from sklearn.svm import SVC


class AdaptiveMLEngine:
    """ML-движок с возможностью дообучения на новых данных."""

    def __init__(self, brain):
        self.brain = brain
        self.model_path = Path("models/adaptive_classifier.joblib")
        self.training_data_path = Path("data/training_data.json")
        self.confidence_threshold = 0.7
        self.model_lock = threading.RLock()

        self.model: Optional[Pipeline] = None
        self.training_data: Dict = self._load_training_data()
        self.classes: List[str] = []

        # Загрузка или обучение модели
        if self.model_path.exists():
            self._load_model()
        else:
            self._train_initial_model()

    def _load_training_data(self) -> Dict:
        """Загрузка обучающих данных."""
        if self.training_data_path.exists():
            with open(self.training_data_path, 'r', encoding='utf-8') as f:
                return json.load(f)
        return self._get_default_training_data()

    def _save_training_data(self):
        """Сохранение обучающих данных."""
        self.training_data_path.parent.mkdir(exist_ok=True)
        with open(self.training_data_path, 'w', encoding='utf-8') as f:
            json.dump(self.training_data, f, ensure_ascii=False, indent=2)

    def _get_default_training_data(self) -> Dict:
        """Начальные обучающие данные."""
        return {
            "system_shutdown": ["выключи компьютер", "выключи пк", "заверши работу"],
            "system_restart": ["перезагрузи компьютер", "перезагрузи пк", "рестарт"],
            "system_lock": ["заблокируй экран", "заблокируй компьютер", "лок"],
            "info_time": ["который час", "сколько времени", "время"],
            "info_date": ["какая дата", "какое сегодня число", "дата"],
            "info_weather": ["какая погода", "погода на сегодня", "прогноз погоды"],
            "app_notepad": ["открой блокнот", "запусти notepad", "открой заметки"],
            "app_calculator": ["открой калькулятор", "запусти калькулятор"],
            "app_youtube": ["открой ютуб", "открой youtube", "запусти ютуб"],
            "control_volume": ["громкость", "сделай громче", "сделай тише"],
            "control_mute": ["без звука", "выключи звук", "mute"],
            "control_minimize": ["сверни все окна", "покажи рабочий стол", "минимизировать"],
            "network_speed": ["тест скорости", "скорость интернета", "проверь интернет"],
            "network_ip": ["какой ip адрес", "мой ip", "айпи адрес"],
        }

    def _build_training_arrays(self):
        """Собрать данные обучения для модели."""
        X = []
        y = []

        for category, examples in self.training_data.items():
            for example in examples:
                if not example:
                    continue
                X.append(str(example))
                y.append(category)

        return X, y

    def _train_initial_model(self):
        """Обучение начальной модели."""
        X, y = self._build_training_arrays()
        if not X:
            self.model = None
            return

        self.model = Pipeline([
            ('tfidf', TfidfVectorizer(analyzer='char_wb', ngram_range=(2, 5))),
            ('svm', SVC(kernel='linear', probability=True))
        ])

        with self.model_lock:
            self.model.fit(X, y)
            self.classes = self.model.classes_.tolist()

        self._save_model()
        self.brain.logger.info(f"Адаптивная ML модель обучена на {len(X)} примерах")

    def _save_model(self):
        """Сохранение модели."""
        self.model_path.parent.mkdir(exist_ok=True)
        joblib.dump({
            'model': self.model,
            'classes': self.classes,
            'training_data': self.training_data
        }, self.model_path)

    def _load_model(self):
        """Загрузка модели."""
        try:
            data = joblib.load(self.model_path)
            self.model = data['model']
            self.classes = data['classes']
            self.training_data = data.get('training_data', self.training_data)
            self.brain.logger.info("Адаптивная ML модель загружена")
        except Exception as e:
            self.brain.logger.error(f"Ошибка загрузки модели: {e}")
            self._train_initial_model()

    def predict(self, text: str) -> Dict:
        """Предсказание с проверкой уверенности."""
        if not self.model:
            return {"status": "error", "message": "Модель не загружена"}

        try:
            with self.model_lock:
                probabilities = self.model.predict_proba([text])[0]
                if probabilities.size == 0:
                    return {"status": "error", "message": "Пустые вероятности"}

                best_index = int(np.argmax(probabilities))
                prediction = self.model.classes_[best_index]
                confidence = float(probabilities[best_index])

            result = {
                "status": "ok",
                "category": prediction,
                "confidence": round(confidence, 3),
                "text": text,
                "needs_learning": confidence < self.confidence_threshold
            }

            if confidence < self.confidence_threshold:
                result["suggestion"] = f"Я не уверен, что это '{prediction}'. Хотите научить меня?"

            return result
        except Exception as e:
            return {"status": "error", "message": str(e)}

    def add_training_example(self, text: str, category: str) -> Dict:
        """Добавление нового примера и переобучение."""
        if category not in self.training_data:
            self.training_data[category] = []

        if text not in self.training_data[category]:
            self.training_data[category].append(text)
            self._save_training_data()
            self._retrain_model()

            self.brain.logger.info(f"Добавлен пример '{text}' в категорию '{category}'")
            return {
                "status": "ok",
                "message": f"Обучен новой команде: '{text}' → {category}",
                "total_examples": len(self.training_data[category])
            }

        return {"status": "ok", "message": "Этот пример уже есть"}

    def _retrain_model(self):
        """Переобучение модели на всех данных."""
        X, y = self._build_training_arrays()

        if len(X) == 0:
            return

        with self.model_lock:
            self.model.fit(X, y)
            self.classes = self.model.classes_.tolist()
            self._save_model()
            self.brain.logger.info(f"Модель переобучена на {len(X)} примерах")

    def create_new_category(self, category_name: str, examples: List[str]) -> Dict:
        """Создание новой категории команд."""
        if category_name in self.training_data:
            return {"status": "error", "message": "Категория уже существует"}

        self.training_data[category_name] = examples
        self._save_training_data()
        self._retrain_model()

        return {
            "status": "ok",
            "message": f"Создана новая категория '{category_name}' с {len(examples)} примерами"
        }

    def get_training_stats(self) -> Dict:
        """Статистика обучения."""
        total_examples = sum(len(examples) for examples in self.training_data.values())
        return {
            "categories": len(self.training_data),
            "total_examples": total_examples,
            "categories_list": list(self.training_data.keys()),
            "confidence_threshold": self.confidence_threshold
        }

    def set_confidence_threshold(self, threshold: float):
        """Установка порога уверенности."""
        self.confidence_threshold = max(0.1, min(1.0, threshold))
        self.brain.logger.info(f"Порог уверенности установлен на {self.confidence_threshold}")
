@@ -1,0 +1,70 @@
+"""
+Сетевые операции JARVIS
+"""
+
+import threading
+from typing import Callable, Dict, Optional
+
+import requests
+import speedtest
+
+
+class NetworkModule:
+    """Сетевые функции."""
+
+    def __init__(self, brain):
+        self.brain = brain
+        self._speed_test_lock = threading.Lock()
+
+    def get_ip(self) -> Dict:
+        """Получить IP адрес."""
+        try:
+            response = requests.get('https://api.ipify.org?format=json', timeout=5)
+            data = response.json()
+            return {"status": "ok", "ip": data['ip']}
+        except Exception as e:
+            return {"status": "error", "message": str(e)}
+
+    def speed_test(self) -> Dict:
+        """Тест скорости интернета.
+
+        Выполняется синхронно, но защищён блокировкой, чтобы не запускать
+        несколько параллельных нагрузочных проверок одновременно.
+        """
+        with self._speed_test_lock:
+            try:
+                st = speedtest.Speedtest()
+                st.get_best_server()
+                download = st.download() / 1_000_000
+                upload = st.upload() / 1_000_000
+                ping = st.results.ping
+
+                return {
+                    "status": "ok",
+                    "download": round(download, 2),
+                    "upload": round(upload, 2),
+                    "ping": round(ping, 2),
+                    "unit": "Mbps"
+                }
+            except Exception as e:
+                return {"status": "error", "message": str(e)}
+
+    def speed_test_async(self, callback: Optional[Callable[[Dict], None]] = None) -> threading.Thread:
+        """Запуск проверки скорости в отдельном потоке."""
+
+        def worker():
+            result = self.speed_test()
+            if callback:
+                callback(result)
+
+        thread = threading.Thread(target=worker, daemon=True)
+        thread.start()
+        return thread
+
+    def check_connection(self) -> Dict:
+        """Проверить подключение к интернету."""
+        try:
+            requests.get('https://www.google.com', timeout=5)
+            return {"status": "ok", "connected": True}
+        except Exception:
+            return {"status": "ok", "connected": False}
