@@ -11,70 +11,43 @@ class LearningManager:
 
     def __init__(self, brain):
         self.brain = brain
-
-        # Инициализация модулей обучения
         self.adaptive_ml = None
         self.alias_system = None
         self.user_profile = None
         self.pattern_recognizer = None
         self.local_llm = None
         self.optimization_manager = None
-
         self._init_modules()
 
     def _init_modules(self):
         """Инициализация модулей обучения."""
-        try:
-            from ai.adaptive_ml import AdaptiveMLEngine
-            self.adaptive_ml = AdaptiveMLEngine(self.brain)
-            self.brain.logger.info("✓ Адаптивный ML загружен")
-        except Exception as e:
-            self.brain.logger.error(f"Ошибка загрузки адаптивного ML: {e}")
+        modules = [
+            ("adaptive_ml", "ai.adaptive_ml", "AdaptiveMLEngine", "Адаптивный ML"),
+            ("alias_system", "ai.alias_system", "AliasSystem", "Система алиасов"),
+            ("user_profile", "ai.user_profile", "UserProfile", "Профиль пользователя"),
+            ("pattern_recognizer", "ai.pattern_recognizer", "PatternRecognizer", "Распознавание паттернов"),
+            ("local_llm", "ai.local_llm", "LocalLLM", "Локальная LLM"),
+        ]
 
-        try:
-            from ai.alias_system import AliasSystem
-            self.alias_system = AliasSystem(self.brain)
-            self.brain.logger.info("✓ Система алиасов загружена")
-        except Exception as e:
-            self.brain.logger.error(f"Ошибка загрузки системы алиасов: {e}")
-
-        try:
-            from ai.user_profile import UserProfile
-            self.user_profile = UserProfile(self.brain)
-            self.brain.logger.info("✓ Профиль пользователя загружен")
-        except Exception as e:
-            self.brain.logger.error(f"Ошибка загрузки профиля: {e}")
-
-        try:
-            from ai.pattern_recognizer import PatternRecognizer
-            self.pattern_recognizer = PatternRecognizer(self.brain)
-            self.brain.logger.info("✓ Распознавание паттернов загружено")
-        except Exception as e:
-            self.brain.logger.error(f"Ошибка загрузки распознавания паттернов: {e}")
-
-        try:
-            from ai.local_llm import LocalLLM
-            self.local_llm = LocalLLM(self.brain)
-            self.brain.logger.info("✓ Локальная LLM загружена")
-        except Exception as e:
-            self.brain.logger.error(f"Ошибка загрузки локальной LLM: {e}")
+        for attribute, module_name, class_name, label in modules:
+            try:
+                module = __import__(module_name, fromlist=[class_name])
+                setattr(self, attribute, getattr(module, class_name)(self.brain))
+                self.brain.logger.info("✓ %s загружен", label)
+            except Exception as error:
+                self.brain.logger.error("Ошибка загрузки %s: %s", label, error)
 
         try:
             from ai.optimization_agents import OptimizationManager
             self.optimization_manager = OptimizationManager(self.brain, self)
             self.brain.logger.info("✓ Агенты оптимизации загружены")
-        except Exception as e:
-            self.brain.logger.error(f"Ошибка загрузки агентов оптимизации: {e}")
+        except Exception as error:
+            self.brain.logger.error("Ошибка загрузки агентов оптимизации: %s", error)
 
     def process_command(self, text: str) -> Dict:
-        """Обработка команды с использованием модулей обучения и оптимизации."""
-        result = {
-            "original": text,
-            "processed": text,
-            "modules_used": []
-        }
+        """Process a command and attach current optimization status."""
+        result = {"original": text, "processed": text, "modules_used": []}
 
-        # 1. Разрешение алиасов
         if self.alias_system:
             resolved = self.alias_system.resolve_alias(text)
             if resolved != text:
@@ -82,7 +55,6 @@ class LearningManager:
                 result["alias_resolved"] = True
                 result["modules_used"].append("alias_system")
 
-        # 2. Классификация через адаптивный ML
         if self.adaptive_ml:
             classification = self.adaptive_ml.predict(result["processed"])
             result["classification"] = classification
@@ -91,46 +63,45 @@ class LearningManager:
             if classification.get("needs_learning"):
                 result["learning_suggestion"] = classification.get("suggestion")
 
-        # 3. Логирование в профиль
         if self.user_profile:
             self.user_profile.log_command(text)
             self.user_profile.update_activity()
             result["modules_used"].append("user_profile")
 
-        # 4. Агенты оптимизации: анализ и рекомендация, без автоматизации.
         if self.optimization_manager and self.brain.config.get("optimization.enabled", True):
             try:
-                result["optimization"] = self.optimization_manager.analyze()
+                report = self.get_optimization_report()
+                result["optimization"] = report
                 result["modules_used"].append("optimization_agents")
+
+                recommendations = report.get("recommendations", [])
+                if recommendations:
+                    self.brain.logger.info("Рекомендации оптимизации: %s", "; ".join(recommendations))
+
+                hud = getattr(self.brain, "hud", None)
+                if hud and hasattr(hud, "set_optimization_status"):
+                    hud.set_optimization_status(report)
+
             except Exception as error:
                 self.brain.logger.debug("Ошибка анализа оптимизации: %s", error)
 
         return result
 
-    def optimize_runtime(self, text: str) -> Dict:
-        """Формальная точка входа для оптимизации, безопасная и необязательная."""
-        if not self.optimization_manager:
-            return {"status": "ok", "text": text, "recommendations": []}
-        if not self.brain.config.get("optimization.enabled", True):
-            return {"status": "disabled", "text": text, "recommendations": []}
-        return self.optimization_manager.analyze()
+    def optimize_runtime(self, text: str = "") -> Dict:
+        """Return a fresh optimization report for CLI, API, or UI callers."""
+        return self.get_optimization_report()
 
     def learn_new_command(self, text: str, category: str) -> Dict:
-        """Обучение новой команде."""
         if not self.adaptive_ml:
             return {"status": "error", "message": "Адаптивный ML не загружен"}
-
         return self.adaptive_ml.add_training_example(text, category)
 
     def create_alias(self, alias: str, command: str) -> Dict:
-        """Создание алиаса."""
         if not self.alias_system:
             return {"status": "error", "message": "Система алиасов не загружена"}
-
         return self.alias_system.add_alias(alias, command)
 
     def get_learning_status(self) -> Dict:
-        """Получение статуса обучения и доступных агентов."""
         status = {"modules": {}, "timestamp": datetime.now().isoformat()}
 
         if self.adaptive_ml:
@@ -150,34 +121,49 @@ class LearningManager:
         if self.local_llm:
             status["modules"]["local_llm"] = self.local_llm.get_status()
 
-        status["modules"]["optimization_agents"] = {
-            "enabled": bool(
-                self.optimization_manager
-                and self.brain.config.get("optimization.enabled", True)
-            ),
-            "agent_names": ["resource", "cache", "workflow", "scheduler"] if self.optimization_manager else [],
-            "automatic_actions": False,
-        }
+        status["modules"]["optimization_agents"] = self.get_optimization_status()
         return status
 
+    def get_optimization_status(self) -> Dict:
+        """Compact status for CLI and UI, independent of the full report."""
+        report = self.get_optimization_report()
+        agents = report.get("agents", {})
+        return {
+            "enabled": report.get("status") == "ok",
+            "agent_names": list(agents.keys()),
+            "recommendation_count": len(report.get("recommendations", [])),
+            "cache": agents.get("cache", {}),
+            "automatic_actions": False,
+            "timestamp": report.get("timestamp"),
+        }
+
+    def format_optimization_status(self) -> str:
+        """Human-readable status line suitable for CLI and logs."""
+        status = self.get_optimization_status()
+        if not status["enabled"]:
+            return "Агенты оптимизации отключены или недоступны."
+
+        cache = status.get("cache", {})
+        return (
+            f"Оптимизация: {len(status['agent_names'])} агентов; "
+            f"рекомендаций: {status['recommendation_count']}; "
+            f"кэш: {cache.get('cache_entries', 0)} записей "
+            f"(hits={cache.get('hits', 0)}, misses={cache.get('misses', 0)})."
+        )
+
     def get_optimization_report(self) -> Dict:
-        """Получение текущего отчёта агентов оптимизации."""
         if not self.optimization_manager:
-            return {"status": "error", "message": "Агенты оптимизации не загружены"}
+            return {"status": "error", "message": "Агенты оптимизации не загружены", "recommendations": []}
         if not self.brain.config.get("optimization.enabled", True):
-            return {"status": "disabled", "message": "Агенты оптимизации отключены"}
+            return {"status": "disabled", "message": "Агенты оптимизации отключены", "recommendations": []}
         return self.optimization_manager.analyze()
 
     def analyze_patterns(self) -> List[Dict]:
-        """Анализ истории команд для обновления предложений автоматизации."""
         if not self.pattern_recognizer or not self.user_profile:
             return []
-
-        history = self.user_profile.command_history
-        return self.pattern_recognizer.analyze_command_history(history)
+        return self.pattern_recognizer.analyze_command_history(self.user_profile.command_history)
 
     def get_greeting(self) -> str:
-        """Получение персонализированного приветствия."""
         if self.user_profile:
             return self.user_profile.get_greeting()
         return "Здравствуйте, сэр."
