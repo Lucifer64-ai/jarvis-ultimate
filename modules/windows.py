@@ -1,5 +1,5 @@
 """
-Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð¾ÐºÐ½Ð°Ð¼Ð¸ JARVIS
+£¿°²»µ½¸µ ¾º½°¼¸ JARVIS
 """
 
 import win32gui
@@ -8,13 +8,13 @@ from typing import Dict, List
 
 
 class WindowModule:
-    """Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð¾ÐºÐ½Ð°Ð¼Ð¸ Windows."""
+    """£¿°²»µ½¸µ ¾º½°¼¸ Windows."""
 
     def __init__(self, brain):
         self.brain = brain
 
     def list_windows(self) -> List[Dict]:
-        """Ð¡Ð¿Ð¸ÑÐ¾Ðº Ð¾ÑÐºÑÑÑÑÑ Ð¾ÐºÐ¾Ð½."""
+        """¡¿¸¾º ¾º ¾º¾½."""
         windows = []
 
         def callback(hwnd, results):
@@ -30,20 +30,20 @@ class WindowModule:
         return windows
 
     def minimize_all(self) -> Dict:
-        """Ð¡Ð²ÐµÑÐ½ÑÑÑ Ð²ÑÐµ Ð¾ÐºÐ½Ð°."""
+        """¡²µ½ ²µ ¾º½°."""
         try:
             import pyautogui
             pyautogui.hotkey('win', 'd')
-            return {"status": "ok", "message": "ÐÑÐµ Ð¾ÐºÐ½Ð° ÑÐ²ÑÑÐ½ÑÑÑ"}
+            return {"status": "ok", "message": "µ ¾º½° ²½"}
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
     def show_desktop(self) -> Dict:
-        """ÐÐ¾ÐºÐ°Ð·Ð°ÑÑ ÑÐ°Ð±Ð¾ÑÐ¸Ð¹ ÑÑÐ¾Ð»."""
+        """¾º°·° °±¾¸¹ ¾»."""
         return self.minimize_all()
 
     def close_window(self, title: str) -> Dict:
-        """ÐÐ°ÐºÑÑÑÑ Ð¾ÐºÐ½Ð¾ Ð¿Ð¾ Ð·Ð°Ð³Ð¾Ð»Ð¾Ð²ÐºÑ."""
+        """°º ¾º½¾ ¿¾ ·°³¾»¾²º."""
         def callback(hwnd, target):
             if win32gui.IsWindowVisible(hwnd):
                 window_title = win32gui.GetWindowText(hwnd)
@@ -54,6 +54,6 @@ class WindowModule:
 
         try:
             win32gui.EnumWindows(lambda hwnd, _: callback(hwnd, title), None)
-            return {"status": "ok", "message": f"ÐÐºÐ½Ð¾ '{title}' Ð·Ð°ÐºÑÑÑÐ¾"}
+            return {"status": "ok", "message": f"º½¾ '{title}' ·°º¾"}
         except Exception as e:
             return {"status": "error", "message": str(e)}
