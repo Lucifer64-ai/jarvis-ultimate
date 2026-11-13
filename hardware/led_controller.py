@@ -1,5 +1,5 @@
 """
-LED Controller - Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ LED Ð¸Ð½Ð´Ð¸ÐºÐ°ÑÐ¾ÑÐ°Ð¼Ð¸
+LED Controller - ÃÂ£ÃÂ¿ÃÃÂ°ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ LED ÃÂ¸ÃÂ½ÃÂ´ÃÂ¸ÃÂºÃÂ°ÃÃÂ¾ÃÃÂ°ÃÂ¼ÃÂ¸
 """
 
 import time
@@ -9,16 +9,16 @@ import logging
 
 
 class LEDController:
-    """Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ LED Ð¸Ð½Ð´Ð¸ÐºÐ°ÑÐ¾ÑÐ°Ð¼Ð¸ JARVIS."""
+    """ÃÂ£ÃÂ¿ÃÃÂ°ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ LED ÃÂ¸ÃÂ½ÃÂ´ÃÂ¸ÃÂºÃÂ°ÃÃÂ¾ÃÃÂ°ÃÂ¼ÃÂ¸ JARVIS."""
 
     def __init__(self, brain):
         self.brain = brain
         self.logger = brain.logger
         
-        # ÐÐ¸Ð½Ñ LED (Ð´Ð»Ñ Raspberry Pi GPIO)
+        # ÃÃÂ¸ÃÂ½Ã LED (ÃÂ´ÃÂ»Ã Raspberry Pi GPIO)
         self.led_pins = brain.config.get("hardware.led_pins", [18, 23, 24])  # RGB
         
-        # Ð¡Ð¾ÑÑÐ¾ÑÐ½Ð¸Ñ
+        # ÃÂ¡ÃÂ¾ÃÃÃÂ¾ÃÃÂ½ÃÂ¸Ã
         self.current_color = (0, 0, 0)
         self.brightness = 100
         self.animation_thread: Optional[threading.Thread] = None
@@ -27,9 +27,9 @@ class LEDController:
         self.initialized = False
 
     def initialize(self) -> Dict:
-        """ÐÐ½Ð¸ÑÐ¸Ð°Ð»Ð¸Ð·Ð°ÑÐ¸Ñ LED."""
+        """ÃÃÂ½ÃÂ¸ÃÃÂ¸ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸Ã LED."""
         try:
-            # Ð ÑÐµÐ°Ð»ÑÐ½Ð¾Ð¹ ÑÐµÐ°Ð»Ð¸Ð·Ð°ÑÐ¸Ð¸:
+            # Ã ÃÃÂµÃÂ°ÃÂ»ÃÃÂ½ÃÂ¾ÃÂ¹ ÃÃÂµÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸ÃÂ¸:
             # import RPi.GPIO as GPIO
             # GPIO.setmode(GPIO.BCM)
             # for pin in self.led_pins:
@@ -38,16 +38,16 @@ class LEDController:
             #     self.pwm[-1].start(0)
             
             self.initialized = True
-            self.logger.info("LED Ð¸Ð½Ð´Ð¸ÐºÐ°ÑÐ¾ÑÑ Ð¸Ð½Ð¸ÑÐ¸Ð°Ð»Ð¸Ð·Ð¸ÑÐ¾Ð²Ð°Ð½Ñ")
-            return {"status": "ok", "message": "LED Ð³Ð¾ÑÐ¾Ð²Ñ Ðº ÑÐ°Ð±Ð¾ÑÐµ"}
+            self.logger.info("LED ÃÂ¸ÃÂ½ÃÂ´ÃÂ¸ÃÂºÃÂ°ÃÃÂ¾ÃÃ ÃÂ¸ÃÂ½ÃÂ¸ÃÃÂ¸ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½Ã")
+            return {"status": "ok", "message": "LED ÃÂ³ÃÂ¾ÃÃÂ¾ÃÂ²Ã ÃÂº ÃÃÂ°ÃÂ±ÃÂ¾ÃÃÂµ"}
         except Exception as e:
-            self.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° Ð¸Ð½Ð¸ÑÐ¸Ð°Ð»Ð¸Ð·Ð°ÑÐ¸Ð¸ LED: {e}")
+            self.logger.error(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ¸ÃÂ½ÃÂ¸ÃÃÂ¸ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸ÃÂ¸ LED: {e}")
             return {"status": "error", "message": str(e)}
 
     def set_color(self, r: int, g: int, b: int) -> Dict:
-        """Ð£ÑÑÐ°Ð½Ð¾Ð²ÐºÐ° ÑÐ²ÐµÑÐ° (0-255)."""
+        """ÃÂ£ÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ° ÃÃÂ²ÃÂµÃÃÂ° (0-255)."""
         if not self.initialized:
-            return {"status": "error", "message": "LED Ð½Ðµ Ð¸Ð½Ð¸ÑÐ¸Ð°Ð»Ð¸Ð·Ð¸ÑÐ¾Ð²Ð°Ð½Ñ"}
+            return {"status": "error", "message": "LED ÃÂ½ÃÂµ ÃÂ¸ÃÂ½ÃÂ¸ÃÃÂ¸ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½Ã"}
         
         r = max(0, min(255, r))
         g = max(0, min(255, g))
@@ -55,7 +55,7 @@ class LEDController:
         
         self.current_color = (r, g, b)
         
-        # Ð ÑÐµÐ°Ð»ÑÐ½Ð¾Ð¹ ÑÐµÐ°Ð»Ð¸Ð·Ð°ÑÐ¸Ð¸:
+        # Ã ÃÃÂµÃÂ°ÃÂ»ÃÃÂ½ÃÂ¾ÃÂ¹ ÃÃÂµÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸ÃÂ¸:
         # duty_r = (r / 255.0) * (self.brightness / 100.0) * 100
         # duty_g = (g / 255.0) * (self.brightness / 100.0) * 100
         # duty_b = (b / 255.0) * (self.brightness / 100.0) * 100
@@ -63,48 +63,48 @@ class LEDController:
         # self.pwm[1].ChangeDutyCycle(duty_g)
         # self.pwm[2].ChangeDutyCycle(duty_b)
         
-        self.logger.info(f"LED ÑÐ²ÐµÑ: RGB({r}, {g}, {b})")
-        return {"status": "ok", "message": f"Ð¦Ð²ÐµÑ ÑÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½: RGB({r}, {g}, {b})"}
+        self.logger.info(f"LED ÃÃÂ²ÃÂµÃ: RGB({r}, {g}, {b})")
+        return {"status": "ok", "message": f"ÃÂ¦ÃÂ²ÃÂµÃ ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½: RGB({r}, {g}, {b})"}
 
     def set_brightness(self, level: int) -> Dict:
-        """Ð£ÑÑÐ°Ð½Ð¾Ð²ÐºÐ° ÑÑÐºÐ¾ÑÑÐ¸ (0-100)."""
+        """ÃÂ£ÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ° ÃÃÃÂºÃÂ¾ÃÃÃÂ¸ (0-100)."""
         self.brightness = max(0, min(100, level))
         r, g, b = self.current_color
         return self.set_color(r, g, b)
 
     def off(self) -> Dict:
-        """ÐÑÐºÐ»ÑÑÐ¸ÑÑ LED."""
+        """ÃÃÃÂºÃÂ»ÃÃÃÂ¸ÃÃ LED."""
         self.stop_animation = True
         return self.set_color(0, 0, 0)
 
-    # ÐÑÐµÐ´ÑÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½Ð½ÑÐµ ÑÐ²ÐµÑÐ°
+    # ÃÃÃÂµÃÂ´ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ½ÃÃÂµ ÃÃÂ²ÃÂµÃÃÂ°
     def idle(self) -> Dict:
-        """Ð ÐµÐ¶Ð¸Ð¼ Ð¾Ð¶Ð¸Ð´Ð°Ð½Ð¸Ñ - ÑÐ¸Ð½Ð¸Ð¹."""
+        """ÃÂ ÃÂµÃÂ¶ÃÂ¸ÃÂ¼ ÃÂ¾ÃÂ¶ÃÂ¸ÃÂ´ÃÂ°ÃÂ½ÃÂ¸Ã - ÃÃÂ¸ÃÂ½ÃÂ¸ÃÂ¹."""
         return self.set_color(0, 100, 255)
 
     def listening(self) -> Dict:
-        """Ð¡Ð»ÑÑÐ°ÐµÑ - Ð·ÐµÐ»ÐµÐ½ÑÐ¹."""
+        """ÃÂ¡ÃÂ»ÃÃÃÂ°ÃÂµÃ - ÃÂ·ÃÂµÃÂ»ÃÂµÃÂ½ÃÃÂ¹."""
         return self.set_color(0, 255, 100)
 
     def speaking(self) -> Dict:
-        """ÐÐ¾Ð²Ð¾ÑÐ¸Ñ - Ð³Ð¾Ð»ÑÐ±Ð¾Ð¹."""
+        """ÃÃÂ¾ÃÂ²ÃÂ¾ÃÃÂ¸Ã - ÃÂ³ÃÂ¾ÃÂ»ÃÃÂ±ÃÂ¾ÃÂ¹."""
         return self.set_color(0, 200, 255)
 
     def thinking(self) -> Dict:
-        """ÐÑÐ¼Ð°ÐµÑ - Ð¶ÐµÐ»ÑÑÐ¹."""
+        """ÃÃÃÂ¼ÃÂ°ÃÂµÃ - ÃÂ¶ÃÂµÃÂ»ÃÃÃÂ¹."""
         return self.set_color(255, 200, 0)
 
     def error(self) -> Dict:
-        """ÐÑÐ¸Ð±ÐºÐ° - ÐºÑÐ°ÑÐ½ÑÐ¹."""
+        """ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° - ÃÂºÃÃÂ°ÃÃÂ½ÃÃÂ¹."""
         return self.set_color(255, 0, 0)
 
     def success(self) -> Dict:
-        """Ð£ÑÐ¿ÐµÑ - Ð·ÐµÐ»ÐµÐ½ÑÐ¹."""
+        """ÃÂ£ÃÃÂ¿ÃÂµÃ - ÃÂ·ÃÂµÃÂ»ÃÂµÃÂ½ÃÃÂ¹."""
         return self.set_color(0, 255, 0)
 
-    # ÐÐ½Ð¸Ð¼Ð°ÑÐ¸Ð¸
+    # ÃÃÂ½ÃÂ¸ÃÂ¼ÃÂ°ÃÃÂ¸ÃÂ¸
     def pulse(self, color: Tuple[int, int, int], duration: float = 2.0) -> Dict:
-        """ÐÑÐ»ÑÑÐ°ÑÐ¸Ñ."""
+        """ÃÃÃÂ»ÃÃÃÂ°ÃÃÂ¸Ã."""
         self.stop_animation = True
         time.sleep(0.1)
         self.stop_animation = False
@@ -129,27 +129,27 @@ class LEDController:
         self.animation_thread = threading.Thread(target=animate, daemon=True)
         self.animation_thread.start()
         
-        return {"status": "ok", "message": "ÐÑÐ»ÑÑÐ°ÑÐ¸Ñ Ð·Ð°Ð¿ÑÑÐµÐ½Ð°"}
+        return {"status": "ok", "message": "ÃÃÃÂ»ÃÃÃÂ°ÃÃÂ¸Ã ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂµÃÂ½ÃÂ°"}
 
     def breathe(self, duration: float = 3.0) -> Dict:
-        """ÐÑÑÐ°Ð½Ð¸Ðµ - Ð¿Ð»Ð°Ð²Ð½Ð°Ñ Ð¿ÑÐ»ÑÑÐ°ÑÐ¸Ñ ÑÐ¸Ð½Ð¸Ð¼."""
+        """ÃÃÃÃÂ°ÃÂ½ÃÂ¸ÃÂµ - ÃÂ¿ÃÂ»ÃÂ°ÃÂ²ÃÂ½ÃÂ°Ã ÃÂ¿ÃÃÂ»ÃÃÃÂ°ÃÃÂ¸Ã ÃÃÂ¸ÃÂ½ÃÂ¸ÃÂ¼."""
         return self.pulse((0, 100, 255), duration)
 
     def rainbow(self, duration: float = 5.0) -> Dict:
-        """Ð Ð°Ð´ÑÐ³Ð°."""
+        """ÃÂ ÃÂ°ÃÂ´ÃÃÂ³ÃÂ°."""
         self.stop_animation = True
         time.sleep(0.1)
         self.stop_animation = False
         
         def animate():
             colors = [
-                (255, 0, 0),    # ÐÑÐ°ÑÐ½ÑÐ¹
-                (255, 127, 0),  # ÐÑÐ°Ð½Ð¶ÐµÐ²ÑÐ¹
-                (255, 255, 0),  # ÐÐµÐ»ÑÑÐ¹
-                (0, 255, 0),    # ÐÐµÐ»ÐµÐ½ÑÐ¹
-                (0, 0, 255),    # Ð¡Ð¸Ð½Ð¸Ð¹
-                (75, 0, 130),   # ÐÐ½Ð´Ð¸Ð³Ð¾
-                (148, 0, 211)   # Ð¤Ð¸Ð¾Ð»ÐµÑÐ¾Ð²ÑÐ¹
+                (255, 0, 0),    # ÃÃÃÂ°ÃÃÂ½ÃÃÂ¹
+                (255, 127, 0),  # ÃÃÃÂ°ÃÂ½ÃÂ¶ÃÂµÃÂ²ÃÃÂ¹
+                (255, 255, 0),  # ÃÃÂµÃÂ»ÃÃÃÂ¹
+                (0, 255, 0),    # ÃÃÂµÃÂ»ÃÂµÃÂ½ÃÃÂ¹
+                (0, 0, 255),    # ÃÂ¡ÃÂ¸ÃÂ½ÃÂ¸ÃÂ¹
+                (75, 0, 130),   # ÃÃÂ½ÃÂ´ÃÂ¸ÃÂ³ÃÂ¾
+                (148, 0, 211)   # ÃÂ¤ÃÂ¸ÃÂ¾ÃÂ»ÃÂµÃÃÂ¾ÃÂ²ÃÃÂ¹
             ]
             
             step_time = duration / len(colors)
@@ -164,10 +164,10 @@ class LEDController:
         self.animation_thread = threading.Thread(target=animate, daemon=True)
         self.animation_thread.start()
         
-        return {"status": "ok", "message": "Ð Ð°Ð´ÑÐ³Ð° Ð·Ð°Ð¿ÑÑÐµÐ½Ð°"}
+        return {"status": "ok", "message": "ÃÂ ÃÂ°ÃÂ´ÃÃÂ³ÃÂ° ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂµÃÂ½ÃÂ°"}
 
     def get_status(self) -> Dict:
-        """Ð¡ÑÐ°ÑÑÑ LED."""
+        """ÃÂ¡ÃÃÂ°ÃÃÃ LED."""
         return {
             "initialized": self.initialized,
             "color": self.current_color,
@@ -175,12 +175,12 @@ class LEDController:
         }
 
     def cleanup(self):
-        """ÐÑÐ¸ÑÑÐºÐ° ÑÐµÑÑÑÑÐ¾Ð²."""
+        """ÃÃÃÂ¸ÃÃÃÂºÃÂ° ÃÃÂµÃÃÃÃÃÂ¾ÃÂ²."""
         self.stop_animation = True
         if self.initialized:
-            # Ð ÑÐµÐ°Ð»ÑÐ½Ð¾Ð¹ ÑÐµÐ°Ð»Ð¸Ð·Ð°ÑÐ¸Ð¸:
+            # Ã ÃÃÂµÃÂ°ÃÂ»ÃÃÂ½ÃÂ¾ÃÂ¹ ÃÃÂµÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸ÃÂ¸:
             # for pwm in self.pwm:
             #     pwm.stop()
             # GPIO.cleanup()
             self.initialized = False
-            self.logger.info("LED Ð¾ÑÐ¸ÑÐµÐ½Ñ")
+            self.logger.info("LED ÃÂ¾ÃÃÂ¸ÃÃÂµÃÂ½Ã")
