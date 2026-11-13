@@ -1,5 +1,5 @@
 """
-HUD-ÃÂ¸ÃÂ½ÃÃÂµÃÃÃÂµÃÂ¹Ã JARVIS ÃÂ² ÃÃÃÂ¸ÃÂ»ÃÂµ Iron Man
+HUD-ÃÃÂ¸ÃÃÂ½ÃÃÃÂµÃÃÃÃÂµÃÃÂ¹Ã JARVIS ÃÃÂ² ÃÃÃÃÂ¸ÃÃÂ»ÃÃÂµ Iron Man
 """
 
 import tkinter as tk
@@ -10,7 +10,7 @@ from datetime import datetime
 
 
 class HUDOverlay:
-    """ÃÃÂ¾ÃÂ»ÃÂ¾ÃÂ³ÃÃÂ°ÃÃÂ¸ÃÃÂµÃÃÂºÃÂ¸ÃÂ¹ HUD-ÃÂ¾ÃÂ²ÃÂµÃÃÂ»ÃÂµÃÂ¹."""
+    """ÃÃÃÂ¾ÃÃÂ»ÃÃÂ¾ÃÃÂ³ÃÃÃÂ°ÃÃÃÂ¸ÃÃÃÂµÃÃÃÂºÃÃÂ¸ÃÃÂ¹ HUD-ÃÃÂ¾ÃÃÂ²ÃÃÂµÃÃÃÂ»ÃÃÂµÃÃÂ¹."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -20,7 +20,7 @@ class HUDOverlay:
         self.config = brain.config.get("hud", {})
 
     def start(self):
-        """ÃÃÂ°ÃÂ¿ÃÃÃÂº HUD ÃÂ² ÃÂ¾ÃÃÂ´ÃÂµÃÂ»ÃÃÂ½ÃÂ¾ÃÂ¼ ÃÂ¿ÃÂ¾ÃÃÂ¾ÃÂºÃÂµ."""
+        """ÃÃÃÂ°ÃÃÂ¿ÃÃÃÃÂº HUD ÃÃÂ² ÃÃÂ¾ÃÃÃÂ´ÃÃÂµÃÃÂ»ÃÃÃÂ½ÃÃÂ¾ÃÃÂ¼ ÃÃÂ¿ÃÃÂ¾ÃÃÃÂ¾ÃÃÂºÃÃÂµ."""
         if not self.config.get("enabled", True):
             return
         
@@ -28,14 +28,14 @@ class HUDOverlay:
         thread.start()
 
     def _run(self):
-        """ÃÃÃÂ½ÃÂ¾ÃÂ²ÃÂ½ÃÂ¾ÃÂ¹ ÃÃÂ¸ÃÂºÃÂ» HUD."""
+        """ÃÃÃÃÂ½ÃÃÂ¾ÃÃÂ²ÃÃÂ½ÃÃÂ¾ÃÃÂ¹ ÃÃÃÂ¸ÃÃÂºÃÃÂ» HUD."""
         self.root = tk.Tk()
         self.root.overrideredirect(True)
         self.root.attributes('-topmost', True)
         self.root.attributes('-alpha', 0.7)
         self.root.configure(bg='black')
         
-        # ÃÂ ÃÂ°ÃÂ·ÃÂ¼ÃÂµÃ ÃÂ¸ ÃÂ¿ÃÂ¾ÃÂ·ÃÂ¸ÃÃÂ¸Ã
+        # ÃÃÂ ÃÃÂ°ÃÃÂ·ÃÃÂ¼ÃÃÂµÃ ÃÃÂ¸ ÃÃÂ¿ÃÃÂ¾ÃÃÂ·ÃÃÂ¸ÃÃÃÂ¸Ã
         width, height = 400, 300
         screen_width = self.root.winfo_screenwidth()
         
@@ -49,14 +49,14 @@ class HUDOverlay:
         
         self.root.geometry(f"{width}x{height}+{x}+{y}")
         
-        # Canvas ÃÂ´ÃÂ»Ã ÃÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ¸Ã
+        # Canvas ÃÃÂ´ÃÃÂ»Ã ÃÃÃÂ¸ÃÃÃÂ¾ÃÃÂ²ÃÃÂ°ÃÃÂ½ÃÃÂ¸Ã
         self.canvas = Canvas(self.root, width=width, height=height, bg='black', highlightthickness=0)
         self.canvas.pack()
         
-        # ÃÂ ÃÂ°ÃÂ¼ÃÂºÃÂ°
+        # ÃÃÂ ÃÃÂ°ÃÃÂ¼ÃÃÂºÃÃÂ°
         self.canvas.create_rectangle(5, 5, width-5, height-5, outline='#00d4ff', width=2)
         
-        # ÃÃÂ°ÃÂ³ÃÂ¾ÃÂ»ÃÂ¾ÃÂ²ÃÂ¾ÃÂº
+        # ÃÃÃÂ°ÃÃÂ³ÃÃÂ¾ÃÃÂ»ÃÃÂ¾ÃÃÂ²ÃÃÂ¾ÃÃÂº
         self.canvas.create_text(width//2, 25, text="J.A.R.V.I.S.", fill='#00d4ff', font=('Consolas', 16, 'bold'))
         
         self.running = True
@@ -64,15 +64,15 @@ class HUDOverlay:
         self.root.mainloop()
 
     def _update(self):
-        """ÃÃÂ±ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÂ´ÃÂ°ÃÂ½ÃÂ½ÃÃ HUD."""
+        """ÃÃÃÂ±ÃÃÂ½ÃÃÂ¾ÃÃÂ²ÃÃÂ»ÃÃÂµÃÃÂ½ÃÃÂ¸ÃÃÂµ ÃÃÂ´ÃÃÂ°ÃÃÂ½ÃÃÂ½ÃÃ HUD."""
         if not self.running:
             return
         
         try:
-            # ÃÃÃÂ¸ÃÃÃÂºÃÂ° ÃÃÃÂ°ÃÃÃ ÃÂ´ÃÂ°ÃÂ½ÃÂ½ÃÃ
+            # ÃÃÃÃÂ¸ÃÃÃÃÂºÃÃÂ° ÃÃÃÃÂ°ÃÃÃ ÃÃÂ´ÃÃÂ°ÃÃÂ½ÃÃÂ½ÃÃ
             self.canvas.delete("data")
             
-            # ÃÃÃÂµÃÂ¼Ã
+            # ÃÃÃÃÂµÃÃÂ¼Ã
             now = datetime.now().strftime("%H:%M:%S")
             self.canvas.create_text(200, 60, text=now, fill='#00d4ff', font=('Consolas', 14), tags="data")
             
@@ -89,23 +89,23 @@ class HUDOverlay:
             if battery:
                 self.canvas.create_text(50, 160, text=f"BAT: {battery.percent}%", fill='#ffaa00', font=('Consolas', 11), anchor='w', tags="data")
             
-            # ÃÂ¡ÃÃÂ°ÃÃÃ
+            # ÃÃÂ¡ÃÃÃÂ°ÃÃÃ
             self.canvas.create_text(200, 250, text="SYSTEM ONLINE", fill='#00d4ff', font=('Consolas', 10), tags="data")
             
         except Exception as e:
-            self.brain.logger.error(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ¾ÃÂ±ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¸Ã HUD: {e}")
+            self.brain.logger.error(f"ÃÃÃÃÂ¸ÃÃÂ±ÃÃÂºÃÃÂ° ÃÃÂ¾ÃÃÂ±ÃÃÂ½ÃÃÂ¾ÃÃÂ²ÃÃÂ»ÃÃÂµÃÃÂ½ÃÃÂ¸Ã HUD: {e}")
         
-        # ÃÃÂ±ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÂºÃÂ°ÃÂ¶ÃÂ´ÃÃÂµ 2 ÃÃÂµÃÂºÃÃÂ½ÃÂ´Ã
+        # ÃÃÃÂ±ÃÃÂ½ÃÃÂ¾ÃÃÂ²ÃÃÂ»ÃÃÂµÃÃÂ½ÃÃÂ¸ÃÃÂµ ÃÃÂºÃÃÂ°ÃÃÂ¶ÃÃÂ´ÃÃÃÂµ 2 ÃÃÃÂµÃÃÂºÃÃÃÂ½ÃÃÂ´Ã
         self.root.after(2000, self._update)
 
     def stop(self):
-        """ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ° HUD."""
+        """ÃÃÃÃÃÂ°ÃÃÂ½ÃÃÂ¾ÃÃÂ²ÃÃÂºÃÃÂ° HUD."""
         self.running = False
         if self.root:
             self.root.quit()
 
     def show_message(self, message: str, duration: int = 3000):
-        """ÃÃÂ¾ÃÂºÃÂ°ÃÂ·ÃÂ°ÃÃ ÃÂ²ÃÃÂµÃÂ¼ÃÂµÃÂ½ÃÂ½ÃÂ¾ÃÂµ ÃÃÂ¾ÃÂ¾ÃÂ±ÃÃÂµÃÂ½ÃÂ¸ÃÂµ."""
+        """ÃÃÃÂ¾ÃÃÂºÃÃÂ°ÃÃÂ·ÃÃÂ°ÃÃ ÃÃÂ²ÃÃÃÂµÃÃÂ¼ÃÃÂµÃÃÂ½ÃÃÂ½ÃÃÂ¾ÃÃÂµ ÃÃÃÂ¾ÃÃÂ¾ÃÃÂ±ÃÃÃÂµÃÃÂ½ÃÃÂ¸ÃÃÂµ."""
         if not self.canvas:
             return
         
