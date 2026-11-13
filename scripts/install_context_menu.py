@@ -1,5 +1,5 @@
 """
-Ð¡ÐºÑÐ¸Ð¿Ñ ÑÑÑÐ°Ð½Ð¾Ð²ÐºÐ¸ ÐºÐ¾Ð½ÑÐµÐºÑÑÐ½Ð¾Ð³Ð¾ Ð¼ÐµÐ½Ñ Ð¿ÑÐ¾Ð²Ð¾Ð´Ð½Ð¸ÐºÐ° Windows
+ÃÂ¡ÃÂºÃÃÂ¸ÃÂ¿Ã ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ¸ ÃÂºÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ¼ÃÂµÃÂ½Ã ÃÂ¿ÃÃÂ¾ÃÂ²ÃÂ¾ÃÂ´ÃÂ½ÃÂ¸ÃÂºÃÂ° Windows
 """
 
 import winreg
@@ -9,34 +9,34 @@ from pathlib import Path
 
 
 def install_context_menu():
-    """Ð£ÑÑÐ°Ð½Ð¾Ð²ÐºÐ° ÐºÐ¾Ð½ÑÐµÐºÑÑÐ½Ð¾Ð³Ð¾ Ð¼ÐµÐ½Ñ."""
+    """ÃÂ£ÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ° ÃÂºÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ¼ÃÂµÃÂ½Ã."""
     try:
-        # ÐÑÑÑ Ðº JARVIS
+        # ÃÃÃÃ ÃÂº JARVIS
         jarvis_path = sys.executable
         
-        # ÐÐ»Ñ ÑÐ°Ð¹Ð»Ð¾Ð²
+        # ÃÃÂ»Ã ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ¾ÃÂ²
         file_key = r"*\shell\JARVIS"
         with winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, file_key) as key:
-            winreg.SetValueEx(key, "", 0, winreg.REG_SZ, "JARVIS - ÐÑÐºÑÑÑÑ ÑÐ°Ð¹Ð»")
+            winreg.SetValueEx(key, "", 0, winreg.REG_SZ, "JARVIS - ÃÃÃÂºÃÃÃÃ ÃÃÂ°ÃÂ¹ÃÂ»")
             winreg.SetValueEx(key, "Icon", 0, winreg.REG_SZ, jarvis_path)
         
         with winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, rf"{file_key}\command") as key:
             winreg.SetValueEx(key, "", 0, winreg.REG_SZ, f'"{jarvis_path}" open "%1"')
         
-        # ÐÐ»Ñ Ð¿Ð°Ð¿Ð¾Ðº
+        # ÃÃÂ»Ã ÃÂ¿ÃÂ°ÃÂ¿ÃÂ¾ÃÂº
         folder_key = r"Directory\shell\JARVIS"
         with winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, folder_key) as key:
-            winreg.SetValueEx(key, "", 0, winreg.REG_SZ, "JARVIS - ÐÑÐºÑÑÑÑ Ð¿Ð°Ð¿ÐºÑ")
+            winreg.SetValueEx(key, "", 0, winreg.REG_SZ, "JARVIS - ÃÃÃÂºÃÃÃÃ ÃÂ¿ÃÂ°ÃÂ¿ÃÂºÃ")
             winreg.SetValueEx(key, "Icon", 0, winreg.REG_SZ, jarvis_path)
         
         with winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, rf"{folder_key}\command") as key:
             winreg.SetValueEx(key, "", 0, winreg.REG_SZ, f'"{jarvis_path}" open "%1"')
         
-        print("ÐÐ¾Ð½ÑÐµÐºÑÑÐ½Ð¾Ðµ Ð¼ÐµÐ½Ñ ÑÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½Ð¾ ÑÑÐ¿ÐµÑÐ½Ð¾")
+        print("ÃÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂµ ÃÂ¼ÃÂµÃÂ½Ã ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¾ ÃÃÃÂ¿ÃÂµÃÃÂ½ÃÂ¾")
         return 0
     
     except Exception as e:
-        print(f"ÐÑÐ¸Ð±ÐºÐ° ÑÑÑÐ°Ð½Ð¾Ð²ÐºÐ¸ ÐºÐ¾Ð½ÑÐµÐºÑÑÐ½Ð¾Ð³Ð¾ Ð¼ÐµÐ½Ñ: {e}")
+        print(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ¸ ÃÂºÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ¼ÃÂµÃÂ½Ã: {e}")
         return 1
 
 
