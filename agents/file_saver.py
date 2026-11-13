@@ -1,6 +1,6 @@
 """
 JARVIS - File Saver Service
-Сервис для сохранения файлов, созданных агентами, на диск
+   ,  ,  
 """
 
 import os
@@ -11,7 +11,7 @@ from datetime import datetime
 
 
 class FileSaver:
-    """Сервис для сохранения файлов на диск."""
+    """     ."""
 
     def __init__(self, base_dir: Optional[str] = None):
         self.logger = logging.getLogger(__name__)
@@ -25,28 +25,28 @@ class FileSaver:
         project_name: Optional[str] = None,
         agent_name: Optional[str] = None
     ) -> Dict[str, Any]:
-        """Сохранить файлы на диск.
+        """   .
 
         Args:
-            files: Словарь {имя_файла: содержимое}
-            project_name: Имя проекта (создаст подпапку)
-            agent_name: Имя агента (для логирования)
+            files:  {_: }
+            project_name:   ( )
+            agent_name:   ( )
 
         Returns:
-            Словарь с информацией о сохранённых файлах
+                 
         """
         if not files:
             return {
                 'status': 'error',
-                'message': 'Нет файлов для сохранения'
+                'message': '   '
             }
 
         try:
-            # Создаём папку проекта
+            #   
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
             if project_name:
-                # Очищаем имя проекта от недопустимых символов
+                #      
                 safe_name = "".join(c for c in project_name if c.isalnum() or c in (' ', '-', '_')).strip()
                 safe_name = safe_name.replace(' ', '_')[:50]
                 project_dir = self.base_dir / f"{safe_name}_{timestamp}"
@@ -55,15 +55,15 @@ class FileSaver:
 
             project_dir.mkdir(parents=True, exist_ok=True)
 
-            # Сохраняем каждый файл
+            #   
             saved_files = []
             for filename, content in files.items():
                 file_path = project_dir / filename
 
-                # Создаём подпапки если нужно
+                #    
                 file_path.parent.mkdir(parents=True, exist_ok=True)
 
-                # Определяем режим записи
+                #   
                 mode = 'wb' if isinstance(content, bytes) else 'w'
                 encoding = None if mode == 'wb' else 'utf-8'
 
@@ -78,7 +78,7 @@ class FileSaver:
 
                 self.logger.info(f"Saved: {file_path}")
 
-            # Создаём README с информацией о проекте
+            #  README    
             readme_content = self._generate_readme(project_name, agent_name, saved_files)
             readme_path = project_dir / "README.md"
             with open(readme_path, 'w', encoding='utf-8') as f:
@@ -96,7 +96,7 @@ class FileSaver:
             self.logger.error(f"Error saving files: {e}")
             return {
                 'status': 'error',
-                'message': f'Ошибка сохранения: {str(e)}'
+                'message': f' : {str(e)}'
             }
 
     def _generate_readme(
@@ -105,44 +105,44 @@ class FileSaver:
         agent_name: Optional[str],
         saved_files: List[Dict]
     ) -> str:
-        """Генерация README файла."""
+        """ README ."""
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         readme = f"""# {project_name or 'JARVIS Project'}
 
-**Создано:** JARVIS AI Assistant  
-**Дата:** {timestamp}  
-**Агент:** {agent_name or 'Unknown'}
+**:** JARVIS AI Assistant  
+**:** {timestamp}  
+**:** {agent_name or 'Unknown'}
 
-## Описание
+## 
 
-Проект автоматически создан JARVIS AI Agent.
+   JARVIS AI Agent.
 
-## Файлы
+## 
 
 """
         for file_info in saved_files:
-            readme += f"- `{file_info['filename']}` ({file_info['size']} байт)\n"
+            readme += f"- `{file_info['filename']}` ({file_info['size']} )\n"
 
         readme += f"""
-## Структура проекта
+##  
 
 ```
 {Path(saved_files[0]['path']).parent.name}/
 """
         for file_info in saved_files:
-            readme += f"├── {file_info['filename']}\n"
-        readme += "└── README.md\n```\n"
+            readme += f" {file_info['filename']}\n"
+        readme += " README.md\n```\n"
 
         readme += """
 ---
-*Создано JARVIS Ultimate - AI-powered assistant*
+* JARVIS Ultimate - AI-powered assistant*
 """
 
         return readme
 
     def list_projects(self) -> List[Dict[str, Any]]:
-        """Получить список всех сохранённых проектов."""
+        """    ."""
         projects = []
 
         if not self.base_dir.exists():
@@ -163,18 +163,18 @@ class FileSaver:
         return sorted(projects, key=lambda x: x['created'], reverse=True)
 
     def get_project_path(self, project_name: str) -> Optional[Path]:
-        """Получить путь к проекту по имени."""
+        """     ."""
         for item in self.base_dir.iterdir():
             if item.is_dir() and project_name.lower() in item.name.lower():
                 return item
         return None
 
 
-# Глобальный экземпляр
+#  
 _file_saver_instance = None
 
 def get_file_saver() -> FileSaver:
-    """Получить глобальный экземпляр FileSaver."""
+    """   FileSaver."""
     global _file_saver_instance
     if _file_saver_instance is None:
         _file_saver_instance = FileSaver()
