@@ -1,5 +1,5 @@
 """
-HUD-интерфейс JARVIS в стиле Iron Man
+HUD-Ð¸Ð½ÑÐµÑÑÐµÐ¹Ñ JARVIS Ð² ÑÑÐ¸Ð»Ðµ Iron Man
 """
 
 import tkinter as tk
@@ -10,7 +10,7 @@ from datetime import datetime
 
 
 class HUDOverlay:
-    """Голографический HUD-оверлей."""
+    """ÐÐ¾Ð»Ð¾Ð³ÑÐ°ÑÐ¸ÑÐµÑÐºÐ¸Ð¹ HUD-Ð¾Ð²ÐµÑÐ»ÐµÐ¹."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -20,7 +20,7 @@ class HUDOverlay:
         self.config = brain.config.get("hud", {})
 
     def start(self):
-        """Запуск HUD в отдельном потоке."""
+        """ÐÐ°Ð¿ÑÑÐº HUD Ð² Ð¾ÑÐ´ÐµÐ»ÑÐ½Ð¾Ð¼ Ð¿Ð¾ÑÐ¾ÐºÐµ."""
         if not self.config.get("enabled", True):
             return
         
@@ -28,14 +28,14 @@ class HUDOverlay:
         thread.start()
 
     def _run(self):
-        """Основной цикл HUD."""
+        """ÐÑÐ½Ð¾Ð²Ð½Ð¾Ð¹ ÑÐ¸ÐºÐ» HUD."""
         self.root = tk.Tk()
         self.root.overrideredirect(True)
         self.root.attributes('-topmost', True)
         self.root.attributes('-alpha', 0.7)
         self.root.configure(bg='black')
         
-        # Размер и позиция
+        # Ð Ð°Ð·Ð¼ÐµÑ Ð¸ Ð¿Ð¾Ð·Ð¸ÑÐ¸Ñ
         width, height = 400, 300
         screen_width = self.root.winfo_screenwidth()
         
@@ -49,14 +49,14 @@ class HUDOverlay:
         
         self.root.geometry(f"{width}x{height}+{x}+{y}")
         
-        # Canvas для рисования
+        # Canvas Ð´Ð»Ñ ÑÐ¸ÑÐ¾Ð²Ð°Ð½Ð¸Ñ
         self.canvas = Canvas(self.root, width=width, height=height, bg='black', highlightthickness=0)
         self.canvas.pack()
         
-        # Рамка
+        # Ð Ð°Ð¼ÐºÐ°
         self.canvas.create_rectangle(5, 5, width-5, height-5, outline='#00d4ff', width=2)
         
-        # Заголовок
+        # ÐÐ°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº
         self.canvas.create_text(width//2, 25, text="J.A.R.V.I.S.", fill='#00d4ff', font=('Consolas', 16, 'bold'))
         
         self.running = True
@@ -64,15 +64,15 @@ class HUDOverlay:
         self.root.mainloop()
 
     def _update(self):
-        """Обновление данных HUD."""
+        """ÐÐ±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ðµ Ð´Ð°Ð½Ð½ÑÑ HUD."""
         if not self.running:
             return
         
         try:
-            # Очистка старых данных
+            # ÐÑÐ¸ÑÑÐºÐ° ÑÑÐ°ÑÑÑ Ð´Ð°Ð½Ð½ÑÑ
             self.canvas.delete("data")
             
-            # Время
+            # ÐÑÐµÐ¼Ñ
             now = datetime.now().strftime("%H:%M:%S")
             self.canvas.create_text(200, 60, text=now, fill='#00d4ff', font=('Consolas', 14), tags="data")
             
@@ -89,23 +89,23 @@ class HUDOverlay:
             if battery:
                 self.canvas.create_text(50, 160, text=f"BAT: {battery.percent}%", fill='#ffaa00', font=('Consolas', 11), anchor='w', tags="data")
             
-            # Статус
+            # Ð¡ÑÐ°ÑÑÑ
             self.canvas.create_text(200, 250, text="SYSTEM ONLINE", fill='#00d4ff', font=('Consolas', 10), tags="data")
             
         except Exception as e:
-            self.brain.logger.error(f"Ошибка обновления HUD: {e}")
+            self.brain.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° Ð¾Ð±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ñ HUD: {e}")
         
-        # Обновление каждые 2 секунды
+        # ÐÐ±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ðµ ÐºÐ°Ð¶Ð´ÑÐµ 2 ÑÐµÐºÑÐ½Ð´Ñ
         self.root.after(2000, self._update)
 
     def stop(self):
-        """Остановка HUD."""
+        """ÐÑÑÐ°Ð½Ð¾Ð²ÐºÐ° HUD."""
         self.running = False
         if self.root:
             self.root.quit()
 
     def show_message(self, message: str, duration: int = 3000):
-        """Показать временное сообщение."""
+        """ÐÐ¾ÐºÐ°Ð·Ð°ÑÑ Ð²ÑÐµÐ¼ÐµÐ½Ð½Ð¾Ðµ ÑÐ¾Ð¾Ð±ÑÐµÐ½Ð¸Ðµ."""
         if not self.canvas:
             return
         
