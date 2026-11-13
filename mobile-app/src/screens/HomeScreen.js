@@ -24,7 +24,7 @@ export default function HomeScreen({ navigation }) {
     <View style={styles.container}>
       <ScrollView>
         <View style={styles.card}>
-          <Text style={styles.title}>Системный статус</Text>
+          <Text style={styles.title}>¡¸µ¼½¹ °</Text>
           {status && (
             <>
               <View style={styles.statRow}>
@@ -36,7 +36,7 @@ export default function HomeScreen({ navigation }) {
                 <Text style={styles.statValue}>{status.ram}%</Text>
               </View>
               <View style={styles.statRow}>
-                <Text style={styles.statLabel}>Статус:</Text>
+                <Text style={styles.statLabel}>¡°:</Text>
                 <Text style={[styles.statValue, styles.statusOnline]}>
                   {status.status || 'Online'}
                 </Text>
@@ -50,24 +50,24 @@ export default function HomeScreen({ navigation }) {
             style={styles.menuButton}
             onPress={() => navigation.navigate('Devices')}
           >
-            <Text style={styles.menuIcon}>🏠</Text>
-            <Text style={styles.menuText}>Устройства</Text>
+            <Text style={styles.menuIcon}> </Text>
+            <Text style={styles.menuText}>£¾¹²°</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.menuButton}
             onPress={() => navigation.navigate('Command')}
           >
-            <Text style={styles.menuIcon}>🎤</Text>
-            <Text style={styles.menuText}>Команды</Text>
+            <Text style={styles.menuIcon}>¤</Text>
+            <Text style={styles.menuText}>¾¼°½´</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.menuButton}
             onPress={() => navigation.navigate('Settings')}
           >
-            <Text style={styles.menuIcon}>⚙️</Text>
-            <Text style={styles.menuText}>Настройки</Text>
+            <Text style={styles.menuIcon}>¸</Text>
+            <Text style={styles.menuText}>°¾¹º¸</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
