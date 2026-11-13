@@ -1,5 +1,5 @@
 """
-Ð¢ÑÐµÐ¹-Ð¸ÐºÐ¾Ð½ÐºÐ° JARVIS
+ÃÂ¢ÃÃÂµÃÂ¹-ÃÂ¸ÃÂºÃÂ¾ÃÂ½ÃÂºÃÂ° JARVIS
 """
 
 import pystray
@@ -8,7 +8,7 @@ import threading
 
 
 class TrayIcon:
-    """ÐÐºÐ¾Ð½ÐºÐ° Ð² ÑÐ¸ÑÑÐµÐ¼Ð½Ð¾Ð¼ ÑÑÐµÐµ."""
+    """ÃÃÂºÃÂ¾ÃÂ½ÃÂºÃÂ° ÃÂ² ÃÃÂ¸ÃÃÃÂµÃÂ¼ÃÂ½ÃÂ¾ÃÂ¼ ÃÃÃÂµÃÂµ."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -16,28 +16,28 @@ class TrayIcon:
         self._create_icon()
 
     def _create_icon(self):
-        """Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð¸ÐºÐ¾Ð½ÐºÐ¸."""
-        # Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð¿ÑÐ¾ÑÑÐ¾Ð¹ Ð¸ÐºÐ¾Ð½ÐºÐ¸ JARVIS
+        """ÃÂ¡ÃÂ¾ÃÂ·ÃÂ´ÃÂ°ÃÂ½ÃÂ¸ÃÂµ ÃÂ¸ÃÂºÃÂ¾ÃÂ½ÃÂºÃÂ¸."""
+        # ÃÂ¡ÃÂ¾ÃÂ·ÃÂ´ÃÂ°ÃÂ½ÃÂ¸ÃÂµ ÃÂ¿ÃÃÂ¾ÃÃÃÂ¾ÃÂ¹ ÃÂ¸ÃÂºÃÂ¾ÃÂ½ÃÂºÃÂ¸ JARVIS
         image = Image.new('RGB', (64, 64), color='#0f0f1e')
         dc = ImageDraw.Draw(image)
         
-        # ÐÑÑÐ³
+        # ÃÃÃÃÂ³
         dc.ellipse([8, 8, 56, 56], outline='#00d4ff', width=3)
         
-        # ÐÑÐºÐ²Ð° J
+        # ÃÃÃÂºÃÂ²ÃÂ° J
         dc.text((24, 18), "J", fill='#00d4ff')
         
         self.image = image
 
     def start(self):
-        """ÐÐ°Ð¿ÑÑÐº Ð¸ÐºÐ¾Ð½ÐºÐ¸ Ð² ÑÑÐµÐµ."""
+        """ÃÃÂ°ÃÂ¿ÃÃÃÂº ÃÂ¸ÃÂºÃÂ¾ÃÂ½ÃÂºÃÂ¸ ÃÂ² ÃÃÃÂµÃÂµ."""
         menu = pystray.Menu(
-            pystray.MenuItem("ÐÐ¾ÐºÐ°Ð·Ð°ÑÑ HUD", self._show_hud),
-            pystray.MenuItem("Ð¡ÐºÑÑÑÑ HUD", self._hide_hud),
+            pystray.MenuItem("ÃÃÂ¾ÃÂºÃÂ°ÃÂ·ÃÂ°ÃÃ HUD", self._show_hud),
+            pystray.MenuItem("ÃÂ¡ÃÂºÃÃÃÃ HUD", self._hide_hud),
             pystray.Menu.SEPARATOR,
-            pystray.MenuItem("Ð¡ÑÐ°ÑÑÑ", self._show_status),
+            pystray.MenuItem("ÃÂ¡ÃÃÂ°ÃÃÃ", self._show_status),
             pystray.Menu.SEPARATOR,
-            pystray.MenuItem("ÐÑÑÐ¾Ð´", self._quit)
+            pystray.MenuItem("ÃÃÃÃÂ¾ÃÂ´", self._quit)
         )
         
         self.icon = pystray.Icon("jarvis", self.image, "JARVIS", menu)
@@ -46,26 +46,26 @@ class TrayIcon:
         thread.start()
 
     def _show_hud(self, icon, item):
-        """ÐÐ¾ÐºÐ°Ð·Ð°ÑÑ HUD."""
+        """ÃÃÂ¾ÃÂºÃÂ°ÃÂ·ÃÂ°ÃÃ HUD."""
         if hasattr(self.brain, 'hud'):
             self.brain.hud.start()
 
     def _hide_hud(self, icon, item):
-        """Ð¡ÐºÑÑÑÑ HUD."""
+        """ÃÂ¡ÃÂºÃÃÃÃ HUD."""
         if hasattr(self.brain, 'hud'):
             self.brain.hud.stop()
 
     def _show_status(self, icon, item):
-        """ÐÐ¾ÐºÐ°Ð·Ð°ÑÑ ÑÑÐ°ÑÑÑ."""
+        """ÃÃÂ¾ÃÂºÃÂ°ÃÂ·ÃÂ°ÃÃ ÃÃÃÂ°ÃÃÃ."""
         status = self.brain.get_status()
-        self.brain.logger.info(f"Ð¡ÑÐ°ÑÑÑ: {status}")
+        self.brain.logger.info(f"ÃÂ¡ÃÃÂ°ÃÃÃ: {status}")
 
     def _quit(self, icon, item):
-        """ÐÑÑÐ¾Ð´ Ð¸Ð· Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ."""
+        """ÃÃÃÃÂ¾ÃÂ´ ÃÂ¸ÃÂ· ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã."""
         self.brain.stop()
         icon.stop()
 
     def stop(self):
-        """ÐÑÑÐ°Ð½Ð¾Ð²ÐºÐ° Ð¸ÐºÐ¾Ð½ÐºÐ¸."""
+        """ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ° ÃÂ¸ÃÂºÃÂ¾ÃÂ½ÃÂºÃÂ¸."""
         if self.icon:
             self.icon.stop()
