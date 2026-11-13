@@ -1,5 +1,5 @@
 """
-ÃÃÂµÃÂ½ÃÂµÃÂ´ÃÂ¶ÃÂµÃ ÃÂ¾ÃÂ±ÃÃÃÂµÃÂ½ÃÂ¸Ã JARVIS - ÃÂºÃÂ¾ÃÂ¾ÃÃÂ´ÃÂ¸ÃÂ½ÃÂ¸ÃÃÃÂµÃ ÃÂ²ÃÃÂµ ÃÂ¼ÃÂ¾ÃÂ´ÃÃÂ»ÃÂ¸ ÃÂ¾ÃÂ±ÃÃÃÂµÃÂ½ÃÂ¸Ã
+µ½µ´¶µ ¾±µ½¸ JARVIS - º¾¾´¸½¸µ ²µ ¼¾´»¸ ¾±µ½¸
 """
 
 from typing import Dict, List
@@ -7,7 +7,7 @@ from datetime import datetime
 
 
 class LearningManager:
-    """ÃÂ¦ÃÂµÃÂ½ÃÃÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ½ÃÂ¾ÃÂµ ÃÃÂ¿ÃÃÂ°ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÂ¾ÃÂ±ÃÃÃÂµÃÂ½ÃÂ¸ÃÂµÃÂ¼."""
+    """¦µ½°»¸·¾²°½½¾µ ¿°²»µ½¸µ ¾±µ½¸µ¼."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -20,29 +20,29 @@ class LearningManager:
         self._init_modules()
 
     def _init_modules(self):
-        """ÃÃÂ½ÃÂ¸ÃÃÂ¸ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸Ã ÃÂ¼ÃÂ¾ÃÂ´ÃÃÂ»ÃÂµÃÂ¹ ÃÂ¾ÃÂ±ÃÃÃÂµÃÂ½ÃÂ¸Ã."""
+        """½¸¸°»¸·°¸ ¼¾´»µ¹ ¾±µ½¸."""
         modules = [
-            ("adaptive_ml", "ai.adaptive_ml", "AdaptiveMLEngine", "ÃÃÂ´ÃÂ°ÃÂ¿ÃÃÂ¸ÃÂ²ÃÂ½ÃÃÂ¹ ML"),
-            ("alias_system", "ai.alias_system", "AliasSystem", "ÃÂ¡ÃÂ¸ÃÃÃÂµÃÂ¼ÃÂ° ÃÂ°ÃÂ»ÃÂ¸ÃÂ°ÃÃÂ¾ÃÂ²"),
-            ("user_profile", "ai.user_profile", "UserProfile", "ÃÃÃÂ¾ÃÃÂ¸ÃÂ»Ã ÃÂ¿ÃÂ¾ÃÂ»ÃÃÂ·ÃÂ¾ÃÂ²ÃÂ°ÃÃÂµÃÂ»Ã"),
-            ("pattern_recognizer", "ai.pattern_recognizer", "PatternRecognizer", "ÃÂ ÃÂ°ÃÃÂ¿ÃÂ¾ÃÂ·ÃÂ½ÃÂ°ÃÂ²ÃÂ°ÃÂ½ÃÂ¸ÃÂµ ÃÂ¿ÃÂ°ÃÃÃÂµÃÃÂ½ÃÂ¾ÃÂ²"),
-            ("local_llm", "ai.local_llm", "LocalLLM", "ÃÃÂ¾ÃÂºÃÂ°ÃÂ»ÃÃÂ½ÃÂ°Ã LLM"),
+            ("adaptive_ml", "ai.adaptive_ml", "AdaptiveMLEngine", "´°¿¸²½¹ ML"),
+            ("alias_system", "ai.alias_system", "AliasSystem", "¡¸µ¼° °»¸°¾²"),
+            ("user_profile", "ai.user_profile", "UserProfile", "¾¸» ¿¾»·¾²°µ»"),
+            ("pattern_recognizer", "ai.pattern_recognizer", "PatternRecognizer", " °¿¾·½°²°½¸µ ¿°µ½¾²"),
+            ("local_llm", "ai.local_llm", "LocalLLM", "¾º°»½° LLM"),
         ]
 
         for attribute, module_name, class_name, label in modules:
             try:
                 module = __import__(module_name, fromlist=[class_name])
                 setattr(self, attribute, getattr(module, class_name)(self.brain))
-                self.brain.logger.info("Ã¢ %s ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½", label)
+                self.brain.logger.info("¢ %s ·°³¶µ½", label)
             except Exception as error:
-                self.brain.logger.error("ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ¸ %s: %s", label, error)
+                self.brain.logger.error("¸±º° ·°³·º¸ %s: %s", label, error)
 
         try:
             from ai.optimization_agents import OptimizationManager
             self.optimization_manager = OptimizationManager(self.brain, self)
-            self.brain.logger.info("Ã¢ ÃÃÂ³ÃÂµÃÂ½ÃÃ ÃÂ¾ÃÂ¿ÃÃÂ¸ÃÂ¼ÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸ÃÂ¸ ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½Ã")
+            self.brain.logger.info("¢ ³µ½ ¾¿¸¼¸·°¸¸ ·°³¶µ½")
         except Exception as error:
-            self.brain.logger.error("ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ¸ ÃÂ°ÃÂ³ÃÂµÃÂ½ÃÃÂ¾ÃÂ² ÃÂ¾ÃÂ¿ÃÃÂ¸ÃÂ¼ÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸ÃÂ¸: %s", error)
+            self.brain.logger.error("¸±º° ·°³·º¸ °³µ½¾² ¾¿¸¼¸·°¸¸: %s", error)
 
     def process_command(self, text: str) -> Dict:
         """Process a command and attach current optimization status."""
@@ -76,14 +76,14 @@ class LearningManager:
 
                 recommendations = report.get("recommendations", [])
                 if recommendations:
-                    self.brain.logger.info("ÃÂ ÃÂµÃÂºÃÂ¾ÃÂ¼ÃÂµÃÂ½ÃÂ´ÃÂ°ÃÃÂ¸ÃÂ¸ ÃÂ¾ÃÂ¿ÃÃÂ¸ÃÂ¼ÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸ÃÂ¸: %s", "; ".join(recommendations))
+                    self.brain.logger.info(" µº¾¼µ½´°¸¸ ¾¿¸¼¸·°¸¸: %s", "; ".join(recommendations))
 
                 hud = getattr(self.brain, "hud", None)
                 if hud and hasattr(hud, "set_optimization_status"):
                     hud.set_optimization_status(report)
 
             except Exception as error:
-                self.brain.logger.debug("ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ°ÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ° ÃÂ¾ÃÂ¿ÃÃÂ¸ÃÂ¼ÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸ÃÂ¸: %s", error)
+                self.brain.logger.debug("¸±º° °½°»¸·° ¾¿¸¼¸·°¸¸: %s", error)
 
         return result
 
@@ -93,12 +93,12 @@ class LearningManager:
 
     def learn_new_command(self, text: str, category: str) -> Dict:
         if not self.adaptive_ml:
-            return {"status": "error", "message": "ÃÃÂ´ÃÂ°ÃÂ¿ÃÃÂ¸ÃÂ²ÃÂ½ÃÃÂ¹ ML ÃÂ½ÃÂµ ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½"}
+            return {"status": "error", "message": "´°¿¸²½¹ ML ½µ ·°³¶µ½"}
         return self.adaptive_ml.add_training_example(text, category)
 
     def create_alias(self, alias: str, command: str) -> Dict:
         if not self.alias_system:
-            return {"status": "error", "message": "ÃÂ¡ÃÂ¸ÃÃÃÂµÃÂ¼ÃÂ° ÃÂ°ÃÂ»ÃÂ¸ÃÂ°ÃÃÂ¾ÃÂ² ÃÂ½ÃÂµ ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½ÃÂ°"}
+            return {"status": "error", "message": "¡¸µ¼° °»¸°¾² ½µ ·°³¶µ½°"}
         return self.alias_system.add_alias(alias, command)
 
     def get_learning_status(self) -> Dict:
@@ -141,21 +141,21 @@ class LearningManager:
         """Human-readable status line suitable for CLI and logs."""
         status = self.get_optimization_status()
         if not status["enabled"]:
-            return "ÃÃÂ³ÃÂµÃÂ½ÃÃ ÃÂ¾ÃÂ¿ÃÃÂ¸ÃÂ¼ÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸ÃÂ¸ ÃÂ¾ÃÃÂºÃÂ»ÃÃÃÂµÃÂ½Ã ÃÂ¸ÃÂ»ÃÂ¸ ÃÂ½ÃÂµÃÂ´ÃÂ¾ÃÃÃÃÂ¿ÃÂ½Ã."
+            return "³µ½ ¾¿¸¼¸·°¸¸ ¾º»µ½ ¸»¸ ½µ´¾¿½."
 
         cache = status.get("cache", {})
         return (
-            f"ÃÃÂ¿ÃÃÂ¸ÃÂ¼ÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸Ã: {len(status['agent_names'])} ÃÂ°ÃÂ³ÃÂµÃÂ½ÃÃÂ¾ÃÂ²; "
-            f"ÃÃÂµÃÂºÃÂ¾ÃÂ¼ÃÂµÃÂ½ÃÂ´ÃÂ°ÃÃÂ¸ÃÂ¹: {status['recommendation_count']}; "
-            f"ÃÂºÃÃ: {cache.get('cache_entries', 0)} ÃÂ·ÃÂ°ÃÂ¿ÃÂ¸ÃÃÂµÃÂ¹ "
+            f"¿¸¼¸·°¸: {len(status['agent_names'])} °³µ½¾²; "
+            f"µº¾¼µ½´°¸¹: {status['recommendation_count']}; "
+            f"º: {cache.get('cache_entries', 0)} ·°¿¸µ¹ "
             f"(hits={cache.get('hits', 0)}, misses={cache.get('misses', 0)})."
         )
 
     def get_optimization_report(self) -> Dict:
         if not self.optimization_manager:
-            return {"status": "error", "message": "ÃÃÂ³ÃÂµÃÂ½ÃÃ ÃÂ¾ÃÂ¿ÃÃÂ¸ÃÂ¼ÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸ÃÂ¸ ÃÂ½ÃÂµ ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½Ã", "recommendations": []}
+            return {"status": "error", "message": "³µ½ ¾¿¸¼¸·°¸¸ ½µ ·°³¶µ½", "recommendations": []}
         if not self.brain.config.get("optimization.enabled", True):
-            return {"status": "disabled", "message": "ÃÃÂ³ÃÂµÃÂ½ÃÃ ÃÂ¾ÃÂ¿ÃÃÂ¸ÃÂ¼ÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸ÃÂ¸ ÃÂ¾ÃÃÂºÃÂ»ÃÃÃÂµÃÂ½Ã", "recommendations": []}
+            return {"status": "disabled", "message": "³µ½ ¾¿¸¼¸·°¸¸ ¾º»µ½", "recommendations": []}
         return self.optimization_manager.analyze()
 
     def analyze_patterns(self) -> List[Dict]:
@@ -166,4 +166,4 @@ class LearningManager:
     def get_greeting(self) -> str:
         if self.user_profile:
             return self.user_profile.get_greeting()
-        return "ÃÃÂ´ÃÃÂ°ÃÂ²ÃÃÃÂ²ÃÃÂ¹ÃÃÂµ, ÃÃÃ."
+        return "´°²²¹µ, ."
