@@ -1,4 +1,4 @@
-"""JARVIS Brain - Ð³Ð»Ð°Ð²Ð½ÑÐ¹ ÐºÐ¾Ð½ÑÑÐ¾Ð»Ð»ÐµÑ ÑÐ¸ÑÑÐµÐ¼Ñ"""
+"""JARVIS Brain - ÃÂ³ÃÂ»ÃÂ°ÃÂ²ÃÂ½ÃÃÂ¹ ÃÂºÃÂ¾ÃÂ½ÃÃÃÂ¾ÃÂ»ÃÂ»ÃÂµÃ ÃÃÂ¸ÃÃÃÂµÃÂ¼Ã"""
 
 import logging
 from typing import Dict
@@ -6,17 +6,62 @@ from typing import Dict
 from core.config import Config
 from core.event_bus import EventBus
 from core.plugin_manager import PluginManager
+from agents.agent_manager import AgentManager
 
+
+
+    def _handle_agent_task(self, text: str) -> Dict:
+        """Обработка задачи через систему агентов."""
+        self.logger.info(f"Передача задачи агенту: {text}")
+
+        try:
+            result = self.agent_manager.execute_task(text)
+
+            if result.get('status') == 'success':
+                # Уведомляем пользователя
+                if self.toast_notifications:
+                    agent_name = result.get('agent', 'Агент')
+                    self.toast_notifications.show_toast(
+                        "JARVIS Agent",
+                        f"Задача выполнена: {result.get('message', 'Успешно')}",
+                        duration=5000
+                    )
+
+                # Сохраняем файлы если есть
+                files = result.get('files', {})
+                if files:
+                    self.logger.info(f"Создано файлов: {len(files)}")
+                    # Здесь можно добавить сохранение файлов на диск
+
+                return {
+                    "status": "success",
+                    "message": result.get('message', 'Задача выполнена'),
+                    "agent": result.get('agent', 'Unknown'),
+                    "files_created": len(files)
+                }
+            else:
+                return {
+                    "status": "error",
+                    "message": result.get('message', 'Ошибка выполнения задачи')
+                }
+
+        except Exception as e:
+            self.logger.error(f"Ошибка при обработке задачи агентом: {e}")
+            return {
+                "status": "error",
+                "message": f"Ошибка: {str(e)}"
+            }
 
 class JarvisBrain:
-    """Ð¦ÐµÐ½ÑÑÐ°Ð»ÑÐ½ÑÐ¹ ÐºÐ¾Ð½ÑÑÐ¾Ð»Ð»ÐµÑ JARVIS."""
+    """ÃÂ¦ÃÂµÃÂ½ÃÃÃÂ°ÃÂ»ÃÃÂ½ÃÃÂ¹ ÃÂºÃÂ¾ÃÂ½ÃÃÃÂ¾ÃÂ»ÃÂ»ÃÂµÃ JARVIS."""
 
     def __init__(self):
         self.logger = self._setup_logging()
-        self.logger.info("ÐÐ½Ð¸ÑÐ¸Ð°Ð»Ð¸Ð·Ð°ÑÐ¸Ñ JARVIS Brain...")
+        self.logger.info("ÃÃÂ½ÃÂ¸ÃÃÂ¸ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸Ã JARVIS Brain...")
         self.config = Config()
         self.event_bus = EventBus()
         self.plugin_manager = PluginManager(self)
+        self.agent_manager = AgentManager()
         self.learning_manager = None
         self.windows_integration = None
         self.toast_notifications = None
@@ -29,7 +74,7 @@ class JarvisBrain:
         self.news_module = None
         self.modules = {}
         self.running = False
-        self.logger.info("JARVIS Brain Ð¸Ð½Ð¸ÑÐ¸Ð°Ð»Ð¸Ð·Ð¸ÑÐ¾Ð²Ð°Ð½")
+        self.logger.info("JARVIS Brain ÃÂ¸ÃÂ½ÃÂ¸ÃÃÂ¸ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½")
 
     def _setup_logging(self) -> logging.Logger:
         logger = logging.getLogger("JARVIS")
@@ -41,107 +86,107 @@ class JarvisBrain:
         return logger
 
     def initialize(self):
-        self.logger.info("ÐÐ°Ð¿ÑÑÐº Ð¸Ð½Ð¸ÑÐ¸Ð°Ð»Ð¸Ð·Ð°ÑÐ¸Ð¸ Ð¼Ð¾Ð´ÑÐ»ÐµÐ¹...")
+        self.logger.info("ÃÃÂ°ÃÂ¿ÃÃÃÂº ÃÂ¸ÃÂ½ÃÂ¸ÃÃÂ¸ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸ÃÂ¸ ÃÂ¼ÃÂ¾ÃÂ´ÃÃÂ»ÃÂµÃÂ¹...")
         self._init_learning_modules()
         self._init_windows_integration()
         self._init_hud()
         self._init_info_modules()
         self._init_system_modules()
         self.plugin_manager.load_plugins()
-        self.logger.info("ÐÑÐµ Ð¼Ð¾Ð´ÑÐ»Ð¸ Ð¸Ð½Ð¸ÑÐ¸Ð°Ð»Ð¸Ð·Ð¸ÑÐ¾Ð²Ð°Ð½Ñ")
+        self.logger.info("ÃÃÃÂµ ÃÂ¼ÃÂ¾ÃÂ´ÃÃÂ»ÃÂ¸ ÃÂ¸ÃÂ½ÃÂ¸ÃÃÂ¸ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½Ã")
 
     def _init_learning_modules(self):
         try:
             from ai.learning_manager import LearningManager
             self.learning_manager = LearningManager(self)
-            self.logger.info("â ÐÐ¾Ð´ÑÐ»Ð¸ Ð¾Ð±ÑÑÐµÐ½Ð¸Ñ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½Ñ")
+            self.logger.info("Ã¢ ÃÃÂ¾ÃÂ´ÃÃÂ»ÃÂ¸ ÃÂ¾ÃÂ±ÃÃÃÂµÃÂ½ÃÂ¸Ã ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½Ã")
         except Exception as e:
-            self.logger.error("ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ Ð¼Ð¾Ð´ÑÐ»ÐµÐ¹ Ð¾Ð±ÑÑÐµÐ½Ð¸Ñ: %s", e)
+            self.logger.error("ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ¸ ÃÂ¼ÃÂ¾ÃÂ´ÃÃÂ»ÃÂµÃÂ¹ ÃÂ¾ÃÂ±ÃÃÃÂµÃÂ½ÃÂ¸Ã: %s", e)
             self.learning_manager = None
 
     def _init_windows_integration(self):
         try:
             from modules.windows_integration import WindowsIntegration
             self.windows_integration = WindowsIntegration(self)
-            self.logger.info("â Windows Ð¸Ð½ÑÐµÐ³ÑÐ°ÑÐ¸Ñ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½Ð°")
+            self.logger.info("Ã¢ Windows ÃÂ¸ÃÂ½ÃÃÂµÃÂ³ÃÃÂ°ÃÃÂ¸Ã ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½ÃÂ°")
         except Exception as e:
-            self.logger.error("ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ Windows Ð¸Ð½ÑÐµÐ³ÑÐ°ÑÐ¸Ð¸: %s", e)
+            self.logger.error("ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ¸ Windows ÃÂ¸ÃÂ½ÃÃÂµÃÂ³ÃÃÂ°ÃÃÂ¸ÃÂ¸: %s", e)
             self.windows_integration = None
         try:
             from modules.toast_notifications import ToastNotifications
             self.toast_notifications = ToastNotifications(self)
-            self.logger.info("â Toast ÑÐ²ÐµÐ´Ð¾Ð¼Ð»ÐµÐ½Ð¸Ñ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½Ñ")
+            self.logger.info("Ã¢ Toast ÃÃÂ²ÃÂµÃÂ´ÃÂ¾ÃÂ¼ÃÂ»ÃÂµÃÂ½ÃÂ¸Ã ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½Ã")
         except Exception as e:
-            self.logger.error("ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ toast ÑÐ²ÐµÐ´Ð¾Ð¼Ð»ÐµÐ½Ð¸Ð¹: %s", e)
+            self.logger.error("ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ¸ toast ÃÃÂ²ÃÂµÃÂ´ÃÂ¾ÃÂ¼ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂ¹: %s", e)
             self.toast_notifications = None
         try:
             from modules.wake_word_service import WakeWordService
             self.wake_word_service = WakeWordService(self)
-            self.logger.info("â Wake word ÑÐµÑÐ²Ð¸Ñ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½")
+            self.logger.info("Ã¢ Wake word ÃÃÂµÃÃÂ²ÃÂ¸Ã ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½")
         except Exception as e:
-            self.logger.error("ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ wake word ÑÐµÑÐ²Ð¸ÑÐ°: %s", e)
+            self.logger.error("ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ¸ wake word ÃÃÂµÃÃÂ²ÃÂ¸ÃÃÂ°: %s", e)
             self.wake_word_service = None
         try:
             from modules.clean_desktop import CleanDesktop
             self.clean_desktop = CleanDesktop(self)
-            self.logger.info("â Clean Desktop Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½")
+            self.logger.info("Ã¢ Clean Desktop ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½")
         except Exception as e:
-            self.logger.error("ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ Clean Desktop: %s", e)
+            self.logger.error("ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ¸ Clean Desktop: %s", e)
             self.clean_desktop = None
         try:
             from modules.app_launcher import AppLauncher
             self.app_launcher = AppLauncher(self)
-            self.logger.info("â App Launcher Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½")
+            self.logger.info("Ã¢ App Launcher ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½")
         except Exception as e:
-            self.logger.error("ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ App Launcher: %s", e)
+            self.logger.error("ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ¸ App Launcher: %s", e)
             self.app_launcher = None
 
     def _init_voice(self):
         try:
             from voice.speaker import VoiceSpeaker
             self.voice_speaker = VoiceSpeaker(self)
-            self.logger.info("â ÐÐ¾Ð»Ð¾ÑÐ¾Ð²Ð¾Ð¹ Ð¼Ð¾Ð´ÑÐ»Ñ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½")
+            self.logger.info("Ã¢ ÃÃÂ¾ÃÂ»ÃÂ¾ÃÃÂ¾ÃÂ²ÃÂ¾ÃÂ¹ ÃÂ¼ÃÂ¾ÃÂ´ÃÃÂ»Ã ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½")
         except Exception as e:
-            self.logger.error("ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ Ð³Ð¾Ð»Ð¾ÑÐ¾Ð²Ð¾Ð³Ð¾ Ð¼Ð¾Ð´ÑÐ»Ñ: %s", e)
+            self.logger.error("ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ¸ ÃÂ³ÃÂ¾ÃÂ»ÃÂ¾ÃÃÂ¾ÃÂ²ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ¼ÃÂ¾ÃÂ´ÃÃÂ»Ã: %s", e)
             self.voice_speaker = None
 
     def _init_hud(self):
         try:
             from hud.holographic_ui import HolographicHUD
             self.hud = HolographicHUD(self)
-            self.logger.info("â HUD Ð¸Ð½ÑÐµÑÑÐµÐ¹Ñ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½")
+            self.logger.info("Ã¢ HUD ÃÂ¸ÃÂ½ÃÃÂµÃÃÃÂµÃÂ¹Ã ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½")
         except Exception as e:
-            self.logger.error("ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ HUD: %s", e)
+            self.logger.error("ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ¸ HUD: %s", e)
             self.hud = None
 
     def _init_info_modules(self):
         try:
             from modules.weather import WeatherModule
             self.weather_module = WeatherModule(self)
-            self.logger.info("â ÐÐ¾Ð´ÑÐ»Ñ Ð¿Ð¾Ð³Ð¾Ð´Ñ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½")
+            self.logger.info("Ã¢ ÃÃÂ¾ÃÂ´ÃÃÂ»Ã ÃÂ¿ÃÂ¾ÃÂ³ÃÂ¾ÃÂ´Ã ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½")
         except Exception as e:
-            self.logger.error("ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ Ð¼Ð¾Ð´ÑÐ»Ñ Ð¿Ð¾Ð³Ð¾Ð´Ñ: %s", e)
+            self.logger.error("ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ¸ ÃÂ¼ÃÂ¾ÃÂ´ÃÃÂ»Ã ÃÂ¿ÃÂ¾ÃÂ³ÃÂ¾ÃÂ´Ã: %s", e)
             self.weather_module = None
         try:
             from modules.currency import CurrencyModule
             self.currency_module = CurrencyModule(self)
-            self.logger.info("â ÐÐ¾Ð´ÑÐ»Ñ Ð²Ð°Ð»ÑÑ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½")
+            self.logger.info("Ã¢ ÃÃÂ¾ÃÂ´ÃÃÂ»Ã ÃÂ²ÃÂ°ÃÂ»ÃÃ ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½")
         except Exception as e:
-            self.logger.error("ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ Ð¼Ð¾Ð´ÑÐ»Ñ Ð²Ð°Ð»ÑÑ: %s", e)
+            self.logger.error("ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ¸ ÃÂ¼ÃÂ¾ÃÂ´ÃÃÂ»Ã ÃÂ²ÃÂ°ÃÂ»ÃÃ: %s", e)
             self.currency_module = None
         try:
             from modules.news import NewsModule
             self.news_module = NewsModule(self)
-            self.logger.info("â ÐÐ¾Ð´ÑÐ»Ñ Ð½Ð¾Ð²Ð¾ÑÑÐµÐ¹ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½")
+            self.logger.info("Ã¢ ÃÃÂ¾ÃÂ´ÃÃÂ»Ã ÃÂ½ÃÂ¾ÃÂ²ÃÂ¾ÃÃÃÂµÃÂ¹ ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½")
         except Exception as e:
-            self.logger.error("ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ Ð¼Ð¾Ð´ÑÐ»Ñ Ð½Ð¾Ð²Ð¾ÑÑÐµÐ¹: %s", e)
+            self.logger.error("ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ¸ ÃÂ¼ÃÂ¾ÃÂ´ÃÃÂ»Ã ÃÂ½ÃÂ¾ÃÂ²ÃÂ¾ÃÃÃÂµÃÂ¹: %s", e)
             self.news_module = None
 
     def reload_api_integrations(self):
-        """ÐÐµÑÐµÑÐ¸ÑÐ°ÑÑ ÐºÐ»ÑÑÐ¸ Ð¸ Ð¿ÐµÑÐµÑÐ¾Ð·Ð´Ð°ÑÑ Ð¸Ð½ÑÐµÐ³ÑÐ°ÑÐ¸Ð¸, Ð¸ÑÐ¿Ð¾Ð»ÑÐ·ÑÑÑÐ¸Ðµ API-ÐºÐ»ÑÑÐ¸."""
+        """ÃÃÂµÃÃÂµÃÃÂ¸ÃÃÂ°ÃÃ ÃÂºÃÂ»ÃÃÃÂ¸ ÃÂ¸ ÃÂ¿ÃÂµÃÃÂµÃÃÂ¾ÃÂ·ÃÂ´ÃÂ°ÃÃ ÃÂ¸ÃÂ½ÃÃÂµÃÂ³ÃÃÂ°ÃÃÂ¸ÃÂ¸, ÃÂ¸ÃÃÂ¿ÃÂ¾ÃÂ»ÃÃÂ·ÃÃÃÃÂ¸ÃÂµ API-ÃÂºÃÂ»ÃÃÃÂ¸."""
         self.config.reload_secrets()
         self._init_info_modules()
-        self.logger.info("API-Ð½Ð°ÑÑÑÐ¾Ð¹ÐºÐ¸ Ð¿ÐµÑÐµÑÐ¸ÑÐ°Ð½Ñ; ÐºÐ»ÑÑÐ¸ OpenWeather Ð¸ NewsAPI Ð¾Ð±Ð½Ð¾Ð²Ð»ÐµÐ½Ñ")
+        self.logger.info("API-ÃÂ½ÃÂ°ÃÃÃÃÂ¾ÃÂ¹ÃÂºÃÂ¸ ÃÂ¿ÃÂµÃÃÂµÃÃÂ¸ÃÃÂ°ÃÂ½Ã; ÃÂºÃÂ»ÃÃÃÂ¸ OpenWeather ÃÂ¸ NewsAPI ÃÂ¾ÃÂ±ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½Ã")
 
     def _init_system_modules(self):
         module_specs = [
@@ -158,12 +203,12 @@ class JarvisBrain:
             try:
                 module = __import__(module_name, fromlist=[class_name])
                 self.modules[key] = getattr(module, class_name)(self)
-                self.logger.info("â ÐÐ¾Ð´ÑÐ»Ñ %s Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½", key)
+                self.logger.info("Ã¢ ÃÃÂ¾ÃÂ´ÃÃÂ»Ã %s ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½", key)
             except Exception as e:
-                self.logger.error("ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ Ð¼Ð¾Ð´ÑÐ»Ñ %s: %s", key, e)
+                self.logger.error("ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ¸ ÃÂ¼ÃÂ¾ÃÂ´ÃÃÂ»Ã %s: %s", key, e)
 
     def process_command(self, text: str) -> Dict:
-        self.logger.info("ÐÐ±ÑÐ°Ð±Ð¾ÑÐºÐ° ÐºÐ¾Ð¼Ð°Ð½Ð´Ñ: %s", text)
+        self.logger.info("ÃÃÂ±ÃÃÂ°ÃÂ±ÃÂ¾ÃÃÂºÃÂ° ÃÂºÃÂ¾ÃÂ¼ÃÂ°ÃÂ½ÃÂ´Ã: %s", text)
         if self.hud:
             self.hud.set_status("PROCESSING")
             self.hud.set_voice_active(True)
@@ -171,10 +216,10 @@ class JarvisBrain:
             learning_result = self.learning_manager.process_command(text)
             processed_text = learning_result.get("processed", text)
             if learning_result.get("learning_suggestion"):
-                self.logger.info("ÐÑÐµÐ´Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ Ð¾Ð±ÑÑÐµÐ½Ð¸Ñ: %s", learning_result['learning_suggestion'])
+                self.logger.info("ÃÃÃÂµÃÂ´ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÂ¾ÃÂ±ÃÃÃÂµÃÂ½ÃÂ¸Ã: %s", learning_result['learning_suggestion'])
             optimization_result = self.learning_manager.optimize_runtime(text)
             if optimization_result.get("recommendations"):
-                self.logger.info("Ð ÐµÐºÐ¾Ð¼ÐµÐ½Ð´Ð°ÑÐ¸Ð¸ Ð¾Ð¿ÑÐ¸Ð¼Ð¸Ð·Ð°ÑÐ¸Ð¸: %s", optimization_result['recommendations'])
+                self.logger.info("ÃÂ ÃÂµÃÂºÃÂ¾ÃÂ¼ÃÂµÃÂ½ÃÂ´ÃÂ°ÃÃÂ¸ÃÂ¸ ÃÂ¾ÃÂ¿ÃÃÂ¸ÃÂ¼ÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸ÃÂ¸: %s", optimization_result['recommendations'])
         else:
             processed_text = text
             learning_result = {"original": text, "processed": text}
@@ -186,82 +231,87 @@ class JarvisBrain:
         return result
 
     def _execute_command(self, text: str) -> Dict:
-        """ÐÑÐ¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ðµ ÐºÐ¾Ð¼Ð°Ð½Ð´ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ."""
+        """ÃÃÃÂ¿ÃÂ¾ÃÂ»ÃÂ½ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÂºÃÂ¾ÃÂ¼ÃÂ°ÃÂ½ÃÂ´ ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã."""
         text_lower = text.lower().strip()
-        if any(word in text_lower for word in ["Ð¿Ð¾Ð³Ð¾Ð´Ð°", "ÑÐµÐ¼Ð¿ÐµÑÐ°ÑÑÑÐ°", "Ð¿ÑÐ¾Ð³Ð½Ð¾Ð·"]):
+        # Проверка задач для агентов
+        agent_keywords = ["создай", "напиши", "разработай", "программа", "код", "сайт", "лендинг", "анализ", "данные"]
+        if any(keyword in text_lower for keyword in agent_keywords):
+            return self._handle_agent_task(text_lower)
+
+        if any(word in text_lower for word in ["ÃÂ¿ÃÂ¾ÃÂ³ÃÂ¾ÃÂ´ÃÂ°", "ÃÃÂµÃÂ¼ÃÂ¿ÃÂµÃÃÂ°ÃÃÃÃÂ°", "ÃÂ¿ÃÃÂ¾ÃÂ³ÃÂ½ÃÂ¾ÃÂ·"]):
             return self._handle_weather_command(text_lower)
-        elif any(word in text_lower for word in ["ÐºÑÑÑ", "Ð²Ð°Ð»ÑÑ", "Ð´Ð¾Ð»Ð»Ð°Ñ", "ÐµÐ²ÑÐ¾", "ÑÑÐ±Ð»", "Ð±Ð¸ÑÐºÐ¾Ð¸Ð½", "btc", "usd", "eur"]):
+        elif any(word in text_lower for word in ["ÃÂºÃÃÃ", "ÃÂ²ÃÂ°ÃÂ»ÃÃ", "ÃÂ´ÃÂ¾ÃÂ»ÃÂ»ÃÂ°Ã", "ÃÂµÃÂ²ÃÃÂ¾", "ÃÃÃÂ±ÃÂ»", "ÃÂ±ÃÂ¸ÃÃÂºÃÂ¾ÃÂ¸ÃÂ½", "btc", "usd", "eur"]):
             return self._handle_currency_command(text_lower)
-        elif any(word in text_lower for word in ["Ð½Ð¾Ð²Ð¾ÑÑ", "ÑÑÐ¾ ÑÐ»ÑÑÐ¸Ð»Ð¾ÑÑ", "ÑÑÐ¾ Ð¿ÑÐ¾Ð¸Ð·Ð¾ÑÐ»Ð¾", "headline"]):
+        elif any(word in text_lower for word in ["ÃÂ½ÃÂ¾ÃÂ²ÃÂ¾ÃÃ", "ÃÃÃÂ¾ ÃÃÂ»ÃÃÃÂ¸ÃÂ»ÃÂ¾ÃÃ", "ÃÃÃÂ¾ ÃÂ¿ÃÃÂ¾ÃÂ¸ÃÂ·ÃÂ¾ÃÃÂ»ÃÂ¾", "headline"]):
             return self._handle_news_command(text_lower)
-        elif "Ð¿Ð¾ÐºÐ°Ð¶Ð¸ hud" in text_lower or "Ð²ÐºÐ»ÑÑÐ¸ Ð¸Ð½ÑÐµÑÑÐµÐ¹Ñ" in text_lower:
+        elif "ÃÂ¿ÃÂ¾ÃÂºÃÂ°ÃÂ¶ÃÂ¸ hud" in text_lower or "ÃÂ²ÃÂºÃÂ»ÃÃÃÂ¸ ÃÂ¸ÃÂ½ÃÃÂµÃÃÃÂµÃÂ¹Ã" in text_lower:
             if self.hud:
                 self.hud.show()
-                return {"status": "ok", "message": "HUD Ð°ÐºÑÐ¸Ð²Ð¸ÑÐ¾Ð²Ð°Ð½"}
-        elif "ÑÐºÑÐ¾Ð¹ hud" in text_lower or "Ð²ÑÐºÐ»ÑÑÐ¸ Ð¸Ð½ÑÐµÑÑÐµÐ¹Ñ" in text_lower:
+                return {"status": "ok", "message": "HUD ÃÂ°ÃÂºÃÃÂ¸ÃÂ²ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½"}
+        elif "ÃÃÂºÃÃÂ¾ÃÂ¹ hud" in text_lower or "ÃÂ²ÃÃÂºÃÂ»ÃÃÃÂ¸ ÃÂ¸ÃÂ½ÃÃÂµÃÃÃÂµÃÂ¹Ã" in text_lower:
             if self.hud:
                 self.hud.hide()
-                return {"status": "ok", "message": "HUD Ð´ÐµÐ°ÐºÑÐ¸Ð²Ð¸ÑÐ¾Ð²Ð°Ð½"}
-        elif "ÑÐ¸ÑÑÑÐ¹ ÑÐ°Ð±Ð¾ÑÐ¸Ð¹ ÑÑÐ¾Ð»" in text_lower or "ÑÐºÑÐ¾Ð¹ Ð¸ÐºÐ¾Ð½ÐºÐ¸" in text_lower:
+                return {"status": "ok", "message": "HUD ÃÂ´ÃÂµÃÂ°ÃÂºÃÃÂ¸ÃÂ²ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½"}
+        elif "ÃÃÂ¸ÃÃÃÃÂ¹ ÃÃÂ°ÃÂ±ÃÂ¾ÃÃÂ¸ÃÂ¹ ÃÃÃÂ¾ÃÂ»" in text_lower or "ÃÃÂºÃÃÂ¾ÃÂ¹ ÃÂ¸ÃÂºÃÂ¾ÃÂ½ÃÂºÃÂ¸" in text_lower:
             if self.clean_desktop:
                 return self.clean_desktop.enable_clean_mode()
-        elif "Ð¿Ð¾ÐºÐ°Ð¶Ð¸ Ð¸ÐºÐ¾Ð½ÐºÐ¸" in text_lower or "Ð¾Ð±ÑÑÐ½ÑÐ¹ ÑÐ°Ð±Ð¾ÑÐ¸Ð¹ ÑÑÐ¾Ð»" in text_lower:
+        elif "ÃÂ¿ÃÂ¾ÃÂºÃÂ°ÃÂ¶ÃÂ¸ ÃÂ¸ÃÂºÃÂ¾ÃÂ½ÃÂºÃÂ¸" in text_lower or "ÃÂ¾ÃÂ±ÃÃÃÂ½ÃÃÂ¹ ÃÃÂ°ÃÂ±ÃÂ¾ÃÃÂ¸ÃÂ¹ ÃÃÃÂ¾ÃÂ»" in text_lower:
             if self.clean_desktop:
                 return self.clean_desktop.disable_clean_mode()
-        elif "Ð¾ÑÐºÑÐ¾Ð¹" in text_lower or "Ð·Ð°Ð¿ÑÑÑÐ¸" in text_lower:
+        elif "ÃÂ¾ÃÃÂºÃÃÂ¾ÃÂ¹" in text_lower or "ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÃÂ¸" in text_lower:
             if self.app_launcher:
-                app_name = text_lower.replace("Ð¾ÑÐºÑÐ¾Ð¹", "").replace("Ð·Ð°Ð¿ÑÑÑÐ¸", "").strip()
+                app_name = text_lower.replace("ÃÂ¾ÃÃÂºÃÃÂ¾ÃÂ¹", "").replace("ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÃÂ¸", "").strip()
                 return self.app_launcher.launch(app_name)
-        elif "ÑÐ¿Ð¸ÑÐ¾Ðº Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ð¹" in text_lower:
+        elif "ÃÃÂ¿ÃÂ¸ÃÃÂ¾ÃÂº ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂ¹" in text_lower:
             if self.app_launcher:
                 return self.app_launcher.list_apps()
-        elif any(word in text_lower for word in ["Ð²ÑÐºÐ»ÑÑÐ¸", "Ð·Ð°Ð²ÐµÑÑÐ¸ ÑÐ°Ð±Ð¾ÑÑ"]):
+        elif any(word in text_lower for word in ["ÃÂ²ÃÃÂºÃÂ»ÃÃÃÂ¸", "ÃÂ·ÃÂ°ÃÂ²ÃÂµÃÃÃÂ¸ ÃÃÂ°ÃÂ±ÃÂ¾ÃÃ"]):
             if "system" in self.modules:
                 return self.modules["system"].shutdown()
-        elif any(word in text_lower for word in ["Ð¿ÐµÑÐµÐ·Ð°Ð³ÑÑÐ·Ð¸", "ÑÐµÑÑÐ°ÑÑ"]):
+        elif any(word in text_lower for word in ["ÃÂ¿ÃÂµÃÃÂµÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ·ÃÂ¸", "ÃÃÂµÃÃÃÂ°ÃÃ"]):
             if "system" in self.modules:
                 return self.modules["system"].restart()
-        elif any(word in text_lower for word in ["Ð·Ð°Ð±Ð»Ð¾ÐºÐ¸ÑÑÐ¹", "Ð»Ð¾Ðº"]):
+        elif any(word in text_lower for word in ["ÃÂ·ÃÂ°ÃÂ±ÃÂ»ÃÂ¾ÃÂºÃÂ¸ÃÃÃÂ¹", "ÃÂ»ÃÂ¾ÃÂº"]):
             if "system" in self.modules:
                 return self.modules["system"].lock_screen()
-        elif "ÑÐ°Ñ" in text_lower or "Ð²ÑÐµÐ¼Ñ" in text_lower:
+        elif "ÃÃÂ°Ã" in text_lower or "ÃÂ²ÃÃÂµÃÂ¼Ã" in text_lower:
             if "system" in self.modules:
                 return self.modules["system"].get_time()
-        elif "Ð´Ð°ÑÐ°" in text_lower or "ÑÐ¸ÑÐ»Ð¾" in text_lower:
+        elif "ÃÂ´ÃÂ°ÃÃÂ°" in text_lower or "ÃÃÂ¸ÃÃÂ»ÃÂ¾" in text_lower:
             if "system" in self.modules:
                 return self.modules["system"].get_date()
-        elif "ÑÑÐ°ÑÑÑ" in text_lower or "ÑÐ¾ÑÑÐ¾ÑÐ½Ð¸Ðµ" in text_lower:
+        elif "ÃÃÃÂ°ÃÃÃ" in text_lower or "ÃÃÂ¾ÃÃÃÂ¾ÃÃÂ½ÃÂ¸ÃÂµ" in text_lower:
             if "hardware" in self.modules:
                 return self.modules["hardware"].get_system_info()
-        elif "ip" in text_lower or "Ð°Ð¹Ð¿Ð¸" in text_lower:
+        elif "ip" in text_lower or "ÃÂ°ÃÂ¹ÃÂ¿ÃÂ¸" in text_lower:
             if "network" in self.modules:
                 return self.modules["network"].get_ip()
-        elif "ÑÐºÐ¾ÑÐ¾ÑÑÑ" in text_lower and "Ð¸Ð½ÑÐµÑÐ½ÐµÑ" in text_lower:
+        elif "ÃÃÂºÃÂ¾ÃÃÂ¾ÃÃÃ" in text_lower and "ÃÂ¸ÃÂ½ÃÃÂµÃÃÂ½ÃÂµÃ" in text_lower:
             if "network" in self.modules:
                 return self.modules["network"].speed_test()
-        elif "Ð°Ð²ÑÐ¾Ð·Ð°Ð¿ÑÑÐº" in text_lower and self.windows_integration:
-            if "Ð²ÐºÐ»ÑÑÐ¸" in text_lower:
+        elif "ÃÂ°ÃÂ²ÃÃÂ¾ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂº" in text_lower and self.windows_integration:
+            if "ÃÂ²ÃÂºÃÂ»ÃÃÃÂ¸" in text_lower:
                 return self.windows_integration.enable_autostart()
-            if "Ð²ÑÐºÐ»ÑÑÐ¸" in text_lower:
+            if "ÃÂ²ÃÃÂºÃÂ»ÃÃÃÂ¸" in text_lower:
                 return self.windows_integration.disable_autostart()
-        elif "Ð½Ð°ÑÑÐ¸ÑÑ" in text_lower or "Ð·Ð°Ð¿Ð¾Ð¼Ð½Ð¸" in text_lower:
+        elif "ÃÂ½ÃÂ°ÃÃÃÂ¸ÃÃ" in text_lower or "ÃÂ·ÃÂ°ÃÂ¿ÃÂ¾ÃÂ¼ÃÂ½ÃÂ¸" in text_lower:
             return self._handle_learning_command(text)
-        elif "Ð°Ð»Ð¸Ð°Ñ" in text_lower or "Ð¿ÑÐµÐ²Ð´Ð¾Ð½Ð¸Ð¼" in text_lower:
+        elif "ÃÂ°ÃÂ»ÃÂ¸ÃÂ°Ã" in text_lower or "ÃÂ¿ÃÃÂµÃÂ²ÃÂ´ÃÂ¾ÃÂ½ÃÂ¸ÃÂ¼" in text_lower:
             return self._handle_alias_command(text)
-        elif "ÑÑÐ°ÑÑÑ Ð¾Ð±ÑÑÐµÐ½Ð¸Ñ" in text_lower or "ÑÐµÐ¼Ñ ÑÑ Ð½Ð°ÑÑÐ¸Ð»ÑÑ" in text_lower:
+        elif "ÃÃÃÂ°ÃÃÃ ÃÂ¾ÃÂ±ÃÃÃÂµÃÂ½ÃÂ¸Ã" in text_lower or "ÃÃÂµÃÂ¼Ã ÃÃ ÃÂ½ÃÂ°ÃÃÃÂ¸ÃÂ»ÃÃ" in text_lower:
             return self._get_learning_status()
-        return {"status": "ok", "message": "ÐÐ¾Ð¼Ð°Ð½Ð´Ð° Ð½Ðµ ÑÐ°ÑÐ¿Ð¾Ð·Ð½Ð°Ð½Ð°", "text": text}
+        return {"status": "ok", "message": "ÃÃÂ¾ÃÂ¼ÃÂ°ÃÂ½ÃÂ´ÃÂ° ÃÂ½ÃÂµ ÃÃÂ°ÃÃÂ¿ÃÂ¾ÃÂ·ÃÂ½ÃÂ°ÃÂ½ÃÂ°", "text": text}
 
     def _handle_weather_command(self, text: str) -> Dict:
         if not self.weather_module:
-            return {"status": "error", "message": "ÐÐ¾Ð´ÑÐ»Ñ Ð¿Ð¾Ð³Ð¾Ð´Ñ Ð½Ðµ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½"}
-        city = "ÐÐ¾ÑÐºÐ²Ð°"
-        cities = ["Ð¼Ð¾ÑÐºÐ²Ð°", "ÑÐ°Ð½ÐºÑ-Ð¿ÐµÑÐµÑÐ±ÑÑÐ³", "Ð¿Ð¸ÑÐµÑ", "Ð½Ð¾Ð²Ð¾ÑÐ¸Ð±Ð¸ÑÑÐº", "ÐµÐºÐ°ÑÐµÑÐ¸Ð½Ð±ÑÑÐ³", "ÐºÐ°Ð·Ð°Ð½Ñ", "Ð½Ð¸Ð¶Ð½Ð¸Ð¹ Ð½Ð¾Ð²Ð³Ð¾ÑÐ¾Ð´", "ÑÐ°Ð¼Ð°ÑÐ°"]
+            return {"status": "error", "message": "ÃÃÂ¾ÃÂ´ÃÃÂ»Ã ÃÂ¿ÃÂ¾ÃÂ³ÃÂ¾ÃÂ´Ã ÃÂ½ÃÂµ ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½"}
+        city = "ÃÃÂ¾ÃÃÂºÃÂ²ÃÂ°"
+        cities = ["ÃÂ¼ÃÂ¾ÃÃÂºÃÂ²ÃÂ°", "ÃÃÂ°ÃÂ½ÃÂºÃ-ÃÂ¿ÃÂµÃÃÂµÃÃÂ±ÃÃÃÂ³", "ÃÂ¿ÃÂ¸ÃÃÂµÃ", "ÃÂ½ÃÂ¾ÃÂ²ÃÂ¾ÃÃÂ¸ÃÂ±ÃÂ¸ÃÃÃÂº", "ÃÂµÃÂºÃÂ°ÃÃÂµÃÃÂ¸ÃÂ½ÃÂ±ÃÃÃÂ³", "ÃÂºÃÂ°ÃÂ·ÃÂ°ÃÂ½Ã", "ÃÂ½ÃÂ¸ÃÂ¶ÃÂ½ÃÂ¸ÃÂ¹ ÃÂ½ÃÂ¾ÃÂ²ÃÂ³ÃÂ¾ÃÃÂ¾ÃÂ´", "ÃÃÂ°ÃÂ¼ÃÂ°ÃÃÂ°"]
         for city_name in cities:
             if city_name in text:
-                city = "Ð¡Ð°Ð½ÐºÑ-ÐÐµÑÐµÑÐ±ÑÑÐ³" if city_name == "Ð¿Ð¸ÑÐµÑ" else city_name.capitalize()
+                city = "ÃÂ¡ÃÂ°ÃÂ½ÃÂºÃ-ÃÃÂµÃÃÂµÃÃÂ±ÃÃÃÂ³" if city_name == "ÃÂ¿ÃÂ¸ÃÃÂµÃ" else city_name.capitalize()
                 break
-        if "Ð¿ÑÐ¾Ð³Ð½Ð¾Ð·" in text:
+        if "ÃÂ¿ÃÃÂ¾ÃÂ³ÃÂ½ÃÂ¾ÃÂ·" in text:
             data = self.weather_module.get_forecast(city)
             return {"status": "ok", "message": self.weather_module.format_forecast_message(data), "data": data}
         data = self.weather_module.get_weather(city)
@@ -269,36 +319,36 @@ class JarvisBrain:
 
     def _handle_currency_command(self, text: str) -> Dict:
         if not self.currency_module:
-            return {"status": "error", "message": "ÐÐ¾Ð´ÑÐ»Ñ Ð²Ð°Ð»ÑÑ Ð½Ðµ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½"}
-        if any(word in text for word in ["ÐºÐ¾Ð½Ð²ÐµÑÑ", "Ð¿ÐµÑÐµÐ²ÐµÐ´Ð¸", "ÑÐºÐ¾Ð»ÑÐºÐ¾"]):
-            if "Ð´Ð¾Ð»Ð»Ð°Ñ" in text or "usd" in text:
+            return {"status": "error", "message": "ÃÃÂ¾ÃÂ´ÃÃÂ»Ã ÃÂ²ÃÂ°ÃÂ»ÃÃ ÃÂ½ÃÂµ ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½"}
+        if any(word in text for word in ["ÃÂºÃÂ¾ÃÂ½ÃÂ²ÃÂµÃÃ", "ÃÂ¿ÃÂµÃÃÂµÃÂ²ÃÂµÃÂ´ÃÂ¸", "ÃÃÂºÃÂ¾ÃÂ»ÃÃÂºÃÂ¾"]):
+            if "ÃÂ´ÃÂ¾ÃÂ»ÃÂ»ÃÂ°Ã" in text or "usd" in text:
                 rate = self.currency_module.get_usd_rub()
                 if rate["status"] == "ok":
-                    return {"status": "ok", "message": f"ÐÐ´Ð¸Ð½ Ð´Ð¾Ð»Ð»Ð°Ñ ÑÑÐ¾Ð¸Ñ {rate['rate']} ÑÑÐ±Ð»ÐµÐ¹"}
-            elif "ÐµÐ²ÑÐ¾" in text or "eur" in text:
+                    return {"status": "ok", "message": f"ÃÃÂ´ÃÂ¸ÃÂ½ ÃÂ´ÃÂ¾ÃÂ»ÃÂ»ÃÂ°Ã ÃÃÃÂ¾ÃÂ¸Ã {rate['rate']} ÃÃÃÂ±ÃÂ»ÃÂµÃÂ¹"}
+            elif "ÃÂµÃÂ²ÃÃÂ¾" in text or "eur" in text:
                 rate = self.currency_module.get_eur_rub()
                 if rate["status"] == "ok":
-                    return {"status": "ok", "message": f"ÐÐ´Ð½Ð¾ ÐµÐ²ÑÐ¾ ÑÑÐ¾Ð¸Ñ {rate['rate']} ÑÑÐ±Ð»ÐµÐ¹"}
-            elif "Ð±Ð¸ÑÐºÐ¾Ð¸Ð½" in text or "bitcoin" in text or "btc" in text:
+                    return {"status": "ok", "message": f"ÃÃÂ´ÃÂ½ÃÂ¾ ÃÂµÃÂ²ÃÃÂ¾ ÃÃÃÂ¾ÃÂ¸Ã {rate['rate']} ÃÃÃÂ±ÃÂ»ÃÂµÃÂ¹"}
+            elif "ÃÂ±ÃÂ¸ÃÃÂºÃÂ¾ÃÂ¸ÃÂ½" in text or "bitcoin" in text or "btc" in text:
                 rate = self.currency_module.get_btc_usd()
                 if rate["status"] == "ok":
-                    return {"status": "ok", "message": f"ÐÐ´Ð¸Ð½ Ð±Ð¸ÑÐºÐ¾Ð¸Ð½ ÑÑÐ¾Ð¸Ñ ${rate['rate']}"}
+                    return {"status": "ok", "message": f"ÃÃÂ´ÃÂ¸ÃÂ½ ÃÂ±ÃÂ¸ÃÃÂºÃÂ¾ÃÂ¸ÃÂ½ ÃÃÃÂ¾ÃÂ¸Ã ${rate['rate']}"}
         rates = self.currency_module.get_multiple_rates()
         return {"status": "ok", "message": self.currency_module.format_multiple_rates_message(rates), "data": rates}
 
     def _handle_news_command(self, text: str) -> Dict:
         if not self.news_module:
-            return {"status": "error", "message": "ÐÐ¾Ð´ÑÐ»Ñ Ð½Ð¾Ð²Ð¾ÑÑÐµÐ¹ Ð½Ðµ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½"}
-        if "Ð½Ð°Ð¹Ð´Ð¸" in text or "Ð¿Ð¾Ð¸ÑÐº" in text or "Ð¿ÑÐ¾" in text:
-            query = text.replace("Ð½Ð°Ð¹Ð´Ð¸ Ð½Ð¾Ð²Ð¾ÑÑÐ¸ Ð¿ÑÐ¾", "").replace("Ð½Ð¾Ð²Ð¾ÑÑÐ¸ Ð¿ÑÐ¾", "").replace("Ð½Ð°Ð¹Ð´Ð¸", "").strip()
+            return {"status": "error", "message": "ÃÃÂ¾ÃÂ´ÃÃÂ»Ã ÃÂ½ÃÂ¾ÃÂ²ÃÂ¾ÃÃÃÂµÃÂ¹ ÃÂ½ÃÂµ ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½"}
+        if "ÃÂ½ÃÂ°ÃÂ¹ÃÂ´ÃÂ¸" in text or "ÃÂ¿ÃÂ¾ÃÂ¸ÃÃÂº" in text or "ÃÂ¿ÃÃÂ¾" in text:
+            query = text.replace("ÃÂ½ÃÂ°ÃÂ¹ÃÂ´ÃÂ¸ ÃÂ½ÃÂ¾ÃÂ²ÃÂ¾ÃÃÃÂ¸ ÃÂ¿ÃÃÂ¾", "").replace("ÃÂ½ÃÂ¾ÃÂ²ÃÂ¾ÃÃÃÂ¸ ÃÂ¿ÃÃÂ¾", "").replace("ÃÂ½ÃÂ°ÃÂ¹ÃÂ´ÃÂ¸", "").strip()
             if query:
                 data = self.news_module.search_news(query)
                 return {"status": "ok", "message": self.news_module.format_news_message(data), "data": data}
-        if "ÑÐµÑÐ½Ð¾Ð»Ð¾Ð³" in text or "tech" in text:
+        if "ÃÃÂµÃÃÂ½ÃÂ¾ÃÂ»ÃÂ¾ÃÂ³" in text or "tech" in text:
             data = self.news_module.get_tech_news()
-        elif "Ð±Ð¸Ð·Ð½ÐµÑ" in text or "ÑÐ¸Ð½Ð°Ð½Ñ" in text or "ÑÐºÐ¾Ð½Ð¾Ð¼" in text:
+        elif "ÃÂ±ÃÂ¸ÃÂ·ÃÂ½ÃÂµÃ" in text or "ÃÃÂ¸ÃÂ½ÃÂ°ÃÂ½Ã" in text or "ÃÃÂºÃÂ¾ÃÂ½ÃÂ¾ÃÂ¼" in text:
             data = self.news_module.get_business_news()
-        elif "ÑÐ¿Ð¾ÑÑ" in text:
+        elif "ÃÃÂ¿ÃÂ¾ÃÃ" in text:
             data = self.news_module.get_sports_news()
         else:
             data = self.news_module.get_top_headlines()
@@ -306,23 +356,23 @@ class JarvisBrain:
 
     def _handle_learning_command(self, text: str) -> Dict:
         if not self.learning_manager or not self.learning_manager.adaptive_ml:
-            return {"status": "error", "message": "ÐÐ¾Ð´ÑÐ»Ñ Ð¾Ð±ÑÑÐµÐ½Ð¸Ñ Ð½Ðµ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½"}
-        return {"status": "ok", "message": "ÐÐ¾Ð¼Ð°Ð½Ð´Ð° Ð¾Ð±ÑÑÐµÐ½Ð¸Ñ Ð¿ÑÐ¸Ð½ÑÑÐ°"}
+            return {"status": "error", "message": "ÃÃÂ¾ÃÂ´ÃÃÂ»Ã ÃÂ¾ÃÂ±ÃÃÃÂµÃÂ½ÃÂ¸Ã ÃÂ½ÃÂµ ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½"}
+        return {"status": "ok", "message": "ÃÃÂ¾ÃÂ¼ÃÂ°ÃÂ½ÃÂ´ÃÂ° ÃÂ¾ÃÂ±ÃÃÃÂµÃÂ½ÃÂ¸Ã ÃÂ¿ÃÃÂ¸ÃÂ½ÃÃÃÂ°"}
 
     def _handle_alias_command(self, text: str) -> Dict:
         if not self.learning_manager or not self.learning_manager.alias_system:
-            return {"status": "error", "message": "Ð¡Ð¸ÑÑÐµÐ¼Ð° Ð°Ð»Ð¸Ð°ÑÐ¾Ð² Ð½Ðµ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½Ð°"}
-        return {"status": "ok", "message": "ÐÐ¾Ð¼Ð°Ð½Ð´Ð° Ð°Ð»Ð¸Ð°ÑÐ° Ð¿ÑÐ¸Ð½ÑÑÐ°"}
+            return {"status": "error", "message": "ÃÂ¡ÃÂ¸ÃÃÃÂµÃÂ¼ÃÂ° ÃÂ°ÃÂ»ÃÂ¸ÃÂ°ÃÃÂ¾ÃÂ² ÃÂ½ÃÂµ ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½ÃÂ°"}
+        return {"status": "ok", "message": "ÃÃÂ¾ÃÂ¼ÃÂ°ÃÂ½ÃÂ´ÃÂ° ÃÂ°ÃÂ»ÃÂ¸ÃÂ°ÃÃÂ° ÃÂ¿ÃÃÂ¸ÃÂ½ÃÃÃÂ°"}
 
     def _get_learning_status(self) -> Dict:
         if not self.learning_manager:
-            return {"status": "error", "message": "ÐÐ¾Ð´ÑÐ»Ð¸ Ð¾Ð±ÑÑÐµÐ½Ð¸Ñ Ð½Ðµ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½Ñ"}
+            return {"status": "error", "message": "ÃÃÂ¾ÃÂ´ÃÃÂ»ÃÂ¸ ÃÂ¾ÃÂ±ÃÃÃÂµÃÂ½ÃÂ¸Ã ÃÂ½ÃÂµ ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½Ã"}
         return self.learning_manager.get_learning_status()
 
     def start(self):
-        self.logger.info("ÐÐ°Ð¿ÑÑÐº JARVIS...")
+        self.logger.info("ÃÃÂ°ÃÂ¿ÃÃÃÂº JARVIS...")
         self.running = True
-        greeting = self.learning_manager.get_greeting() if self.learning_manager else "ÐÐ´ÑÐ°Ð²ÑÑÐ²ÑÐ¹ÑÐµ, ÑÑÑ. JARVIS Ð³Ð¾ÑÐ¾Ð² Ðº ÑÐ°Ð±Ð¾ÑÐµ."
+        greeting = self.learning_manager.get_greeting() if self.learning_manager else "ÃÃÂ´ÃÃÂ°ÃÂ²ÃÃÃÂ²ÃÃÂ¹ÃÃÂµ, ÃÃÃ. JARVIS ÃÂ³ÃÂ¾ÃÃÂ¾ÃÂ² ÃÂº ÃÃÂ°ÃÂ±ÃÂ¾ÃÃÂµ."
         self.logger.info(greeting)
         if self.hud:
             self.hud.set_status("ONLINE")
@@ -333,13 +383,13 @@ class JarvisBrain:
         self.event_bus.publish("jarvis_started", {"timestamp": "now"})
 
     def _on_wake_word(self, text: str):
-        self.logger.info("Wake word Ð°ÐºÑÐ¸Ð²Ð¸ÑÐ¾Ð²Ð°Ð½: %s", text)
+        self.logger.info("Wake word ÃÂ°ÃÂºÃÃÂ¸ÃÂ²ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½: %s", text)
         if self.hud:
             self.hud.set_status("LISTENING")
             self.hud.set_voice_active(True)
 
     def stop(self):
-        self.logger.info("ÐÑÑÐ°Ð½Ð¾Ð²ÐºÐ° JARVIS...")
+        self.logger.info("ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ° JARVIS...")
         self.running = False
         if self.wake_word_service and self.wake_word_service.is_running():
             self.wake_word_service.stop()
