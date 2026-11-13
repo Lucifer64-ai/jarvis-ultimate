@@ -1,5 +1,5 @@
 """
-ÐÐ½ÑÐµÐ³ÑÐ°ÑÐ¸Ñ JARVIS Ñ Home Assistant
+½µ³°¸ JARVIS  Home Assistant
 """
 
 import aiohttp
@@ -10,26 +10,26 @@ import logging
 
 
 class HomeAssistantIntegration:
-    """Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ ÑÐ¼Ð½ÑÐ¼ Ð´Ð¾Ð¼Ð¾Ð¼ ÑÐµÑÐµÐ· Home Assistant."""
+    """£¿°²»µ½¸µ ¼½¼ ´¾¼¾¼ µµ· Home Assistant."""
 
     def __init__(self, brain):
         self.brain = brain
         
-        # Ð§ÑÐµÐ½Ð¸Ðµ Ð¸Ð· Ð¿ÐµÑÐµÐ¼ÐµÐ½Ð½ÑÑ Ð¾ÐºÑÑÐ¶ÐµÐ½Ð¸Ñ
+        # §µ½¸µ ¸· ¿µµ¼µ½½ ¾º¶µ½¸
         self.url = brain.config.home_assistant_url
         self.token = brain.config.home_assistant_token
         
         if self.url and self.token:
-            self.brain.logger.info(f"Home Assistant Ð¿Ð¾Ð´ÐºÐ»ÑÑÐµÐ½: {self.url}")
+            self.brain.logger.info(f"Home Assistant ¿¾´º»µ½: {self.url}")
         else:
-            self.brain.logger.warning("Home Assistant Ð½Ðµ Ð½Ð°ÑÑÑÐ¾ÐµÐ½. ÐÐ¾Ð±Ð°Ð²ÑÑÐµ HOME_ASSISTANT_URL Ð¸ HOME_ASSISTANT_TOKEN Ð² .env")
+            self.brain.logger.warning("Home Assistant ½µ ½°¾µ½. ¾±°²µ HOME_ASSISTANT_URL ¸ HOME_ASSISTANT_TOKEN ² .env")
         
         self.session: Optional[aiohttp.ClientSession] = None
 
     async def _ensure_session(self):
-        """Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ HTTP ÑÐµÑÑÐ¸Ð¸."""
+        """¡¾·´°½¸µ HTTP µ¸¸."""
         if not self.url or not self.token:
-            raise Exception("Home Assistant Ð½Ðµ Ð½Ð°ÑÑÑÐ¾ÐµÐ½")
+            raise Exception("Home Assistant ½µ ½°¾µ½")
         
         if self.session is None or self.session.closed:
             self.session = aiohttp.ClientSession(
@@ -40,12 +40,12 @@ class HomeAssistantIntegration:
             )
 
     async def close(self):
-        """ÐÐ°ÐºÑÑÑÐ¸Ðµ ÑÐµÑÑÐ¸Ð¸."""
+        """°º¸µ µ¸¸."""
         if self.session and not self.session.closed:
             await self.session.close()
 
     async def get_states(self) -> Dict:
-        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ Ð²ÑÐµ ÑÐ¾ÑÑÐ¾ÑÐ½Ð¸Ñ ÑÑÑÑÐ¾Ð¹ÑÑÐ²."""
+        """¾»¸ ²µ ¾¾½¸ ¾¹²."""
         await self._ensure_session()
         try:
             async with self.session.get(f"{self.url}/api/states") as resp:
@@ -56,7 +56,7 @@ class HomeAssistantIntegration:
             return {"error": str(e)}
 
     async def get_entity(self, entity_id: str) -> Dict:
-        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ ÑÐ¾ÑÑÐ¾ÑÐ½Ð¸Ðµ ÐºÐ¾Ð½ÐºÑÐµÑÐ½Ð¾Ð³Ð¾ ÑÑÑÑÐ¾Ð¹ÑÑÐ²Ð°."""
+        """¾»¸ ¾¾½¸µ º¾½ºµ½¾³¾ ¾¹²°."""
         await self._ensure_session()
         try:
             async with self.session.get(f"{self.url}/api/states/{entity_id}") as resp:
@@ -67,7 +67,7 @@ class HomeAssistantIntegration:
             return {"error": str(e)}
 
     async def call_service(self, domain: str, service: str, entity_id: str = None, **kwargs) -> Dict:
-        """ÐÑÐ·Ð¾Ð² ÑÐµÑÐ²Ð¸ÑÐ° Home Assistant."""
+        """·¾² µ²¸° Home Assistant."""
         await self._ensure_session()
         
         data = kwargs.copy()
@@ -85,10 +85,10 @@ class HomeAssistantIntegration:
         except Exception as e:
             return {"error": str(e)}
 
-    # === Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð¾ÑÐ²ÐµÑÐµÐ½Ð¸ÐµÐ¼ ===
+    # === £¿°²»µ½¸µ ¾²µµ½¸µ¼ ===
 
     async def turn_on_light(self, entity_id: str, brightness: int = None, color: tuple = None):
-        """ÐÐºÐ»ÑÑÐ¸ÑÑ ÑÐ²ÐµÑ."""
+        """º»¸ ²µ."""
         kwargs = {}
         if brightness:
             kwargs["brightness"] = int(brightness * 2.55)
@@ -98,125 +98,125 @@ class HomeAssistantIntegration:
         return await self.call_service("light", "turn_on", entity_id, **kwargs)
 
     async def turn_off_light(self, entity_id: str):
-        """ÐÑÐºÐ»ÑÑÐ¸ÑÑ ÑÐ²ÐµÑ."""
+        """º»¸ ²µ."""
         return await self.call_service("light", "turn_off", entity_id)
 
     async def set_brightness(self, entity_id: str, brightness: int):
-        """Ð£ÑÑÐ°Ð½Ð¾Ð²Ð¸ÑÑ ÑÑÐºÐ¾ÑÑÑ."""
+        """£°½¾²¸ º¾."""
         return await self.turn_on_light(entity_id, brightness=brightness)
 
     async def set_color(self, entity_id: str, r: int, g: int, b: int):
-        """Ð£ÑÑÐ°Ð½Ð¾Ð²Ð¸ÑÑ ÑÐ²ÐµÑ."""
+        """£°½¾²¸ ²µ."""
         return await self.turn_on_light(entity_id, color=(r, g, b))
 
-    # === Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ ÐºÐ»Ð¸Ð¼Ð°ÑÐ¾Ð¼ ===
+    # === £¿°²»µ½¸µ º»¸¼°¾¼ ===
 
     async def set_temperature(self, entity_id: str, temperature: float):
-        """Ð£ÑÑÐ°Ð½Ð¾Ð²Ð¸ÑÑ ÑÐµÐ¼Ð¿ÐµÑÐ°ÑÑÑÑ."""
+        """£°½¾²¸ µ¼¿µ°."""
         return await self.call_service(
             "climate", "set_temperature",
             entity_id, temperature=temperature
         )
 
     async def set_hvac_mode(self, entity_id: str, mode: str):
-        """Ð£ÑÑÐ°Ð½Ð¾Ð²Ð¸ÑÑ ÑÐµÐ¶Ð¸Ð¼ HVAC."""
+        """£°½¾²¸ µ¶¸¼ HVAC."""
         return await self.call_service(
             "climate", "set_hvac_mode",
             entity_id, hvac_mode=mode
         )
 
-    # === Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð¼ÐµÐ´Ð¸Ð° ===
+    # === £¿°²»µ½¸µ ¼µ´¸° ===
 
     async def media_play(self, entity_id: str):
-        """ÐÐ¾ÑÐ¿ÑÐ¾Ð¸Ð·Ð²ÐµÑÑÐ¸ Ð¼ÐµÐ´Ð¸Ð°."""
+        """¾¿¾¸·²µ¸ ¼µ´¸°."""
         return await self.call_service("media_player", "media_play", entity_id)
 
     async def media_pause(self, entity_id: str):
-        """ÐÐ°ÑÐ·Ð° Ð¼ÐµÐ´Ð¸Ð°."""
+        """°·° ¼µ´¸°."""
         return await self.call_service("media_player", "media_pause", entity_id)
 
     async def media_stop(self, entity_id: str):
-        """ÐÑÑÐ°Ð½Ð¾Ð²Ð¸ÑÑ Ð¼ÐµÐ´Ð¸Ð°."""
+        """°½¾²¸ ¼µ´¸°."""
         return await self.call_service("media_player", "media_stop", entity_id)
 
     async def set_volume(self, entity_id: str, volume: float):
-        """Ð£ÑÑÐ°Ð½Ð¾Ð²Ð¸ÑÑ Ð³ÑÐ¾Ð¼ÐºÐ¾ÑÑÑ."""
+        """£°½¾²¸ ³¾¼º¾."""
         return await self.call_service(
             "media_player", "volume_set",
             entity_id, volume_level=volume
         )
 
-    # === Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð·Ð°Ð¼ÐºÐ°Ð¼Ð¸ ===
+    # === £¿°²»µ½¸µ ·°¼º°¼¸ ===
 
     async def lock(self, entity_id: str):
-        """ÐÐ°Ð±Ð»Ð¾ÐºÐ¸ÑÐ¾Ð²Ð°ÑÑ Ð·Ð°Ð¼Ð¾Ðº."""
+        """°±»¾º¸¾²° ·°¼¾º."""
         return await self.call_service("lock", "lock", entity_id)
 
     async def unlock(self, entity_id: str):
-        """Ð Ð°Ð·Ð±Ð»Ð¾ÐºÐ¸ÑÐ¾Ð²Ð°ÑÑ Ð·Ð°Ð¼Ð¾Ðº."""
+        """ °·±»¾º¸¾²° ·°¼¾º."""
         return await self.call_service("lock", "unlock", entity_id)
 
-    # === Ð¡ÑÐµÐ½Ñ Ð¸ ÑÐºÑÐ¸Ð¿ÑÑ ===
+    # === ¡µ½ ¸ º¸¿ ===
 
     async def activate_scene(self, entity_id: str):
-        """ÐÐºÑÐ¸Ð²Ð¸ÑÐ¾Ð²Ð°ÑÑ ÑÑÐµÐ½Ñ."""
+        """º¸²¸¾²° µ½."""
         return await self.call_service("scene", "turn_on", entity_id)
 
     async def run_script(self, entity_id: str):
-        """ÐÐ°Ð¿ÑÑÑÐ¸ÑÑ ÑÐºÑÐ¸Ð¿Ñ."""
+        """°¿¸ º¸¿."""
         return await self.call_service("script", "turn_on", entity_id)
 
-    # === ÐÐ¾Ð»ÑÑÐµÐ½Ð¸Ðµ Ð¸Ð½ÑÐ¾ÑÐ¼Ð°ÑÐ¸Ð¸ ===
+    # === ¾»µ½¸µ ¸½¾¼°¸¸ ===
 
     async def get_lights(self) -> List[Dict]:
-        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ ÑÐ¿Ð¸ÑÐ¾Ðº Ð²ÑÐµÑ ÑÐ²ÐµÑÐ¸Ð»ÑÐ½Ð¸ÐºÐ¾Ð²."""
+        """¾»¸ ¿¸¾º ²µ ²µ¸»½¸º¾²."""
         states = await self.get_states()
         if "error" in states:
             return []
         return [s for s in states if s["entity_id"].startswith("light.")]
 
     async def get_switches(self) -> List[Dict]:
-        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ ÑÐ¿Ð¸ÑÐ¾Ðº Ð²ÑÐµÑ Ð²ÑÐºÐ»ÑÑÐ°ÑÐµÐ»ÐµÐ¹."""
+        """¾»¸ ¿¸¾º ²µ ²º»°µ»µ¹."""
         states = await self.get_states()
         if "error" in states:
             return []
         return [s for s in states if s["entity_id"].startswith("switch.")]
 
     async def get_sensors(self) -> List[Dict]:
-        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ ÑÐ¿Ð¸ÑÐ¾Ðº Ð²ÑÐµÑ Ð´Ð°ÑÑÐ¸ÐºÐ¾Ð²."""
+        """¾»¸ ¿¸¾º ²µ ´°¸º¾²."""
         states = await self.get_states()
         if "error" in states:
             return []
         return [s for s in states if s["entity_id"].startswith("sensor.")]
 
     async def get_cameras(self) -> List[Dict]:
-        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ ÑÐ¿Ð¸ÑÐ¾Ðº ÐºÐ°Ð¼ÐµÑ."""
+        """¾»¸ ¿¸¾º º°¼µ."""
         states = await self.get_states()
         if "error" in states:
             return []
         return [s for s in states if s["entity_id"].startswith("camera.")]
 
-    # === ÐÐ±ÑÐ°Ð±Ð¾ÑÐºÐ° Ð³Ð¾Ð»Ð¾ÑÐ¾Ð²ÑÑ ÐºÐ¾Ð¼Ð°Ð½Ð´ ===
+    # === ±°±¾º° ³¾»¾¾² º¾¼°½´ ===
 
     async def handle_command(self, command: str) -> Dict:
-        """ÐÐ±ÑÐ°Ð±Ð¾ÑÐºÐ° Ð³Ð¾Ð»Ð¾ÑÐ¾Ð²Ð¾Ð¹ ÐºÐ¾Ð¼Ð°Ð½Ð´Ñ Ð´Ð»Ñ ÑÐ¼Ð½Ð¾Ð³Ð¾ Ð´Ð¾Ð¼Ð°."""
+        """±°±¾º° ³¾»¾¾²¾¹ º¾¼°½´ ´» ¼½¾³¾ ´¾¼°."""
         cmd = command.lower()
         
-        # Ð¡Ð²ÐµÑ
-        if "Ð²ÐºÐ»ÑÑÐ¸ ÑÐ²ÐµÑ" in cmd or "Ð·Ð°Ð¶Ð³Ð¸ ÑÐ²ÐµÑ" in cmd:
+        # ¡²µ
+        if "²º»¸ ²µ" in cmd or "·°¶³¸ ²µ" in cmd:
             lights = await self.get_lights()
             for light in lights:
                 await self.turn_on_light(light["entity_id"])
-            return {"response": f"ÐÐºÐ»ÑÑÐ°Ñ {len(lights)} ÑÐ²ÐµÑÐ¸Ð»ÑÐ½Ð¸ÐºÐ¾Ð²."}
+            return {"response": f"º»° {len(lights)} ²µ¸»½¸º¾²."}
         
-        elif "Ð²ÑÐºÐ»ÑÑÐ¸ ÑÐ²ÐµÑ" in cmd or "Ð¿Ð¾ÑÑÑÐ¸ ÑÐ²ÐµÑ" in cmd:
+        elif "²º»¸ ²µ" in cmd or "¿¾¸ ²µ" in cmd:
             lights = await self.get_lights()
             for light in lights:
                 await self.turn_off_light(light["entity_id"])
-            return {"response": "ÐÑÐºÐ»ÑÑÐ°Ñ Ð²ÐµÑÑ ÑÐ²ÐµÑ."}
+            return {"response": "º»° ²µ ²µ."}
         
-        # Ð¢ÐµÐ¼Ð¿ÐµÑÐ°ÑÑÑÐ°
-        elif "ÑÐµÐ¼Ð¿ÐµÑÐ°ÑÑÑ" in cmd and any(c in cmd for c in ["20", "21", "22", "23", "24", "25"]):
+        # ¢µ¼¿µ°°
+        elif "µ¼¿µ°" in cmd and any(c in cmd for c in ["20", "21", "22", "23", "24", "25"]):
             import re
             match = re.search(r'(\d+)', cmd)
             if match:
@@ -225,14 +225,14 @@ class HomeAssistantIntegration:
                 climates = [s for s in states if s["entity_id"].startswith("climate.")]
                 for climate in climates:
                     await self.set_temperature(climate["entity_id"], temp)
-                return {"response": f"Ð£ÑÑÐ°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°Ñ ÑÐµÐ¼Ð¿ÐµÑÐ°ÑÑÑÑ {temp} Ð³ÑÐ°Ð´ÑÑÐ¾Ð²."}
+                return {"response": f"£°½°²»¸²° µ¼¿µ° {temp} ³°´¾²."}
         
-        # Ð¡ÑÐµÐ½Ñ
-        elif "ÑÑÐµÐ½" in cmd:
+        # ¡µ½
+        elif "µ½" in cmd:
             states = await self.get_states()
             scenes = [s for s in states if s["entity_id"].startswith("scene.")]
             if scenes:
                 await self.activate_scene(scenes[0]["entity_id"])
-                return {"response": f"ÐÐºÑÐ¸Ð²Ð¸ÑÑÑ ÑÑÐµÐ½Ñ {scenes[0]['attributes'].get('friendly_name', '')}."}
+                return {"response": f"º¸²¸ µ½ {scenes[0]['attributes'].get('friendly_name', '')}."}
         
-        return {"response": "ÐÐµ Ð¿Ð¾Ð½Ð¸Ð¼Ð°Ñ ÐºÐ¾Ð¼Ð°Ð½Ð´Ñ Ð´Ð»Ñ ÑÐ¼Ð½Ð¾Ð³Ð¾ Ð´Ð¾Ð¼Ð°."}
+        return {"response": "µ ¿¾½¸¼° º¾¼°½´ ´» ¼½¾³¾ ´¾¼°."}
