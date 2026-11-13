@@ -1,5 +1,5 @@
 """
-Мониторинг датчиков умного дома
+ÐÐ¾Ð½Ð¸ÑÐ¾ÑÐ¸Ð½Ð³ Ð´Ð°ÑÑÐ¸ÐºÐ¾Ð² ÑÐ¼Ð½Ð¾Ð³Ð¾ Ð´Ð¾Ð¼Ð°
 """
 
 from typing import Dict, List, Optional
@@ -7,7 +7,7 @@ import asyncio
 
 
 class SensorMonitor:
-    """Мониторинг датчиков умного дома."""
+    """ÐÐ¾Ð½Ð¸ÑÐ¾ÑÐ¸Ð½Ð³ Ð´Ð°ÑÑÐ¸ÐºÐ¾Ð² ÑÐ¼Ð½Ð¾Ð³Ð¾ Ð´Ð¾Ð¼Ð°."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -15,7 +15,7 @@ class SensorMonitor:
         self.alerts = {}
 
     async def get_all_sensors(self) -> List[Dict]:
-        """Получить все датчики."""
+        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ Ð²ÑÐµ Ð´Ð°ÑÑÐ¸ÐºÐ¸."""
         states = await self.ha.get_states()
         if "error" in states:
             return []
@@ -34,7 +34,7 @@ class SensorMonitor:
         return sensors
 
     async def get_temperature(self) -> Dict:
-        """Получить температуру."""
+        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ ÑÐµÐ¼Ð¿ÐµÑÐ°ÑÑÑÑ."""
         sensors = await self.get_all_sensors()
         temps = [s for s in sensors if s.get("device_class") == "temperature"]
         if temps:
@@ -45,23 +45,23 @@ class SensorMonitor:
         return {"sensors": [], "average": 0}
 
     async def get_humidity(self) -> Dict:
-        """Получить влажность."""
+        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ Ð²Ð»Ð°Ð¶Ð½Ð¾ÑÑÑ."""
         sensors = await self.get_all_sensors()
         hums = [s for s in sensors if s.get("device_class") == "humidity"]
         return {"sensors": hums}
 
     async def get_motion_sensors(self) -> List[Dict]:
-        """Датчики движения."""
+        """ÐÐ°ÑÑÐ¸ÐºÐ¸ Ð´Ð²Ð¸Ð¶ÐµÐ½Ð¸Ñ."""
         sensors = await self.get_all_sensors()
         return [s for s in sensors if s.get("device_class") == "motion"]
 
     async def get_door_sensors(self) -> List[Dict]:
-        """Датчики дверей/окон."""
+        """ÐÐ°ÑÑÐ¸ÐºÐ¸ Ð´Ð²ÐµÑÐµÐ¹/Ð¾ÐºÐ¾Ð½."""
         sensors = await self.get_all_sensors()
         return [s for s in sensors if s.get("device_class") in ["door", "window", "opening"]]
 
     def set_alert(self, name: str, entity_id: str, condition: str, threshold: float):
-        """Установить оповещение."""
+        """Ð£ÑÑÐ°Ð½Ð¾Ð²Ð¸ÑÑ Ð¾Ð¿Ð¾Ð²ÐµÑÐµÐ½Ð¸Ðµ."""
         self.alerts[name] = {
             "entity_id": entity_id,
             "condition": condition,  # "above", "below"
@@ -70,7 +70,7 @@ class SensorMonitor:
         }
 
     async def check_alerts(self) -> List[Dict]:
-        """Проверить оповещения."""
+        """ÐÑÐ¾Ð²ÐµÑÐ¸ÑÑ Ð¾Ð¿Ð¾Ð²ÐµÑÐµÐ½Ð¸Ñ."""
         triggered = []
         for name, alert in self.alerts.items():
             if not alert["active"]:
@@ -91,7 +91,7 @@ class SensorMonitor:
                     "entity_id": alert["entity_id"],
                     "value": value,
                     "threshold": alert["threshold"],
-                    "message": f"{name}: значение {value} выше порога {alert['threshold']}"
+                    "message": f"{name}: Ð·Ð½Ð°ÑÐµÐ½Ð¸Ðµ {value} Ð²ÑÑÐµ Ð¿Ð¾ÑÐ¾Ð³Ð° {alert['threshold']}"
                 })
             elif alert["condition"] == "below" and value < alert["threshold"]:
                 triggered.append({
@@ -99,7 +99,7 @@ class SensorMonitor:
                     "entity_id": alert["entity_id"],
                     "value": value,
                     "threshold": alert["threshold"],
-                    "message": f"{name}: значение {value} ниже порога {alert['threshold']}"
+                    "message": f"{name}: Ð·Ð½Ð°ÑÐµÐ½Ð¸Ðµ {value} Ð½Ð¸Ð¶Ðµ Ð¿Ð¾ÑÐ¾Ð³Ð° {alert['threshold']}"
                 })
         
         return triggered
