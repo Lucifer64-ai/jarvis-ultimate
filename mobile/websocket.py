@@ -1,5 +1,5 @@
 """
-WebSocket сервер JARVIS для real-time обновлений
+WebSocket µ²µ JARVIS ´» real-time ¾±½¾²»µ½¸¹
 """
 
 import asyncio
@@ -10,7 +10,7 @@ import threading
 
 
 class WebSocketServer:
-    """WebSocket сервер для real-time связи."""
+    """WebSocket µ²µ ´» real-time ²·¸."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -19,9 +19,9 @@ class WebSocketServer:
         self.running = False
 
     async def handler(self, websocket, path):
-        """Обработка WebSocket подключений."""
+        """±°±¾º° WebSocket ¿¾´º»µ½¸¹."""
         self.clients.add(websocket)
-        self.brain.logger.info(f"Новое WebSocket подключение. Всего клиентов: {len(self.clients)}")
+        self.brain.logger.info(f"¾²¾µ WebSocket ¿¾´º»µ½¸µ. µ³¾ º»¸µ½¾²: {len(self.clients)}")
         
         try:
             async for message in websocket:
@@ -34,10 +34,10 @@ class WebSocketServer:
             pass
         finally:
             self.clients.discard(websocket)
-            self.brain.logger.info(f"Клиент отключен. Всего клиентов: {len(self.clients)}")
+            self.brain.logger.info(f"»¸µ½ ¾º»µ½. µ³¾ º»¸µ½¾²: {len(self.clients)}")
 
     async def _process_message(self, websocket, data: Dict):
-        """Обработка входящего сообщения."""
+        """±°±¾º° ²¾´µ³¾ ¾¾±µ½¸."""
         msg_type = data.get("type")
         
         if msg_type == "command":
@@ -56,14 +56,14 @@ class WebSocketServer:
             }))
         
         elif msg_type == "subscribe":
-            # Подписка на обновления
+            # ¾´¿¸º° ½° ¾±½¾²»µ½¸
             await websocket.send(json.dumps({
                 "type": "subscribed",
-                "message": "Подписка на обновления активирована"
+                "message": "¾´¿¸º° ½° ¾±½¾²»µ½¸ °º¸²¸¾²°½°"
             }))
 
     async def broadcast(self, message: Dict):
-        """Отправка сообщения всем подключенным клиентам."""
+        """¿°²º° ¾¾±µ½¸ ²µ¼ ¿¾´º»µ½½¼ º»¸µ½°¼."""
         if self.clients:
             await asyncio.wait([
                 client.send(json.dumps(message))
@@ -71,14 +71,14 @@ class WebSocketServer:
             ])
 
     async def start_server(self):
-        """Запуск WebSocket сервера."""
+        """°¿º WebSocket µ²µ°."""
         self.running = True
         server = await websockets.serve(self.handler, "0.0.0.0", self.port)
-        self.brain.logger.info(f"WebSocket сервер запущен на порту {self.port}")
+        self.brain.logger.info(f"WebSocket µ²µ ·°¿µ½ ½° ¿¾ {self.port}")
         await server.wait_closed()
 
     def start(self):
-        """Запуск в отдельном потоке."""
+        """°¿º ² ¾´µ»½¾¼ ¿¾¾ºµ."""
         def run_async():
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
@@ -88,5 +88,5 @@ class WebSocketServer:
         thread.start()
 
     def stop(self):
-        """Остановка сервера."""
+        """°½¾²º° µ²µ°."""
         self.running = False
