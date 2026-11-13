@@ -1,5 +1,5 @@
 """
-API сервер JARVIS для мобильного приложения
+API ÑÐµÑÐ²ÐµÑ JARVIS Ð´Ð»Ñ Ð¼Ð¾Ð±Ð¸Ð»ÑÐ½Ð¾Ð³Ð¾ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ
 """
 
 import asyncio
@@ -13,16 +13,16 @@ from pathlib import Path
 try:
     from aiohttp import web
 except ImportError:
-    print("Установите: pip install aiohttp")
+    print("Ð£ÑÑÐ°Ð½Ð¾Ð²Ð¸ÑÐµ: pip install aiohttp")
 
 
 class MobileServer:
-    """HTTP/WebSocket сервер для мобильного приложения."""
+    """HTTP/WebSocket ÑÐµÑÐ²ÐµÑ Ð´Ð»Ñ Ð¼Ð¾Ð±Ð¸Ð»ÑÐ½Ð¾Ð³Ð¾ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ."""
 
     def __init__(self, brain):
         self.brain = brain
         
-        # Чтение из переменных окружения
+        # Ð§ÑÐµÐ½Ð¸Ðµ Ð¸Ð· Ð¿ÐµÑÐµÐ¼ÐµÐ½Ð½ÑÑ Ð¾ÐºÑÑÐ¶ÐµÐ½Ð¸Ñ
         self.host = brain.config.mobile_api_host
         self.port = brain.config.mobile_api_port
         self.secret = brain.config.mobile_api_secret
@@ -34,19 +34,19 @@ class MobileServer:
         self._setup_routes()
 
     def _load_tokens(self):
-        """Загрузка API токенов."""
+        """ÐÐ°Ð³ÑÑÐ·ÐºÐ° API ÑÐ¾ÐºÐµÐ½Ð¾Ð²."""
         if self.tokens_file.exists():
             with open(self.tokens_file, "r") as f:
                 self.tokens = json.load(f)
 
     def _save_tokens(self):
-        """Сохранение токенов."""
+        """Ð¡Ð¾ÑÑÐ°Ð½ÐµÐ½Ð¸Ðµ ÑÐ¾ÐºÐµÐ½Ð¾Ð²."""
         self.tokens_file.parent.mkdir(exist_ok=True)
         with open(self.tokens_file, "w") as f:
             json.dump(self.tokens, f, indent=2)
 
     def _setup_routes(self):
-        """Настройка маршрутов."""
+        """ÐÐ°ÑÑÑÐ¾Ð¹ÐºÐ° Ð¼Ð°ÑÑÑÑÑÐ¾Ð²."""
         self.app.router.add_post("/api/auth/login", self.handle_login)
         self.app.router.add_post("/api/auth/register", self.handle_register)
         self.app.router.add_get("/api/status", self.handle_status)
@@ -58,7 +58,7 @@ class MobileServer:
         self.app.router.add_get("/ws", self.websocket_handler)
 
     def _verify_token(self, request) -> Optional[str]:
-        """Проверка токена авторизации."""
+        """ÐÑÐ¾Ð²ÐµÑÐºÐ° ÑÐ¾ÐºÐµÐ½Ð° Ð°Ð²ÑÐ¾ÑÐ¸Ð·Ð°ÑÐ¸Ð¸."""
         auth = request.headers.get("Authorization", "")
         if auth.startswith("Bearer "):
             token = auth[7:]
@@ -67,7 +67,7 @@ class MobileServer:
         return None
 
     async def handle_login(self, request):
-        """Авторизация."""
+        """ÐÐ²ÑÐ¾ÑÐ¸Ð·Ð°ÑÐ¸Ñ."""
         data = await request.json()
         username = data.get("username")
         password = data.get("password")
@@ -85,7 +85,7 @@ class MobileServer:
         return web.json_response({"token": token, "username": username})
 
     async def handle_register(self, request):
-        """Регистрация нового устройства."""
+        """Ð ÐµÐ³Ð¸ÑÑÑÐ°ÑÐ¸Ñ Ð½Ð¾Ð²Ð¾Ð³Ð¾ ÑÑÑÑÐ¾Ð¹ÑÑÐ²Ð°."""
         data = await request.json()
         device_name = data.get("device_name")
         
@@ -100,7 +100,7 @@ class MobileServer:
         return web.json_response({"token": token, "device": device_name})
 
     async def handle_status(self, request):
-        """Статус JARVIS."""
+        """Ð¡ÑÐ°ÑÑÑ JARVIS."""
         user = self._verify_token(request)
         if not user:
             return web.json_response({"error": "Unauthorized"}, status=401)
@@ -109,7 +109,7 @@ class MobileServer:
         return web.json_response(status)
 
     async def handle_command(self, request):
-        """Выполнение голосовой команды."""
+        """ÐÑÐ¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ðµ Ð³Ð¾Ð»Ð¾ÑÐ¾Ð²Ð¾Ð¹ ÐºÐ¾Ð¼Ð°Ð½Ð´Ñ."""
         user = self._verify_token(request)
         if not user:
             return web.json_response({"error": "Unauthorized"}, status=401)
@@ -121,7 +121,7 @@ class MobileServer:
         return web.json_response(result)
 
     async def handle_system_info(self, request):
-        """Информация о системе."""
+        """ÐÐ½ÑÐ¾ÑÐ¼Ð°ÑÐ¸Ñ Ð¾ ÑÐ¸ÑÑÐµÐ¼Ðµ."""
         user = self._verify_token(request)
         if not user:
             return web.json_response({"error": "Unauthorized"}, status=401)
@@ -130,7 +130,7 @@ class MobileServer:
         return web.json_response(info)
 
     async def handle_devices(self, request):
-        """Список устройств умного дома."""
+        """Ð¡Ð¿Ð¸ÑÐ¾Ðº ÑÑÑÑÐ¾Ð¹ÑÑÐ² ÑÐ¼Ð½Ð¾Ð³Ð¾ Ð´Ð¾Ð¼Ð°."""
         user = self._verify_token(request)
         if not user:
             return web.json_response({"error": "Unauthorized"}, status=401)
@@ -140,10 +140,10 @@ class MobileServer:
             devices = await ha.get_states()
             return web.json_response({"devices": devices})
         
-        return web.json_response({"devices": [], "message": "Home Assistant не подключен"})
+        return web.json_response({"devices": [], "message": "Home Assistant Ð½Ðµ Ð¿Ð¾Ð´ÐºÐ»ÑÑÐµÐ½"})
 
     async def handle_device_control(self, request):
-        """Управление устройством."""
+        """Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ ÑÑÑÑÐ¾Ð¹ÑÑÐ²Ð¾Ð¼."""
         user = self._verify_token(request)
         if not user:
             return web.json_response({"error": "Unauthorized"}, status=401)
@@ -170,7 +170,7 @@ class MobileServer:
         return web.json_response({"error": "Home Assistant not connected"}, status=503)
 
     async def handle_sensors(self, request):
-        """Данные датчиков."""
+        """ÐÐ°Ð½Ð½ÑÐµ Ð´Ð°ÑÑÐ¸ÐºÐ¾Ð²."""
         user = self._verify_token(request)
         if not user:
             return web.json_response({"error": "Unauthorized"}, status=401)
@@ -184,7 +184,7 @@ class MobileServer:
         return web.json_response({"sensors": []})
 
     async def websocket_handler(self, request):
-        """WebSocket для real-time обновлений."""
+        """WebSocket Ð´Ð»Ñ real-time Ð¾Ð±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ð¹."""
         ws = web.WebSocketResponse()
         await ws.prepare(request)
         
@@ -206,12 +206,12 @@ class MobileServer:
         return ws
 
     def start(self):
-        """Запуск сервера."""
-        self.brain.logger.info(f"Mobile API сервер запущен на {self.host}:{self.port}")
+        """ÐÐ°Ð¿ÑÑÐº ÑÐµÑÐ²ÐµÑÐ°."""
+        self.brain.logger.info(f"Mobile API ÑÐµÑÐ²ÐµÑ Ð·Ð°Ð¿ÑÑÐµÐ½ Ð½Ð° {self.host}:{self.port}")
         web.run_app(self.app, host=self.host, port=self.port)
 
     def start_async(self):
-        """Запуск в отдельном потоке."""
+        """ÐÐ°Ð¿ÑÑÐº Ð² Ð¾ÑÐ´ÐµÐ»ÑÐ½Ð¾Ð¼ Ð¿Ð¾ÑÐ¾ÐºÐµ."""
         import threading
         thread = threading.Thread(target=self.start, daemon=True)
         thread.start()
