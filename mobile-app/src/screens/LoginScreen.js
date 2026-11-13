@@ -10,7 +10,7 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = async () => {
     if (!username || !password) {
-      Alert.alert('Ошибка', 'Заполните все поля');
+      Alert.alert('¸±º°', '°¿¾»½¸µ ²µ ¿¾»');
       return;
     }
 
@@ -20,10 +20,10 @@ export default function LoginScreen({ navigation }) {
       if (success) {
         navigation.replace('Home');
       } else {
-        Alert.alert('Ошибка', 'Неверные учетные данные');
+        Alert.alert('¸±º°', 'µ²µ½µ µ½µ ´°½½µ');
       }
     } catch (error) {
-      Alert.alert('Ошибка', 'Не удалось подключиться к серверу');
+      Alert.alert('¸±º°', 'µ ´°»¾ ¿¾´º»¸ º µ²µ');
     } finally {
       setLoading(false);
     }
@@ -59,7 +59,7 @@ export default function LoginScreen({ navigation }) {
           disabled={loading}
         >
           <Text style={styles.buttonText}>
-            {loading ? 'Подключение...' : 'Войти'}
+            {loading ? '¾´º»µ½¸µ...' : '¾¹¸'}
           </Text>
         </TouchableOpacity>
       </View>
