@@ -1,5 +1,5 @@
 """
-Управление файлами JARVIS
+Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ ÑÐ°Ð¹Ð»Ð°Ð¼Ð¸ JARVIS
 """
 
 import os
@@ -10,13 +10,13 @@ from send2trash import send2trash
 
 
 class FileModule:
-    """Управление файловой системой."""
+    """Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ ÑÐ°Ð¹Ð»Ð¾Ð²Ð¾Ð¹ ÑÐ¸ÑÑÐµÐ¼Ð¾Ð¹."""
 
     def __init__(self, brain):
         self.brain = brain
 
     def list_directory(self, path: str = ".") -> List[Dict]:
-        """Список файлов в директории."""
+        """Ð¡Ð¿Ð¸ÑÐ¾Ðº ÑÐ°Ð¹Ð»Ð¾Ð² Ð² Ð´Ð¸ÑÐµÐºÑÐ¾ÑÐ¸Ð¸."""
         try:
             items = []
             for item in Path(path).iterdir():
@@ -30,7 +30,7 @@ class FileModule:
             return [{"error": str(e)}]
 
     def create_file(self, path: str, content: str = "") -> Dict:
-        """Создать файл."""
+        """Ð¡Ð¾Ð·Ð´Ð°ÑÑ ÑÐ°Ð¹Ð»."""
         try:
             with open(path, 'w', encoding='utf-8') as f:
                 f.write(content)
@@ -39,15 +39,15 @@ class FileModule:
             return {"status": "error", "message": str(e)}
 
     def delete_file(self, path: str) -> Dict:
-        """Удалить файл в корзину."""
+        """Ð£Ð´Ð°Ð»Ð¸ÑÑ ÑÐ°Ð¹Ð» Ð² ÐºÐ¾ÑÐ·Ð¸Ð½Ñ."""
         try:
             send2trash(path)
-            return {"status": "ok", "message": f"Файл '{path}' перемещён в корзину"}
+            return {"status": "ok", "message": f"Ð¤Ð°Ð¹Ð» '{path}' Ð¿ÐµÑÐµÐ¼ÐµÑÑÐ½ Ð² ÐºÐ¾ÑÐ·Ð¸Ð½Ñ"}
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
     def copy_file(self, src: str, dst: str) -> Dict:
-        """Копировать файл."""
+        """ÐÐ¾Ð¿Ð¸ÑÐ¾Ð²Ð°ÑÑ ÑÐ°Ð¹Ð»."""
         try:
             shutil.copy2(src, dst)
             return {"status": "ok", "src": src, "dst": dst}
@@ -55,7 +55,7 @@ class FileModule:
             return {"status": "error", "message": str(e)}
 
     def move_file(self, src: str, dst: str) -> Dict:
-        """Переместить файл."""
+        """ÐÐµÑÐµÐ¼ÐµÑÑÐ¸ÑÑ ÑÐ°Ð¹Ð»."""
         try:
             shutil.move(src, dst)
             return {"status": "ok", "src": src, "dst": dst}
@@ -63,7 +63,7 @@ class FileModule:
             return {"status": "error", "message": str(e)}
 
     def create_directory(self, path: str) -> Dict:
-        """Создать директорию."""
+        """Ð¡Ð¾Ð·Ð´Ð°ÑÑ Ð´Ð¸ÑÐµÐºÑÐ¾ÑÐ¸Ñ."""
         try:
             Path(path).mkdir(parents=True, exist_ok=True)
             return {"status": "ok", "path": path}
