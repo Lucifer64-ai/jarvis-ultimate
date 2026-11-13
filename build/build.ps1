@@ -7,42 +7,42 @@ Write-Host "  JARVIS Ultimate - Build Script" -ForegroundColor Cyan
 Write-Host "==========================================" -ForegroundColor Cyan
 Write-Host ""
 
-# ÐÑÐ¾Ð²ÐµÑÐºÐ° Python
-Write-Host "[1/5] ÐÑÐ¾Ð²ÐµÑÐºÐ° Python..." -ForegroundColor Yellow
+# ÃÃÃÂ¾ÃÂ²ÃÂµÃÃÂºÃÂ° Python
+Write-Host "[1/5] ÃÃÃÂ¾ÃÂ²ÃÂµÃÃÂºÃÂ° Python..." -ForegroundColor Yellow
 try {
     $pythonVersion = python --version 2>&1
     Write-Host "OK: $pythonVersion" -ForegroundColor Green
 } catch {
-    Write-Host "ÐÑÐ¸Ð±ÐºÐ°: Python Ð½Ðµ ÑÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½!" -ForegroundColor Red
+    Write-Host "ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ°: Python ÃÂ½ÃÂµ ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½!" -ForegroundColor Red
     exit 1
 }
 
-# Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð²Ð¸ÑÑÑÐ°Ð»ÑÐ½Ð¾Ð³Ð¾ Ð¾ÐºÑÑÐ¶ÐµÐ½Ð¸Ñ
-Write-Host "[2/5] Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð²Ð¸ÑÑÑÐ°Ð»ÑÐ½Ð¾Ð³Ð¾ Ð¾ÐºÑÑÐ¶ÐµÐ½Ð¸Ñ..." -ForegroundColor Yellow
+# ÃÂ¡ÃÂ¾ÃÂ·ÃÂ´ÃÂ°ÃÂ½ÃÂ¸ÃÂµ ÃÂ²ÃÂ¸ÃÃÃÃÂ°ÃÂ»ÃÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ¾ÃÂºÃÃÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã
+Write-Host "[2/5] ÃÂ¡ÃÂ¾ÃÂ·ÃÂ´ÃÂ°ÃÂ½ÃÂ¸ÃÂµ ÃÂ²ÃÂ¸ÃÃÃÃÂ°ÃÂ»ÃÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ¾ÃÂºÃÃÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã..." -ForegroundColor Yellow
 if (-not (Test-Path "venv")) {
     python -m venv venv
 }
 .\venv\Scripts\Activate.ps1
 Write-Host "OK" -ForegroundColor Green
 
-# Ð£ÑÑÐ°Ð½Ð¾Ð²ÐºÐ° Ð·Ð°Ð²Ð¸ÑÐ¸Ð¼Ð¾ÑÑÐµÐ¹
-Write-Host "[3/5] Ð£ÑÑÐ°Ð½Ð¾Ð²ÐºÐ° Ð·Ð°Ð²Ð¸ÑÐ¸Ð¼Ð¾ÑÑÐµÐ¹..." -ForegroundColor Yellow
+# ÃÂ£ÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ²ÃÂ¸ÃÃÂ¸ÃÂ¼ÃÂ¾ÃÃÃÂµÃÂ¹
+Write-Host "[3/5] ÃÂ£ÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ²ÃÂ¸ÃÃÂ¸ÃÂ¼ÃÂ¾ÃÃÃÂµÃÂ¹..." -ForegroundColor Yellow
 pip install -r requirements.txt
 Write-Host "OK" -ForegroundColor Green
 
-# Ð¡Ð±Ð¾ÑÐºÐ° exe
-Write-Host "[4/5] Ð¡Ð±Ð¾ÑÐºÐ° JARVIS.exe..." -ForegroundColor Yellow
+# ÃÂ¡ÃÂ±ÃÂ¾ÃÃÂºÃÂ° exe
+Write-Host "[4/5] ÃÂ¡ÃÂ±ÃÂ¾ÃÃÂºÃÂ° JARVIS.exe..." -ForegroundColor Yellow
 Set-Location build
 pyinstaller jarvis.spec --clean --noconfirm
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "ÐÑÐ¸Ð±ÐºÐ° ÑÐ±Ð¾ÑÐºÐ¸!" -ForegroundColor Red
+    Write-Host "ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÃÂ±ÃÂ¾ÃÃÂºÃÂ¸!" -ForegroundColor Red
     exit 1
 }
 Set-Location ..
 Write-Host "OK" -ForegroundColor Green
 
-# ÐÐ¾Ð¿Ð¸ÑÐ¾Ð²Ð°Ð½Ð¸Ðµ ÐºÐ¾Ð½ÑÐ¸Ð³ÑÑÐ°ÑÐ¸Ð¸
-Write-Host "[5/5] ÐÐ¾Ð¿Ð¸ÑÐ¾Ð²Ð°Ð½Ð¸Ðµ ÑÐ°Ð¹Ð»Ð¾Ð²..." -ForegroundColor Yellow
+# ÃÃÂ¾ÃÂ¿ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ¸ÃÂµ ÃÂºÃÂ¾ÃÂ½ÃÃÂ¸ÃÂ³ÃÃÃÂ°ÃÃÂ¸ÃÂ¸
+Write-Host "[5/5] ÃÃÂ¾ÃÂ¿ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ¸ÃÂµ ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ¾ÃÂ²..." -ForegroundColor Yellow
 if (-not (Test-Path "dist\JARVIS")) {
     New-Item -ItemType Directory -Path "dist\JARVIS" -Force
 }
@@ -55,6 +55,6 @@ Write-Host "OK" -ForegroundColor Green
 
 Write-Host ""
 Write-Host "==========================================" -ForegroundColor Green
-Write-Host "  Ð¡Ð±Ð¾ÑÐºÐ° Ð·Ð°Ð²ÐµÑÑÐµÐ½Ð° ÑÑÐ¿ÐµÑÐ½Ð¾!" -ForegroundColor Green
-Write-Host "  Ð¤Ð°Ð¹Ð»: dist\JARVIS\JARVIS.exe" -ForegroundColor Green
+Write-Host "  ÃÂ¡ÃÂ±ÃÂ¾ÃÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ²ÃÂµÃÃÃÂµÃÂ½ÃÂ° ÃÃÃÂ¿ÃÂµÃÃÂ½ÃÂ¾!" -ForegroundColor Green
+Write-Host "  ÃÂ¤ÃÂ°ÃÂ¹ÃÂ»: dist\JARVIS\JARVIS.exe" -ForegroundColor Green
 Write-Host "==========================================" -ForegroundColor Green
