@@ -1,6 +1,6 @@
 """
-Windows ÃÂ¸ÃÂ½ÃÃÂµÃÂ³ÃÃÂ°ÃÃÂ¸Ã JARVIS
-ÃÃÂ²ÃÃÂ¾ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂº, ÃÂ³ÃÂ¾ÃÃÃÃÂ¸ÃÂµ ÃÂºÃÂ»ÃÂ°ÃÂ²ÃÂ¸ÃÃÂ¸, ÃÂºÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂµ ÃÂ¼ÃÂµÃÂ½Ã ÃÂ¿ÃÃÂ¾ÃÂ²ÃÂ¾ÃÂ´ÃÂ½ÃÂ¸ÃÂºÃÂ°
+Windows ¸½µ³°¸ JARVIS
+²¾·°¿º, ³¾¸µ º»°²¸¸, º¾½µº½¾µ ¼µ½ ¿¾²¾´½¸º°
 """
 
 import winreg
@@ -12,7 +12,7 @@ import logging
 
 
 class WindowsIntegration:
-    """ÃÃÂ½ÃÃÂµÃÂ³ÃÃÂ°ÃÃÂ¸Ã Ã Windows."""
+    """½µ³°¸  Windows."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -21,7 +21,7 @@ class WindowsIntegration:
         self.exe_path = sys.executable
 
     def enable_autostart(self) -> Dict:
-        """ÃÃÂºÃÂ»ÃÃÃÂ¸ÃÃ ÃÂ°ÃÂ²ÃÃÂ¾ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂº ÃÂ¿ÃÃÂ¸ ÃÃÃÂ°ÃÃÃÂµ Windows."""
+        """º»¸ °²¾·°¿º ¿¸ °µ Windows."""
         try:
             key = winreg.HKEY_CURRENT_USER
             sub_key = r"Software\Microsoft\Windows\CurrentVersion\Run"
@@ -29,15 +29,15 @@ class WindowsIntegration:
             with winreg.OpenKey(key, sub_key, 0, winreg.KEY_SET_VALUE) as reg_key:
                 winreg.SetValueEx(reg_key, self.app_name, 0, winreg.REG_SZ, self.exe_path)
             
-            self.logger.info("ÃÃÂ²ÃÃÂ¾ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂº ÃÂ²ÃÂºÃÂ»ÃÃÃÂµÃÂ½")
-            return {"status": "ok", "message": "ÃÃÂ²ÃÃÂ¾ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂº JARVIS ÃÂ²ÃÂºÃÂ»ÃÃÃÂµÃÂ½"}
+            self.logger.info("²¾·°¿º ²º»µ½")
+            return {"status": "ok", "message": "²¾·°¿º JARVIS ²º»µ½"}
         
         except Exception as e:
-            self.logger.error(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ²ÃÂºÃÂ»ÃÃÃÂµÃÂ½ÃÂ¸Ã ÃÂ°ÃÂ²ÃÃÂ¾ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂºÃÂ°: {e}")
+            self.logger.error(f"¸±º° ²º»µ½¸ °²¾·°¿º°: {e}")
             return {"status": "error", "message": str(e)}
 
     def disable_autostart(self) -> Dict:
-        """ÃÃÃÂºÃÂ»ÃÃÃÂ¸ÃÃ ÃÂ°ÃÂ²ÃÃÂ¾ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂº."""
+        """º»¸ °²¾·°¿º."""
         try:
             key = winreg.HKEY_CURRENT_USER
             sub_key = r"Software\Microsoft\Windows\CurrentVersion\Run"
@@ -45,15 +45,15 @@ class WindowsIntegration:
             with winreg.OpenKey(key, sub_key, 0, winreg.KEY_SET_VALUE) as reg_key:
                 winreg.DeleteValue(reg_key, self.app_name)
             
-            self.logger.info("ÃÃÂ²ÃÃÂ¾ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂº ÃÂ¾ÃÃÂºÃÂ»ÃÃÃÂµÃÂ½")
-            return {"status": "ok", "message": "ÃÃÂ²ÃÃÂ¾ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂº JARVIS ÃÂ¾ÃÃÂºÃÂ»ÃÃÃÂµÃÂ½"}
+            self.logger.info("²¾·°¿º ¾º»µ½")
+            return {"status": "ok", "message": "²¾·°¿º JARVIS ¾º»µ½"}
         
         except Exception as e:
-            self.logger.error(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ¾ÃÃÂºÃÂ»ÃÃÃÂµÃÂ½ÃÂ¸Ã ÃÂ°ÃÂ²ÃÃÂ¾ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂºÃÂ°: {e}")
+            self.logger.error(f"¸±º° ¾º»µ½¸ °²¾·°¿º°: {e}")
             return {"status": "error", "message": str(e)}
 
     def is_autostart_enabled(self) -> bool:
-        """ÃÃÃÂ¾ÃÂ²ÃÂµÃÃÂ¸ÃÃ, ÃÂ²ÃÂºÃÂ»ÃÃÃÂµÃÂ½ ÃÂ»ÃÂ¸ ÃÂ°ÃÂ²ÃÃÂ¾ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂº."""
+        """¾²µ¸, ²º»µ½ »¸ °²¾·°¿º."""
         try:
             key = winreg.HKEY_CURRENT_USER
             sub_key = r"Software\Microsoft\Windows\CurrentVersion\Run"
@@ -65,20 +65,20 @@ class WindowsIntegration:
             return False
 
     def register_hotkey(self, hotkey: str = "Ctrl+Shift+J") -> Dict:
-        """ÃÂ ÃÂµÃÂ³ÃÂ¸ÃÃÃÃÂ°ÃÃÂ¸Ã ÃÂ³ÃÂ»ÃÂ¾ÃÂ±ÃÂ°ÃÂ»ÃÃÂ½ÃÂ¾ÃÂ¹ ÃÂ³ÃÂ¾ÃÃÃÃÂµÃÂ¹ ÃÂºÃÂ»ÃÂ°ÃÂ²ÃÂ¸ÃÃÂ¸."""
-        # ÃÃÃÂ¸ÃÂ¼ÃÂµÃÃÂ°ÃÂ½ÃÂ¸ÃÂµ: ÃÂ´ÃÂ»Ã ÃÂ¿ÃÂ¾ÃÂ»ÃÂ½ÃÂ¾ÃÃÂµÃÂ½ÃÂ½ÃÂ¾ÃÂ¹ ÃÃÂµÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸ÃÂ¸ ÃÂ½ÃÃÂ¶ÃÂµÃÂ½ ctypes ÃÂ¸ Win32 API
-        # ÃÃÂ´ÃÂµÃÃ ÃÂ·ÃÂ°ÃÂ³ÃÂ»ÃÃÃÂºÃÂ° ÃÂ´ÃÂ»Ã ÃÂ´ÃÂµÃÂ¼ÃÂ¾ÃÂ½ÃÃÃÃÂ°ÃÃÂ¸ÃÂ¸
-        self.logger.info(f"ÃÃÂ¾ÃÃÃÃÂ°Ã ÃÂºÃÂ»ÃÂ°ÃÂ²ÃÂ¸ÃÃÂ° ÃÂ·ÃÂ°ÃÃÂµÃÂ³ÃÂ¸ÃÃÃÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ°: {hotkey}")
+        """ µ³¸°¸ ³»¾±°»½¾¹ ³¾µ¹ º»°²¸¸."""
+        # ¸¼µ°½¸µ: ´» ¿¾»½¾µ½½¾¹ µ°»¸·°¸¸ ½¶µ½ ctypes ¸ Win32 API
+        # ´µ ·°³»º° ´» ´µ¼¾½°¸¸
+        self.logger.info(f"¾° º»°²¸° ·°µ³¸¸¾²°½°: {hotkey}")
         return {
             "status": "ok",
-            "message": f"ÃÃÂ¾ÃÃÃÃÂ°Ã ÃÂºÃÂ»ÃÂ°ÃÂ²ÃÂ¸ÃÃÂ° '{hotkey}' ÃÂ·ÃÂ°ÃÃÂµÃÂ³ÃÂ¸ÃÃÃÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ°",
+            "message": f"¾° º»°²¸° '{hotkey}' ·°µ³¸¸¾²°½°",
             "hotkey": hotkey
         }
 
     def install_context_menu(self) -> Dict:
-        """ÃÂ£ÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂ¸ÃÃ ÃÂºÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂµ ÃÂ¼ÃÂµÃÂ½Ã ÃÂ¿ÃÃÂ¾ÃÂ²ÃÂ¾ÃÂ´ÃÂ½ÃÂ¸ÃÂºÃÂ°."""
+        """£°½¾²¸ º¾½µº½¾µ ¼µ½ ¿¾²¾´½¸º°."""
         try:
-            # ÃÃÃÃ ÃÂº ÃÃÂºÃÃÂ¸ÃÂ¿ÃÃ ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ¸
+            #  º º¸¿ °½¾²º¸
             script_path = Path(__file__).parent.parent / "scripts" / "install_context_menu.py"
             
             if script_path.exists():
@@ -86,19 +86,19 @@ class WindowsIntegration:
                 result = subprocess.run([sys.executable, str(script_path)], capture_output=True, text=True)
                 
                 if result.returncode == 0:
-                    self.logger.info("ÃÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂµ ÃÂ¼ÃÂµÃÂ½Ã ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¾")
-                    return {"status": "ok", "message": "ÃÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂµ ÃÂ¼ÃÂµÃÂ½Ã ÃÂ¿ÃÃÂ¾ÃÂ²ÃÂ¾ÃÂ´ÃÂ½ÃÂ¸ÃÂºÃÂ° ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¾"}
+                    self.logger.info("¾½µº½¾µ ¼µ½ °½¾²»µ½¾")
+                    return {"status": "ok", "message": "¾½µº½¾µ ¼µ½ ¿¾²¾´½¸º° °½¾²»µ½¾"}
                 else:
                     return {"status": "error", "message": result.stderr}
             else:
-                return {"status": "error", "message": "ÃÂ¡ÃÂºÃÃÂ¸ÃÂ¿Ã ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ¸ ÃÂ½ÃÂµ ÃÂ½ÃÂ°ÃÂ¹ÃÂ´ÃÂµÃÂ½"}
+                return {"status": "error", "message": "¡º¸¿ °½¾²º¸ ½µ ½°¹´µ½"}
         
         except Exception as e:
-            self.logger.error(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ¸ ÃÂºÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ¼ÃÂµÃÂ½Ã: {e}")
+            self.logger.error(f"¸±º° °½¾²º¸ º¾½µº½¾³¾ ¼µ½: {e}")
             return {"status": "error", "message": str(e)}
 
     def uninstall_context_menu(self) -> Dict:
-        """ÃÂ£ÃÂ´ÃÂ°ÃÂ»ÃÂ¸ÃÃ ÃÂºÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂµ ÃÂ¼ÃÂµÃÂ½Ã."""
+        """£´°»¸ º¾½µº½¾µ ¼µ½."""
         try:
             script_path = Path(__file__).parent.parent / "scripts" / "uninstall_context_menu.py"
             
@@ -107,19 +107,19 @@ class WindowsIntegration:
                 result = subprocess.run([sys.executable, str(script_path)], capture_output=True, text=True)
                 
                 if result.returncode == 0:
-                    self.logger.info("ÃÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂµ ÃÂ¼ÃÂµÃÂ½Ã ÃÃÂ´ÃÂ°ÃÂ»ÃÂµÃÂ½ÃÂ¾")
-                    return {"status": "ok", "message": "ÃÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂµ ÃÂ¼ÃÂµÃÂ½Ã ÃÃÂ´ÃÂ°ÃÂ»ÃÂµÃÂ½ÃÂ¾"}
+                    self.logger.info("¾½µº½¾µ ¼µ½ ´°»µ½¾")
+                    return {"status": "ok", "message": "¾½µº½¾µ ¼µ½ ´°»µ½¾"}
                 else:
                     return {"status": "error", "message": result.stderr}
             else:
-                return {"status": "error", "message": "ÃÂ¡ÃÂºÃÃÂ¸ÃÂ¿Ã ÃÃÂ´ÃÂ°ÃÂ»ÃÂµÃÂ½ÃÂ¸Ã ÃÂ½ÃÂµ ÃÂ½ÃÂ°ÃÂ¹ÃÂ´ÃÂµÃÂ½"}
+                return {"status": "error", "message": "¡º¸¿ ´°»µ½¸ ½µ ½°¹´µ½"}
         
         except Exception as e:
-            self.logger.error(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÃÂ´ÃÂ°ÃÂ»ÃÂµÃÂ½ÃÂ¸Ã ÃÂºÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ¼ÃÂµÃÂ½Ã: {e}")
+            self.logger.error(f"¸±º° ´°»µ½¸ º¾½µº½¾³¾ ¼µ½: {e}")
             return {"status": "error", "message": str(e)}
 
     def get_integration_status(self) -> Dict:
-        """ÃÃÂ¾ÃÂ»ÃÃÃÂ¸ÃÃ ÃÃÃÂ°ÃÃÃ ÃÂ¸ÃÂ½ÃÃÂµÃÂ³ÃÃÂ°ÃÃÂ¸ÃÂ¸."""
+        """¾»¸ ° ¸½µ³°¸¸."""
         return {
             "autostart_enabled": self.is_autostart_enabled(),
             "exe_path": self.exe_path,
