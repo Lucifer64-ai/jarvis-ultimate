@@ -1,9 +1,10 @@
 """
 JARVIS - Data Analyst Agent
-Агент для анализа данных и работы с базами данных
+Агент для анализа данных и работы с базами данных с AI
 """
 
 from .base_agent import BaseAgent
+from .ai_service import get_ai_service
 from typing import Dict, Optional, Any
 
 
@@ -13,7 +14,7 @@ class DataAnalystAgent(BaseAgent):
     def __init__(self):
         super().__init__(
             name="Data Analyst",
-            description="Анализ данных, статистика, визуализация, работа с БД"
+            description="Анализ данных, статистика, визуализация, работа с БД с AI"
         )
         self.capabilities = [
             "Анализ CSV/Excel файлов",
@@ -22,8 +23,10 @@ class DataAnalystAgent(BaseAgent):
             "Работа с базами данных",
             "Обработка данных (pandas)",
             "Машинное обучение (базовое)",
-            "Очистка и подготовка данных"
+            "Очистка и подготовка данных",
+            "AI-генерация аналитического кода"
         ]
+        self.ai_service = get_ai_service()
 
     def can_handle(self, task: str) -> bool:
         """Проверить, может ли агент обработать задачу."""
@@ -39,6 +42,40 @@ class DataAnalystAgent(BaseAgent):
         """Выполнить задачу по анализу данных."""
         context = context or {}
 
+        # Пытаемся использовать AI для генерации
+        if self.ai_service.client:
+            return self._execute_with_ai(task, context)
+        else:
+            # Fallback на шаблоны если AI недоступен
+            return self._execute_with_templates(task, context)
+
+    def _execute_with_ai(self, task: str, context: Dict) -> Dict[str, Any]:
+        """Выполнить задачу с помощью AI."""
+        result = self.ai_service.generate_code(
+            task=task,
+            agent_type="data_analyst",
+            context=context,
+            language="python"
+        )
+
+        if result['status'] == 'success':
+            # Парсим блоки кода из ответа AI
+            files = self.ai_service.parse_code_blocks(result['code'])
+
+            return {
+                'status': 'success',
+                'type': 'ai_generated',
+                'message': f'AI создал код для анализа: {task}',
+                'files': files,
+                'tokens_used': result.get('tokens_used', 0),
+                'model': result.get('model', 'unknown')
+            }
+        else:
+            # Если AI ошибка, используем шаблоны
+            return self._execute_with_templates(task, context)
+
+    def _execute_with_templates(self, task: str, context: Dict) -> Dict[str, Any]:
+        """Выполнить задачу с помощью шаблонов (fallback)."""
         if "график" in task.lower() or "визуализация" in task.lower():
             return self._create_visualization(task, context)
         elif "отчёт" in task.lower() or "отчет" in task.lower():
