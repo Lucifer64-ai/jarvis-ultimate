@@ -1,5 +1,5 @@
 """
-Система алиасов JARVIS
+¡¸µ¼° °»¸°¾² JARVIS
 """
 
 import json
@@ -9,7 +9,7 @@ from datetime import datetime
 
 
 class AliasSystem:
-    """Управление пользовательскими алиасами для команд."""
+    """£¿°²»µ½¸µ ¿¾»·¾²°µ»º¸¼¸ °»¸°°¼¸ ´» º¾¼°½´."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -18,76 +18,76 @@ class AliasSystem:
         self.aliases: Dict[str, str] = self._load_aliases()
 
     def _load_aliases(self) -> Dict[str, str]:
-        """Загрузка алиасов из файла."""
+        """°³·º° °»¸°¾² ¸· °¹»°."""
         if self.aliases_file.exists():
             with open(self.aliases_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
         return {}
 
     def _save_aliases(self):
-        """Сохранение алиасов."""
+        """¡¾°½µ½¸µ °»¸°¾²."""
         with open(self.aliases_file, 'w', encoding='utf-8') as f:
             json.dump(self.aliases, f, ensure_ascii=False, indent=2)
 
     def add_alias(self, alias: str, command: str) -> Dict:
-        """Добавление нового алиаса."""
+        """¾±°²»µ½¸µ ½¾²¾³¾ °»¸°°."""
         alias_lower = alias.lower().strip()
         command_lower = command.lower().strip()
         
         self.aliases[alias_lower] = command_lower
         self._save_aliases()
         
-        self.brain.logger.info(f"Добавлен алиас: '{alias}' → '{command}'")
+        self.brain.logger.info(f"¾±°²»µ½ °»¸°: '{alias}'  '{command}'")
         return {
             "status": "ok",
             "alias": alias_lower,
             "command": command_lower,
-            "message": f"Алиас '{alias}' сохранен"
+            "message": f"»¸° '{alias}' ¾°½µ½"
         }
 
     def remove_alias(self, alias: str) -> Dict:
-        """Удаление алиаса."""
+        """£´°»µ½¸µ °»¸°°."""
         alias_lower = alias.lower().strip()
         
         if alias_lower in self.aliases:
             del self.aliases[alias_lower]
             self._save_aliases()
-            return {"status": "ok", "message": f"Алиас '{alias}' удален"}
+            return {"status": "ok", "message": f"»¸° '{alias}' ´°»µ½"}
         
-        return {"status": "error", "message": "Алиас не найден"}
+        return {"status": "error", "message": "»¸° ½µ ½°¹´µ½"}
 
     def resolve_alias(self, text: str) -> str:
-        """Разрешение алиаса в команду."""
+        """ °·µµ½¸µ °»¸°° ² º¾¼°½´."""
         text_lower = text.lower().strip()
         
-        # Точное совпадение
+        # ¢¾½¾µ ¾²¿°´µ½¸µ
         if text_lower in self.aliases:
             return self.aliases[text_lower]
         
-        # Частичное совпадение (алиас в начале команды)
+        # §°¸½¾µ ¾²¿°´µ½¸µ (°»¸° ² ½°°»µ º¾¼°½´)
         for alias, command in self.aliases.items():
             if text_lower.startswith(alias):
-                # Заменяем алиас на команду
+                # °¼µ½µ¼ °»¸° ½° º¾¼°½´
                 return text_lower.replace(alias, command, 1)
         
         return text
 
     def list_aliases(self) -> List[Dict]:
-        """Список всех алиасов."""
+        """¡¿¸¾º ²µ °»¸°¾²."""
         return [
             {"alias": alias, "command": command}
             for alias, command in self.aliases.items()
         ]
 
     def clear_aliases(self) -> Dict:
-        """Очистка всех алиасов."""
+        """¸º° ²µ °»¸°¾²."""
         count = len(self.aliases)
         self.aliases = {}
         self._save_aliases()
-        return {"status": "ok", "message": f"Удалено {count} алиасов"}
+        return {"status": "ok", "message": f"£´°»µ½¾ {count} °»¸°¾²"}
 
     def get_alias_stats(self) -> Dict:
-        """Статистика алиасов."""
+        """¡°¸¸º° °»¸°¾²."""
         return {
             "total_aliases": len(self.aliases),
             "aliases": list(self.aliases.keys())
