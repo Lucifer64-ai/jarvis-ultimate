@@ -1,5 +1,5 @@
 """
-ÃÂ¡ÃÂ¸ÃÂ½ÃÃÂµÃÂ· ÃÃÂµÃÃÂ¸ JARVIS
+ÃÃÂ¡ÃÃÂ¸ÃÃÂ½ÃÃÃÂµÃÃÂ· ÃÃÃÂµÃÃÃÂ¸ JARVIS
 """
 
 import pyttsx3
@@ -7,18 +7,18 @@ from typing import Optional
 
 
 class VoiceSpeaker:
-    """ÃÂ¡ÃÂ¸ÃÂ½ÃÃÂµÃÂ· ÃÃÂµÃÃÂ¸."""
+    """ÃÃÂ¡ÃÃÂ¸ÃÃÂ½ÃÃÃÂµÃÃÂ· ÃÃÃÂµÃÃÃÂ¸."""
 
     def __init__(self, brain):
         self.brain = brain
         self.engine = pyttsx3.init()
         
-        # ÃÃÂ°ÃÃÃÃÂ¾ÃÂ¹ÃÂºÃÂ° ÃÂ³ÃÂ¾ÃÂ»ÃÂ¾ÃÃÂ°
+        # ÃÃÃÂ°ÃÃÃÃÃÂ¾ÃÃÂ¹ÃÃÂºÃÃÂ° ÃÃÂ³ÃÃÂ¾ÃÃÂ»ÃÃÂ¾ÃÃÃÂ°
         voice_config = brain.config.get("voice", {})
         self.engine.setProperty('rate', voice_config.get("rate", 180))
         self.engine.setProperty('volume', voice_config.get("volume", 1.0))
         
-        # ÃÃÃÂ±ÃÂ¾Ã ÃÃÃÃÃÂºÃÂ¾ÃÂ³ÃÂ¾ ÃÂ³ÃÂ¾ÃÂ»ÃÂ¾ÃÃÂ°
+        # ÃÃÃÃÂ±ÃÃÂ¾Ã ÃÃÃÃÃÃÂºÃÃÂ¾ÃÃÂ³ÃÃÂ¾ ÃÃÂ³ÃÃÂ¾ÃÃÂ»ÃÃÂ¾ÃÃÃÂ°
         voices = self.engine.getProperty('voices')
         for voice in voices:
             if 'russian' in voice.name.lower() or 'ru' in voice.id.lower():
@@ -26,18 +26,18 @@ class VoiceSpeaker:
                 break
 
     def speak(self, text: str):
-        """ÃÃÃÂ¾ÃÂ¸ÃÂ·ÃÂ½ÃÂµÃÃÃÂ¸ ÃÃÂµÃÂºÃÃ."""
+        """ÃÃÃÃÂ¾ÃÃÂ¸ÃÃÂ·ÃÃÂ½ÃÃÂµÃÃÃÃÂ¸ ÃÃÃÂµÃÃÂºÃÃ."""
         try:
-            self.brain.logger.info(f"ÃÃÂ¾ÃÂ²ÃÂ¾ÃÃ: {text}")
+            self.brain.logger.info(f"ÃÃÃÂ¾ÃÃÂ²ÃÃÂ¾ÃÃ: {text}")
             self.engine.say(text)
             self.engine.runAndWait()
         except Exception as e:
-            self.brain.logger.error(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÃÂ¸ÃÂ½ÃÃÂµÃÂ·ÃÂ° ÃÃÂµÃÃÂ¸: {e}")
+            self.brain.logger.error(f"ÃÃÃÃÂ¸ÃÃÂ±ÃÃÂºÃÃÂ° ÃÃÃÂ¸ÃÃÂ½ÃÃÃÂµÃÃÂ·ÃÃÂ° ÃÃÃÂµÃÃÃÂ¸: {e}")
 
     def set_rate(self, rate: int):
-        """ÃÂ£ÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂ¸ÃÃ ÃÃÂºÃÂ¾ÃÃÂ¾ÃÃÃ ÃÃÂµÃÃÂ¸."""
+        """ÃÃÂ£ÃÃÃÃÂ°ÃÃÂ½ÃÃÂ¾ÃÃÂ²ÃÃÂ¸ÃÃ ÃÃÃÂºÃÃÂ¾ÃÃÃÂ¾ÃÃÃ ÃÃÃÂµÃÃÃÂ¸."""
         self.engine.setProperty('rate', rate)
 
     def set_volume(self, volume: float):
-        """ÃÂ£ÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂ¸ÃÃ ÃÂ³ÃÃÂ¾ÃÂ¼ÃÂºÃÂ¾ÃÃÃ."""
+        """ÃÃÂ£ÃÃÃÃÂ°ÃÃÂ½ÃÃÂ¾ÃÃÂ²ÃÃÂ¸ÃÃ ÃÃÂ³ÃÃÃÂ¾ÃÃÂ¼ÃÃÂºÃÃÂ¾ÃÃÃ."""
         self.engine.setProperty('volume', volume)
