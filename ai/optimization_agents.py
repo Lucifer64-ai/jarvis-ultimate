@@ -36,7 +36,7 @@ class ResourceOptimizationAgent:
                 "status": "unavailable",
                 "metrics": metrics,
                 "recommendations": [],
-                "message": "Мониторинг ресурсов недоступен: psutil не установлен",
+                "message": "ÐÐ¾Ð½Ð¸ÑÐ¾ÑÐ¸Ð½Ð³ ÑÐµÑÑÑÑÐ¾Ð² Ð½ÐµÐ´Ð¾ÑÑÑÐ¿ÐµÐ½: psutil Ð½Ðµ ÑÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½",
             }
 
         try:
@@ -44,25 +44,25 @@ class ResourceOptimizationAgent:
             metrics["memory_percent"] = psutil.virtual_memory().percent
             metrics["active_processes"] = len(psutil.pids())
         except Exception as error:
-            self.brain.logger.debug("Не удалось получить метрики ресурсов: %s", error)
+            self.brain.logger.debug("ÐÐµ ÑÐ´Ð°Ð»Ð¾ÑÑ Ð¿Ð¾Ð»ÑÑÐ¸ÑÑ Ð¼ÐµÑÑÐ¸ÐºÐ¸ ÑÐµÑÑÑÑÐ¾Ð²: %s", error)
             return {
                 "status": "error",
                 "metrics": metrics,
                 "recommendations": [],
-                "message": "Не удалось получить метрики ресурсов",
+                "message": "ÐÐµ ÑÐ´Ð°Ð»Ð¾ÑÑ Ð¿Ð¾Ð»ÑÑÐ¸ÑÑ Ð¼ÐµÑÑÐ¸ÐºÐ¸ ÑÐµÑÑÑÑÐ¾Ð²",
             }
 
         if metrics["cpu_percent"] >= cpu_threshold:
             recommendations.append(
-                "Высокая нагрузка на CPU: временно отложите тяжёлые фоновые проверки и повторите задачу позже."
+                "ÐÑÑÐ¾ÐºÐ°Ñ Ð½Ð°Ð³ÑÑÐ·ÐºÐ° Ð½Ð° CPU: Ð²ÑÐµÐ¼ÐµÐ½Ð½Ð¾ Ð¾ÑÐ»Ð¾Ð¶Ð¸ÑÐµ ÑÑÐ¶ÑÐ»ÑÐµ ÑÐ¾Ð½Ð¾Ð²ÑÐµ Ð¿ÑÐ¾Ð²ÐµÑÐºÐ¸ Ð¸ Ð¿Ð¾Ð²ÑÐ¾ÑÐ¸ÑÐµ Ð·Ð°Ð´Ð°ÑÑ Ð¿Ð¾Ð·Ð¶Ðµ."
             )
         if metrics["memory_percent"] >= memory_threshold:
             recommendations.append(
-                "Низкий запас памяти: проверьте приложения с высоким потреблением RAM и уменьшите одновременную нагрузку."
+                "ÐÐ¸Ð·ÐºÐ¸Ð¹ Ð·Ð°Ð¿Ð°Ñ Ð¿Ð°Ð¼ÑÑÐ¸: Ð¿ÑÐ¾Ð²ÐµÑÑÑÐµ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ Ñ Ð²ÑÑÐ¾ÐºÐ¸Ð¼ Ð¿Ð¾ÑÑÐµÐ±Ð»ÐµÐ½Ð¸ÐµÐ¼ RAM Ð¸ ÑÐ¼ÐµÐ½ÑÑÐ¸ÑÐµ Ð¾Ð´Ð½Ð¾Ð²ÑÐµÐ¼ÐµÐ½Ð½ÑÑ Ð½Ð°Ð³ÑÑÐ·ÐºÑ."
             )
         if metrics["active_processes"] and metrics["active_processes"] > 200:
             recommendations.append(
-                "В системе много активных процессов: снизьте количество фоновых задач и обновлений."
+                "Ð ÑÐ¸ÑÑÐµÐ¼Ðµ Ð¼Ð½Ð¾Ð³Ð¾ Ð°ÐºÑÐ¸Ð²Ð½ÑÑ Ð¿ÑÐ¾ÑÐµÑÑÐ¾Ð²: ÑÐ½Ð¸Ð·ÑÑÐµ ÐºÐ¾Ð»Ð¸ÑÐµÑÑÐ²Ð¾ ÑÐ¾Ð½Ð¾Ð²ÑÑ Ð·Ð°Ð´Ð°Ñ Ð¸ Ð¾Ð±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ð¹."
             )
 
         return {
@@ -158,7 +158,7 @@ class SchedulingOptimizationAgent:
             "task_count": len(task_payload),
             "tasks": task_payload,
             "recommendations": [
-                "Проверьте повторяющиеся фоновые задачи и объедините их, если они дублируют друг друга."
+                "ÐÑÐ¾Ð²ÐµÑÑÑÐµ Ð¿Ð¾Ð²ÑÐ¾ÑÑÑÑÐ¸ÐµÑÑ ÑÐ¾Ð½Ð¾Ð²ÑÐµ Ð·Ð°Ð´Ð°ÑÐ¸ Ð¸ Ð¾Ð±ÑÐµÐ´Ð¸Ð½Ð¸ÑÐµ Ð¸Ñ, ÐµÑÐ»Ð¸ Ð¾Ð½Ð¸ Ð´ÑÐ±Ð»Ð¸ÑÑÑÑ Ð´ÑÑÐ³ Ð´ÑÑÐ³Ð°."
             ] if task_payload else [],
         }
 
