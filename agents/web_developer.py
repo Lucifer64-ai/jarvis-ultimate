@@ -1,6 +1,6 @@
 """
 JARVIS - Web Developer Agent
-Агент для создания сайтов и веб-приложений с AI-генерацией
+     -  AI-
 """
 
 from .base_agent import BaseAgent
@@ -10,47 +10,47 @@ import json
 
 
 class WebDeveloperAgent(BaseAgent):
-    """Агент для создания сайтов и веб-приложений."""
+    """     -."""
 
     def __init__(self):
         super().__init__(
             name="Web Developer",
-            description="Создание сайтов, лендингов, веб-приложений с AI"
+            description=" , , -  AI"
         )
         self.capabilities = [
-            "Создание HTML/CSS сайтов",
-            "Генерация React компонентов",
-            "Создание лендингов",
-            "Генерация JavaScript кода",
-            "Создание форм и валидация",
-            "Адаптивный дизайн",
-            "SEO оптимизация",
-            "AI-генерация кода"
+            " HTML/CSS ",
+            " React ",
+            " ",
+            " JavaScript ",
+            "   ",
+            " ",
+            "SEO ",
+            "AI- "
         ]
         self.ai_service = get_ai_service()
 
     def can_handle(self, task: str) -> bool:
-        """Проверить, может ли агент обработать задачу."""
+        """,     ."""
         keywords = [
-            "сайт", "лендинг", "веб", "html", "css", "javascript",
-            "react", "страница", "web", "frontend", "вёрстка", "верстка"
+            "", "", "", "html", "css", "javascript",
+            "react", "", "web", "frontend", "", ""
         ]
         task_lower = task.lower()
         return any(keyword in task_lower for keyword in keywords)
 
     def execute_task(self, task: str, context: Optional[Dict] = None) -> Dict[str, Any]:
-        """Выполнить задачу по созданию сайта."""
+        """    ."""
         context = context or {}
 
-        # Пытаемся использовать AI для генерации
+        #   AI  
         if self.ai_service.client:
             return self._execute_with_ai(task, context)
         else:
-            # Fallback на шаблоны если AI недоступен
+            # Fallback    AI 
             return self._execute_with_templates(task, context)
 
     def _execute_with_ai(self, task: str, context: Dict) -> Dict[str, Any]:
-        """Выполнить задачу с помощью AI."""
+        """    AI."""
         result = self.ai_service.generate_code(
             task=task,
             agent_type="web_developer",
@@ -58,39 +58,39 @@ class WebDeveloperAgent(BaseAgent):
         )
 
         if result['status'] == 'success':
-            # Парсим блоки кода из ответа AI
+            #      AI
             files = self.ai_service.parse_code_blocks(result['code'])
 
             return {
                 'status': 'success',
                 'type': 'ai_generated',
-                'message': f'AI создал веб-приложение: {task}',
+                'message': f'AI  -: {task}',
                 'files': files,
                 'tokens_used': result.get('tokens_used', 0),
                 'model': result.get('model', 'unknown')
             }
         else:
-            # Если AI ошибка, используем шаблоны
+            #  AI ,  
             return self._execute_with_templates(task, context)
 
     def _execute_with_templates(self, task: str, context: Dict) -> Dict[str, Any]:
-        """Выполнить задачу с помощью шаблонов (fallback)."""
-        # Определяем тип задачи
-        if "лендинг" in task.lower() or "landing" in task.lower():
+        """     (fallback)."""
+        #   
+        if "" in task.lower() or "landing" in task.lower():
             return self._create_landing(task, context)
         elif "react" in task.lower():
             return self._create_react_component(task, context)
-        elif "форма" in task.lower() or "form" in task.lower():
+        elif "" in task.lower() or "form" in task.lower():
             return self._create_form(task, context)
         else:
             return self._create_basic_site(task, context)
 
     def _create_landing(self, task: str, context: Dict) -> Dict[str, Any]:
-        """Создать лендинг."""
+        """ ."""
         return {
             'status': 'success',
             'type': 'landing',
-            'message': f'Создаю лендинг: {task}',
+            'message': f' : {task}',
             'files': {
                 'index.html': self._generate_html_template(task),
                 'style.css': self._generate_css_template(),
@@ -99,22 +99,22 @@ class WebDeveloperAgent(BaseAgent):
         }
 
     def _create_react_component(self, task: str, context: Dict) -> Dict[str, Any]:
-        """Создать React компонент."""
+        """ React ."""
         return {
             'status': 'success',
             'type': 'react_component',
-            'message': f'Создаю React компонент: {task}',
+            'message': f' React : {task}',
             'files': {
                 'Component.jsx': self._generate_react_template(task)
             }
         }
 
     def _create_form(self, task: str, context: Dict) -> Dict[str, Any]:
-        """Создать форму."""
+        """ ."""
         return {
             'status': 'success',
             'type': 'form',
-            'message': f'Создаю форму: {task}',
+            'message': f' : {task}',
             'files': {
                 'form.html': self._generate_form_template(task),
                 'validation.js': self._generate_validation_template()
@@ -122,11 +122,11 @@ class WebDeveloperAgent(BaseAgent):
         }
 
     def _create_basic_site(self, task: str, context: Dict) -> Dict[str, Any]:
-        """Создать базовый сайт."""
+        """  ."""
         return {
             'status': 'success',
             'type': 'basic_site',
-            'message': f'Создаю сайт: {task}',
+            'message': f' : {task}',
             'files': {
                 'index.html': self._generate_html_template(task),
                 'style.css': self._generate_css_template()
@@ -134,7 +134,7 @@ class WebDeveloperAgent(BaseAgent):
         }
 
     def _generate_html_template(self, task: str) -> str:
-        """Генерация HTML шаблона."""
+        """ HTML ."""
         return f"""<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -148,15 +148,15 @@ class WebDeveloperAgent(BaseAgent):
         <h1>{task}</h1>
     </header>
     <main>
-        <p>Сайт создан JARVIS Web Developer Agent</p>
+        <p>  JARVIS Web Developer Agent</p>
     </main>
     <script src="script.js"></script>
 </body>
 </html>"""
 
     def _generate_css_template(self) -> str:
-        """Генерация CSS шаблона."""
-        return """/* Стили созданы JARVIS Web Developer Agent */
+        """ CSS ."""
+        return """/*   JARVIS Web Developer Agent */
 * {
     margin: 0;
     padding: 0;
@@ -184,17 +184,17 @@ main {
 """
 
     def _generate_js_template(self) -> str:
-        """Генерация JavaScript шаблона."""
-        return """// JavaScript создан JARVIS Web Developer Agent
-console.log('JARVIS Web Developer Agent: Сайт загружен');
+        """ JavaScript ."""
+        return """// JavaScript  JARVIS Web Developer Agent
+console.log('JARVIS Web Developer Agent:  ');
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM готов к работе');
+    console.log('DOM   ');
 });
 """
 
     def _generate_react_template(self, task: str) -> str:
-        """Генерация React компонента."""
+        """ React ."""
         component_name = ''.join(word.capitalize() for word in task.split()[:2])
         return f"""import React from 'react';
 
@@ -202,7 +202,7 @@ const {component_name} = () => {{
     return (
         <div className="{component_name.lower()}">
             <h2>{task}</h2>
-            <p>Компонент создан JARVIS Web Developer Agent</p>
+            <p>  JARVIS Web Developer Agent</p>
         </div>
     );
 }};
@@ -211,7 +211,7 @@ export default {component_name};
 """
 
     def _generate_form_template(self, task: str) -> str:
-        """Генерация формы."""
+        """ ."""
         return f"""<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -257,14 +257,14 @@ export default {component_name};
         <h2>{task}</h2>
         <form id="mainForm">
             <div class="form-group">
-                <label for="name">Имя:</label>
+                <label for="name">:</label>
                 <input type="text" id="name" name="name" required>
             </div>
             <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" required>
             </div>
-            <button type="submit">Отправить</button>
+            <button type="submit"></button>
         </form>
     </div>
     <script src="validation.js"></script>
@@ -272,8 +272,8 @@ export default {component_name};
 </html>"""
 
     def _generate_validation_template(self) -> str:
-        """Генерация валидации формы."""
-        return """// Валидация формы создана JARVIS Web Developer Agent
+        """  ."""
+        return """//    JARVIS Web Developer Agent
 document.getElementById('mainForm').addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -281,17 +281,17 @@ document.getElementById('mainForm').addEventListener('submit', (e) => {
     const email = document.getElementById('email').value;
 
     if (!name || !email) {
-        alert('Пожалуйста, заполните все поля');
+        alert(',   ');
         return;
     }
 
     const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
     if (!emailRegex.test(email)) {
-        alert('Пожалуйста, введите корректный email');
+        alert(',   email');
         return;
     }
 
-    alert('Форма успешно отправлена!');
-    console.log('Данные формы:', { name, email });
+    alert('  !');
+    console.log(' :', { name, email });
 });
 """
