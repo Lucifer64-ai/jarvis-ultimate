@@ -1,5 +1,5 @@
 """
-HUD-ÃÃÂ¸ÃÃÂ½ÃÃÃÂµÃÃÃÃÂµÃÃÂ¹Ã JARVIS ÃÃÂ² ÃÃÃÃÂ¸ÃÃÂ»ÃÃÂµ Iron Man
+HUD-¸½µµ¹ JARVIS ² ¸»µ Iron Man
 """
 
 import tkinter as tk
@@ -10,7 +10,7 @@ from datetime import datetime
 
 
 class HUDOverlay:
-    """ÃÃÃÂ¾ÃÃÂ»ÃÃÂ¾ÃÃÂ³ÃÃÃÂ°ÃÃÃÂ¸ÃÃÃÂµÃÃÃÂºÃÃÂ¸ÃÃÂ¹ HUD-ÃÃÂ¾ÃÃÂ²ÃÃÂµÃÃÃÂ»ÃÃÂµÃÃÂ¹."""
+    """¾»¾³°¸µº¸¹ HUD-¾²µ»µ¹."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -20,7 +20,7 @@ class HUDOverlay:
         self.config = brain.config.get("hud", {})
 
     def start(self):
-        """ÃÃÃÂ°ÃÃÂ¿ÃÃÃÃÂº HUD ÃÃÂ² ÃÃÂ¾ÃÃÃÂ´ÃÃÂµÃÃÂ»ÃÃÃÂ½ÃÃÂ¾ÃÃÂ¼ ÃÃÂ¿ÃÃÂ¾ÃÃÃÂ¾ÃÃÂºÃÃÂµ."""
+        """°¿º HUD ² ¾´µ»½¾¼ ¿¾¾ºµ."""
         if not self.config.get("enabled", True):
             return
         
@@ -28,14 +28,14 @@ class HUDOverlay:
         thread.start()
 
     def _run(self):
-        """ÃÃÃÃÂ½ÃÃÂ¾ÃÃÂ²ÃÃÂ½ÃÃÂ¾ÃÃÂ¹ ÃÃÃÂ¸ÃÃÂºÃÃÂ» HUD."""
+        """½¾²½¾¹ ¸º» HUD."""
         self.root = tk.Tk()
         self.root.overrideredirect(True)
         self.root.attributes('-topmost', True)
         self.root.attributes('-alpha', 0.7)
         self.root.configure(bg='black')
         
-        # ÃÃÂ ÃÃÂ°ÃÃÂ·ÃÃÂ¼ÃÃÂµÃ ÃÃÂ¸ ÃÃÂ¿ÃÃÂ¾ÃÃÂ·ÃÃÂ¸ÃÃÃÂ¸Ã
+        #  °·¼µ ¸ ¿¾·¸¸
         width, height = 400, 300
         screen_width = self.root.winfo_screenwidth()
         
@@ -49,14 +49,14 @@ class HUDOverlay:
         
         self.root.geometry(f"{width}x{height}+{x}+{y}")
         
-        # Canvas ÃÃÂ´ÃÃÂ»Ã ÃÃÃÂ¸ÃÃÃÂ¾ÃÃÂ²ÃÃÂ°ÃÃÂ½ÃÃÂ¸Ã
+        # Canvas ´» ¸¾²°½¸
         self.canvas = Canvas(self.root, width=width, height=height, bg='black', highlightthickness=0)
         self.canvas.pack()
         
-        # ÃÃÂ ÃÃÂ°ÃÃÂ¼ÃÃÂºÃÃÂ°
+        #  °¼º°
         self.canvas.create_rectangle(5, 5, width-5, height-5, outline='#00d4ff', width=2)
         
-        # ÃÃÃÂ°ÃÃÂ³ÃÃÂ¾ÃÃÂ»ÃÃÂ¾ÃÃÂ²ÃÃÂ¾ÃÃÂº
+        # °³¾»¾²¾º
         self.canvas.create_text(width//2, 25, text="J.A.R.V.I.S.", fill='#00d4ff', font=('Consolas', 16, 'bold'))
         
         self.running = True
@@ -64,15 +64,15 @@ class HUDOverlay:
         self.root.mainloop()
 
     def _update(self):
-        """ÃÃÃÂ±ÃÃÂ½ÃÃÂ¾ÃÃÂ²ÃÃÂ»ÃÃÂµÃÃÂ½ÃÃÂ¸ÃÃÂµ ÃÃÂ´ÃÃÂ°ÃÃÂ½ÃÃÂ½ÃÃ HUD."""
+        """±½¾²»µ½¸µ ´°½½ HUD."""
         if not self.running:
             return
         
         try:
-            # ÃÃÃÃÂ¸ÃÃÃÃÂºÃÃÂ° ÃÃÃÃÂ°ÃÃÃ ÃÃÂ´ÃÃÂ°ÃÃÂ½ÃÃÂ½ÃÃ
+            # ¸º° ° ´°½½
             self.canvas.delete("data")
             
-            # ÃÃÃÃÂµÃÃÂ¼Ã
+            # µ¼
             now = datetime.now().strftime("%H:%M:%S")
             self.canvas.create_text(200, 60, text=now, fill='#00d4ff', font=('Consolas', 14), tags="data")
             
@@ -89,23 +89,23 @@ class HUDOverlay:
             if battery:
                 self.canvas.create_text(50, 160, text=f"BAT: {battery.percent}%", fill='#ffaa00', font=('Consolas', 11), anchor='w', tags="data")
             
-            # ÃÃÂ¡ÃÃÃÂ°ÃÃÃ
+            # ¡°
             self.canvas.create_text(200, 250, text="SYSTEM ONLINE", fill='#00d4ff', font=('Consolas', 10), tags="data")
             
         except Exception as e:
-            self.brain.logger.error(f"ÃÃÃÃÂ¸ÃÃÂ±ÃÃÂºÃÃÂ° ÃÃÂ¾ÃÃÂ±ÃÃÂ½ÃÃÂ¾ÃÃÂ²ÃÃÂ»ÃÃÂµÃÃÂ½ÃÃÂ¸Ã HUD: {e}")
+            self.brain.logger.error(f"¸±º° ¾±½¾²»µ½¸ HUD: {e}")
         
-        # ÃÃÃÂ±ÃÃÂ½ÃÃÂ¾ÃÃÂ²ÃÃÂ»ÃÃÂµÃÃÂ½ÃÃÂ¸ÃÃÂµ ÃÃÂºÃÃÂ°ÃÃÂ¶ÃÃÂ´ÃÃÃÂµ 2 ÃÃÃÂµÃÃÂºÃÃÃÂ½ÃÃÂ´Ã
+        # ±½¾²»µ½¸µ º°¶´µ 2 µº½´
         self.root.after(2000, self._update)
 
     def stop(self):
-        """ÃÃÃÃÃÂ°ÃÃÂ½ÃÃÂ¾ÃÃÂ²ÃÃÂºÃÃÂ° HUD."""
+        """°½¾²º° HUD."""
         self.running = False
         if self.root:
             self.root.quit()
 
     def show_message(self, message: str, duration: int = 3000):
-        """ÃÃÃÂ¾ÃÃÂºÃÃÂ°ÃÃÂ·ÃÃÂ°ÃÃ ÃÃÂ²ÃÃÃÂµÃÃÂ¼ÃÃÂµÃÃÂ½ÃÃÂ½ÃÃÂ¾ÃÃÂµ ÃÃÃÂ¾ÃÃÂ¾ÃÃÂ±ÃÃÃÂµÃÃÂ½ÃÃÂ¸ÃÃÂµ."""
+        """¾º°·° ²µ¼µ½½¾µ ¾¾±µ½¸µ."""
         if not self.canvas:
             return
         
