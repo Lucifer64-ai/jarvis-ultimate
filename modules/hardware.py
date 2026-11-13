@@ -1,5 +1,5 @@
 """
-ÐÐ½ÑÐ¾ÑÐ¼Ð°ÑÐ¸Ñ Ð¾ Ð¶ÐµÐ»ÐµÐ·Ðµ JARVIS
+½¾¼°¸ ¾ ¶µ»µ·µ JARVIS
 """
 
 import psutil
@@ -8,13 +8,13 @@ from typing import Dict
 
 
 class HardwareModule:
-    """ÐÐ¾Ð½Ð¸ÑÐ¾ÑÐ¸Ð½Ð³ Ð¾Ð±Ð¾ÑÑÐ´Ð¾Ð²Ð°Ð½Ð¸Ñ."""
+    """¾½¸¾¸½³ ¾±¾´¾²°½¸."""
 
     def __init__(self, brain):
         self.brain = brain
 
     def get_cpu_info(self) -> Dict:
-        """ÐÐ½ÑÐ¾ÑÐ¼Ð°ÑÐ¸Ñ Ð¾ Ð¿ÑÐ¾ÑÐµÑÑÐ¾ÑÐµ."""
+        """½¾¼°¸ ¾ ¿¾µ¾µ."""
         cpu = cpuinfo.get_cpu_info()
         return {
             "brand": cpu.get('brand_raw', 'Unknown'),
@@ -24,7 +24,7 @@ class HardwareModule:
         }
 
     def get_memory_info(self) -> Dict:
-        """ÐÐ½ÑÐ¾ÑÐ¼Ð°ÑÐ¸Ñ Ð¾ Ð¿Ð°Ð¼ÑÑÐ¸."""
+        """½¾¼°¸ ¾ ¿°¼¸."""
         mem = psutil.virtual_memory()
         return {
             "total": round(mem.total / (1024**3), 2),
@@ -34,7 +34,7 @@ class HardwareModule:
         }
 
     def get_disk_info(self) -> Dict:
-        """ÐÐ½ÑÐ¾ÑÐ¼Ð°ÑÐ¸Ñ Ð¾ Ð´Ð¸ÑÐºÐ°Ñ."""
+        """½¾¼°¸ ¾ ´¸º°."""
         disks = []
         for partition in psutil.disk_partitions():
             try:
@@ -52,7 +52,7 @@ class HardwareModule:
         return disks
 
     def get_full_report(self) -> Dict:
-        """ÐÐ¾Ð»Ð½ÑÐ¹ Ð¾ÑÑÑÑ Ð¾ ÑÐ¸ÑÑÐµÐ¼Ðµ."""
+        """¾»½¹ ¾ ¾ ¸µ¼µ."""
         return {
             "cpu": self.get_cpu_info(),
             "memory": self.get_memory_info(),
