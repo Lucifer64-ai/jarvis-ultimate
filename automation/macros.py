@@ -1,5 +1,5 @@
 """
-ÃÂ¡ÃÂ¸ÃÃÃÂµÃÂ¼ÃÂ° ÃÂ¼ÃÂ°ÃÂºÃÃÂ¾ÃÃÂ¾ÃÂ² JARVIS
+¡¸µ¼° ¼°º¾¾² JARVIS
 """
 
 import json
@@ -8,7 +8,7 @@ from typing import Dict, List
 
 
 class MacroManager:
-    """ÃÂ£ÃÂ¿ÃÃÂ°ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÂ¼ÃÂ°ÃÂºÃÃÂ¾ÃÃÂ°ÃÂ¼ÃÂ¸."""
+    """£¿°²»µ½¸µ ¼°º¾°¼¸."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -18,17 +18,17 @@ class MacroManager:
         self._load_macros()
 
     def _load_macros(self):
-        """ÃÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ° ÃÂ¼ÃÂ°ÃÂºÃÃÂ¾ÃÃÂ¾ÃÂ² ÃÂ¸ÃÂ· ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ¾ÃÂ²."""
+        """°³·º° ¼°º¾¾² ¸· °¹»¾²."""
         for file in self.macros_dir.glob("*.json"):
             try:
                 with open(file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
                     self.macros[file.stem] = data
             except Exception as e:
-                self.brain.logger.error(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ¸ ÃÂ¼ÃÂ°ÃÂºÃÃÂ¾ÃÃÂ° {file}: {e}")
+                self.brain.logger.error(f"¸±º° ·°³·º¸ ¼°º¾° {file}: {e}")
 
     def create_macro(self, name: str, commands: List[str]) -> Dict:
-        """ÃÂ¡ÃÂ¾ÃÂ·ÃÂ´ÃÂ°ÃÃ ÃÂ¼ÃÂ°ÃÂºÃÃÂ¾Ã."""
+        """¡¾·´° ¼°º¾."""
         macro = {
             "name": name,
             "commands": commands,
@@ -43,9 +43,9 @@ class MacroManager:
         return {"status": "ok", "name": name}
 
     def execute_macro(self, name: str) -> Dict:
-        """ÃÃÃÂ¿ÃÂ¾ÃÂ»ÃÂ½ÃÂ¸ÃÃ ÃÂ¼ÃÂ°ÃÂºÃÃÂ¾Ã."""
+        """¿¾»½¸ ¼°º¾."""
         if name not in self.macros:
-            return {"status": "error", "message": "ÃÃÂ°ÃÂºÃÃÂ¾Ã ÃÂ½ÃÂµ ÃÂ½ÃÂ°ÃÂ¹ÃÂ´ÃÂµÃÂ½"}
+            return {"status": "error", "message": "°º¾ ½µ ½°¹´µ½"}
         
         macro = self.macros[name]
         results = []
@@ -57,15 +57,15 @@ class MacroManager:
         return {"status": "ok", "results": results}
 
     def list_macros(self) -> List[str]:
-        """ÃÂ¡ÃÂ¿ÃÂ¸ÃÃÂ¾ÃÂº ÃÂ¼ÃÂ°ÃÂºÃÃÂ¾ÃÃÂ¾ÃÂ²."""
+        """¡¿¸¾º ¼°º¾¾²."""
         return list(self.macros.keys())
 
     def delete_macro(self, name: str) -> Dict:
-        """ÃÂ£ÃÂ´ÃÂ°ÃÂ»ÃÂ¸ÃÃ ÃÂ¼ÃÂ°ÃÂºÃÃÂ¾Ã."""
+        """£´°»¸ ¼°º¾."""
         if name in self.macros:
             file_path = self.macros_dir / f"{name}.json"
             if file_path.exists():
                 file_path.unlink()
             del self.macros[name]
             return {"status": "ok"}
-        return {"status": "error", "message": "ÃÃÂ°ÃÂºÃÃÂ¾Ã ÃÂ½ÃÂµ ÃÂ½ÃÂ°ÃÂ¹ÃÂ´ÃÂµÃÂ½"}
+        return {"status": "error", "message": "°º¾ ½µ ½°¹´µ½"}
