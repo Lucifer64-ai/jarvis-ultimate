@@ -1,5 +1,5 @@
 """
-ÐÑÑÐµÐ½ÑÐ¸ÑÐ¸ÐºÐ°ÑÐ¸Ñ Ð´Ð»Ñ Ð¼Ð¾Ð±Ð¸Ð»ÑÐ½Ð¾Ð³Ð¾ API
+µ½¸¸º°¸ ´» ¼¾±¸»½¾³¾ API
 """
 
 import hashlib
@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 
 
 class AuthManager:
-    """Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð°ÑÑÐµÐ½ÑÐ¸ÑÐ¸ÐºÐ°ÑÐ¸ÐµÐ¹."""
+    """£¿°²»µ½¸µ °µ½¸¸º°¸µ¹."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -23,37 +23,37 @@ class AuthManager:
         self.tokens: Dict = self._load_tokens()
 
     def _load_users(self) -> Dict:
-        """ÐÐ°Ð³ÑÑÐ·ÐºÐ° Ð¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»ÐµÐ¹."""
+        """°³·º° ¿¾»·¾²°µ»µ¹."""
         if self.users_file.exists():
             with open(self.users_file, "r") as f:
                 return json.load(f)
         return {}
 
     def _save_users(self):
-        """Ð¡Ð¾ÑÑÐ°Ð½ÐµÐ½Ð¸Ðµ Ð¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»ÐµÐ¹."""
+        """¡¾°½µ½¸µ ¿¾»·¾²°µ»µ¹."""
         with open(self.users_file, "w") as f:
             json.dump(self.users, f, indent=2)
 
     def _load_tokens(self) -> Dict:
-        """ÐÐ°Ð³ÑÑÐ·ÐºÐ° ÑÐ¾ÐºÐµÐ½Ð¾Ð²."""
+        """°³·º° ¾ºµ½¾²."""
         if self.tokens_file.exists():
             with open(self.tokens_file, "r") as f:
                 return json.load(f)
         return {}
 
     def _save_tokens(self):
-        """Ð¡Ð¾ÑÑÐ°Ð½ÐµÐ½Ð¸Ðµ ÑÐ¾ÐºÐµÐ½Ð¾Ð²."""
+        """¡¾°½µ½¸µ ¾ºµ½¾²."""
         with open(self.tokens_file, "w") as f:
             json.dump(self.tokens, f, indent=2)
 
     def _hash_password(self, password: str) -> str:
-        """Ð¥ÐµÑÐ¸ÑÐ¾Ð²Ð°Ð½Ð¸Ðµ Ð¿Ð°ÑÐ¾Ð»Ñ."""
+        """¥µ¸¾²°½¸µ ¿°¾»."""
         return hashlib.sha256(password.encode()).hexdigest()
 
     def register_user(self, username: str, password: str) -> Dict:
-        """Ð ÐµÐ³Ð¸ÑÑÑÐ°ÑÐ¸Ñ Ð½Ð¾Ð²Ð¾Ð³Ð¾ Ð¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»Ñ."""
+        """ µ³¸°¸ ½¾²¾³¾ ¿¾»·¾²°µ»."""
         if username in self.users:
-            return {"status": "error", "message": "ÐÐ¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»Ñ ÑÐ¶Ðµ ÑÑÑÐµÑÑÐ²ÑÐµÑ"}
+            return {"status": "error", "message": "¾»·¾²°µ» ¶µ µ²µ"}
         
         self.users[username] = {
             "password_hash": self._hash_password(password),
@@ -64,15 +64,15 @@ class AuthManager:
         return {"status": "ok", "username": username}
 
     def authenticate(self, username: str, password: str) -> Dict:
-        """ÐÑÑÐµÐ½ÑÐ¸ÑÐ¸ÐºÐ°ÑÐ¸Ñ Ð¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»Ñ."""
+        """µ½¸¸º°¸ ¿¾»·¾²°µ»."""
         if username not in self.users:
-            return {"status": "error", "message": "ÐÐ¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»Ñ Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½"}
+            return {"status": "error", "message": "¾»·¾²°µ» ½µ ½°¹´µ½"}
         
         user = self.users[username]
         if user["password_hash"] != self._hash_password(password):
-            return {"status": "error", "message": "ÐÐµÐ²ÐµÑÐ½ÑÐ¹ Ð¿Ð°ÑÐ¾Ð»Ñ"}
+            return {"status": "error", "message": "µ²µ½¹ ¿°¾»"}
         
-        # ÐÐµÐ½ÐµÑÐ°ÑÐ¸Ñ ÑÐ¾ÐºÐµÐ½Ð°
+        # µ½µ°¸ ¾ºµ½°
         token = secrets.token_hex(32)
         self.tokens[token] = {
             "username": username,
@@ -84,7 +84,7 @@ class AuthManager:
         return {"status": "ok", "token": token, "username": username}
 
     def verify_token(self, token: str) -> Optional[str]:
-        """ÐÑÐ¾Ð²ÐµÑÐºÐ° ÑÐ¾ÐºÐµÐ½Ð°."""
+        """¾²µº° ¾ºµ½°."""
         if token not in self.tokens:
             return None
         
@@ -99,21 +99,21 @@ class AuthManager:
         return token_data.get("username")
 
     def revoke_token(self, token: str) -> Dict:
-        """ÐÑÐ·ÑÐ² ÑÐ¾ÐºÐµÐ½Ð°."""
+        """·² ¾ºµ½°."""
         if token in self.tokens:
             del self.tokens[token]
             self._save_tokens()
             return {"status": "ok"}
-        return {"status": "error", "message": "Ð¢Ð¾ÐºÐµÐ½ Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½"}
+        return {"status": "error", "message": "¢¾ºµ½ ½µ ½°¹´µ½"}
 
     def list_users(self) -> list:
-        """Ð¡Ð¿Ð¸ÑÐ¾Ðº Ð¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»ÐµÐ¹."""
+        """¡¿¸¾º ¿¾»·¾²°µ»µ¹."""
         return list(self.users.keys())
 
     def delete_user(self, username: str) -> Dict:
-        """Ð£Ð´Ð°Ð»ÐµÐ½Ð¸Ðµ Ð¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»Ñ."""
+        """£´°»µ½¸µ ¿¾»·¾²°µ»."""
         if username in self.users:
             del self.users[username]
             self._save_users()
             return {"status": "ok"}
-        return {"status": "error", "message": "ÐÐ¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»Ñ Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½"}
+        return {"status": "error", "message": "¾»·¾²°µ» ½µ ½°¹´µ½"}
