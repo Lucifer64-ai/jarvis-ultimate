@@ -1,5 +1,5 @@
 """
-ÃÂ¡ÃÂ¸ÃÃÃÂµÃÂ¼ÃÂ° ÃÃÂ²ÃÂµÃÂ´ÃÂ¾ÃÂ¼ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂ¹ JARVIS
+ÃÃÂ¡ÃÃÂ¸ÃÃÃÃÂµÃÃÂ¼ÃÃÂ° ÃÃÃÂ²ÃÃÂµÃÃÂ´ÃÃÂ¾ÃÃÂ¼ÃÃÂ»ÃÃÂµÃÃÂ½ÃÃÂ¸ÃÃÂ¹ JARVIS
 """
 
 from plyer import notification
@@ -8,13 +8,13 @@ import threading
 
 
 class NotificationManager:
-    """ÃÂ£ÃÂ¿ÃÃÂ°ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÃÂ²ÃÂµÃÂ´ÃÂ¾ÃÂ¼ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÃÂ¼ÃÂ¸."""
+    """ÃÃÂ£ÃÃÂ¿ÃÃÃÂ°ÃÃÂ²ÃÃÂ»ÃÃÂµÃÃÂ½ÃÃÂ¸ÃÃÂµ ÃÃÃÂ²ÃÃÂµÃÃÂ´ÃÃÂ¾ÃÃÂ¼ÃÃÂ»ÃÃÂµÃÃÂ½ÃÃÂ¸ÃÃÃÂ¼ÃÃÂ¸."""
 
     def __init__(self, brain):
         self.brain = brain
 
     def show(self, title: str, message: str, timeout: int = 10):
-        """ÃÃÂ¾ÃÂºÃÂ°ÃÂ·ÃÂ°ÃÃ ÃÃÂ²ÃÂµÃÂ´ÃÂ¾ÃÂ¼ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ."""
+        """ÃÃÃÂ¾ÃÃÂºÃÃÂ°ÃÃÂ·ÃÃÂ°ÃÃ ÃÃÃÂ²ÃÃÂµÃÃÂ´ÃÃÂ¾ÃÃÂ¼ÃÃÂ»ÃÃÂµÃÃÂ½ÃÃÂ¸ÃÃÂµ."""
         try:
             notification.notify(
                 title=title,
@@ -23,10 +23,10 @@ class NotificationManager:
                 timeout=timeout
             )
         except Exception as e:
-            self.brain.logger.error(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ¿ÃÂ¾ÃÂºÃÂ°ÃÂ·ÃÂ° ÃÃÂ²ÃÂµÃÂ´ÃÂ¾ÃÂ¼ÃÂ»ÃÂµÃÂ½ÃÂ¸Ã: {e}")
+            self.brain.logger.error(f"ÃÃÃÃÂ¸ÃÃÂ±ÃÃÂºÃÃÂ° ÃÃÂ¿ÃÃÂ¾ÃÃÂºÃÃÂ°ÃÃÂ·ÃÃÂ° ÃÃÃÂ²ÃÃÂµÃÃÂ´ÃÃÂ¾ÃÃÂ¼ÃÃÂ»ÃÃÂµÃÃÂ½ÃÃÂ¸Ã: {e}")
 
     def show_async(self, title: str, message: str, timeout: int = 10):
-        """ÃÃÂ¾ÃÂºÃÂ°ÃÂ·ÃÂ°ÃÃ ÃÃÂ²ÃÂµÃÂ´ÃÂ¾ÃÂ¼ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÂ°ÃÃÂ¸ÃÂ½ÃÃÃÂ¾ÃÂ½ÃÂ½ÃÂ¾."""
+        """ÃÃÃÂ¾ÃÃÂºÃÃÂ°ÃÃÂ·ÃÃÂ°ÃÃ ÃÃÃÂ²ÃÃÂµÃÃÂ´ÃÃÂ¾ÃÃÂ¼ÃÃÂ»ÃÃÂµÃÃÂ½ÃÃÂ¸ÃÃÂµ ÃÃÂ°ÃÃÃÂ¸ÃÃÂ½ÃÃÃÃÂ¾ÃÃÂ½ÃÃÂ½ÃÃÂ¾."""
         thread = threading.Thread(
             target=self.show,
             args=(title, message, timeout),
@@ -35,12 +35,12 @@ class NotificationManager:
         thread.start()
 
     def alert(self, message: str, level: str = "info"):
-        """ÃÃÂ¾ÃÂºÃÂ°ÃÂ·ÃÂ°ÃÃ ÃÂ¿ÃÃÂµÃÂ´ÃÃÂ¿ÃÃÂµÃÂ¶ÃÂ´ÃÂµÃÂ½ÃÂ¸ÃÂµ."""
+        """ÃÃÃÂ¾ÃÃÂºÃÃÂ°ÃÃÂ·ÃÃÂ°ÃÃ ÃÃÂ¿ÃÃÃÂµÃÃÂ´ÃÃÃÂ¿ÃÃÃÂµÃÃÂ¶ÃÃÂ´ÃÃÂµÃÃÂ½ÃÃÂ¸ÃÃÂµ."""
         icons = {
-            "info": "Ã¢Â¹Ã¯Â¸",
-            "warning": "Ã¢Â Ã¯Â¸",
-            "error": "Ã¢",
-            "success": "Ã¢"
+            "info": "ÃÂ¢ÃÂ¹ÃÂ¯ÃÂ¸",
+            "warning": "ÃÂ¢ÃÂ ÃÂ¯ÃÂ¸",
+            "error": "ÃÂ¢",
+            "success": "ÃÂ¢"
         }
-        icon = icons.get(level, "Ã¢Â¹Ã¯Â¸")
+        icon = icons.get(level, "ÃÂ¢ÃÂ¹ÃÂ¯ÃÂ¸")
         self.show(f"{icon} JARVIS", message)
