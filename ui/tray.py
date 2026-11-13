@@ -1,5 +1,5 @@
 """
-Трей-иконка JARVIS
+Ð¢ÑÐµÐ¹-Ð¸ÐºÐ¾Ð½ÐºÐ° JARVIS
 """
 
 import pystray
@@ -8,7 +8,7 @@ import threading
 
 
 class TrayIcon:
-    """Иконка в системном трее."""
+    """ÐÐºÐ¾Ð½ÐºÐ° Ð² ÑÐ¸ÑÑÐµÐ¼Ð½Ð¾Ð¼ ÑÑÐµÐµ."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -16,28 +16,28 @@ class TrayIcon:
         self._create_icon()
 
     def _create_icon(self):
-        """Создание иконки."""
-        # Создание простой иконки JARVIS
+        """Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð¸ÐºÐ¾Ð½ÐºÐ¸."""
+        # Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð¿ÑÐ¾ÑÑÐ¾Ð¹ Ð¸ÐºÐ¾Ð½ÐºÐ¸ JARVIS
         image = Image.new('RGB', (64, 64), color='#0f0f1e')
         dc = ImageDraw.Draw(image)
         
-        # Круг
+        # ÐÑÑÐ³
         dc.ellipse([8, 8, 56, 56], outline='#00d4ff', width=3)
         
-        # Буква J
+        # ÐÑÐºÐ²Ð° J
         dc.text((24, 18), "J", fill='#00d4ff')
         
         self.image = image
 
     def start(self):
-        """Запуск иконки в трее."""
+        """ÐÐ°Ð¿ÑÑÐº Ð¸ÐºÐ¾Ð½ÐºÐ¸ Ð² ÑÑÐµÐµ."""
         menu = pystray.Menu(
-            pystray.MenuItem("Показать HUD", self._show_hud),
-            pystray.MenuItem("Скрыть HUD", self._hide_hud),
+            pystray.MenuItem("ÐÐ¾ÐºÐ°Ð·Ð°ÑÑ HUD", self._show_hud),
+            pystray.MenuItem("Ð¡ÐºÑÑÑÑ HUD", self._hide_hud),
             pystray.Menu.SEPARATOR,
-            pystray.MenuItem("Статус", self._show_status),
+            pystray.MenuItem("Ð¡ÑÐ°ÑÑÑ", self._show_status),
             pystray.Menu.SEPARATOR,
-            pystray.MenuItem("Выход", self._quit)
+            pystray.MenuItem("ÐÑÑÐ¾Ð´", self._quit)
         )
         
         self.icon = pystray.Icon("jarvis", self.image, "JARVIS", menu)
@@ -46,26 +46,26 @@ class TrayIcon:
         thread.start()
 
     def _show_hud(self, icon, item):
-        """Показать HUD."""
+        """ÐÐ¾ÐºÐ°Ð·Ð°ÑÑ HUD."""
         if hasattr(self.brain, 'hud'):
             self.brain.hud.start()
 
     def _hide_hud(self, icon, item):
-        """Скрыть HUD."""
+        """Ð¡ÐºÑÑÑÑ HUD."""
         if hasattr(self.brain, 'hud'):
             self.brain.hud.stop()
 
     def _show_status(self, icon, item):
-        """Показать статус."""
+        """ÐÐ¾ÐºÐ°Ð·Ð°ÑÑ ÑÑÐ°ÑÑÑ."""
         status = self.brain.get_status()
-        self.brain.logger.info(f"Статус: {status}")
+        self.brain.logger.info(f"Ð¡ÑÐ°ÑÑÑ: {status}")
 
     def _quit(self, icon, item):
-        """Выход из приложения."""
+        """ÐÑÑÐ¾Ð´ Ð¸Ð· Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ."""
         self.brain.stop()
         icon.stop()
 
     def stop(self):
-        """Остановка иконки."""
+        """ÐÑÑÐ°Ð½Ð¾Ð²ÐºÐ° Ð¸ÐºÐ¾Ð½ÐºÐ¸."""
         if self.icon:
             self.icon.stop()
