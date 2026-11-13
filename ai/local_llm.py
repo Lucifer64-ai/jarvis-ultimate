@@ -1,5 +1,5 @@
 """
-ÐÐ¾ÐºÐ°Ð»ÑÐ½Ð°Ñ ÑÐ·ÑÐºÐ¾Ð²Ð°Ñ Ð¼Ð¾Ð´ÐµÐ»Ñ JARVIS (Ollama Ð¸Ð½ÑÐµÐ³ÑÐ°ÑÐ¸Ñ)
+¾º°»½° ·º¾²° ¼¾´µ» JARVIS (Ollama ¸½µ³°¸)
 """
 
 import requests
@@ -9,7 +9,7 @@ import logging
 
 
 class LocalLLM:
-    """ÐÐ½ÑÐµÐ³ÑÐ°ÑÐ¸Ñ Ñ Ð»Ð¾ÐºÐ°Ð»ÑÐ½Ð¾Ð¹ ÑÐ·ÑÐºÐ¾Ð²Ð¾Ð¹ Ð¼Ð¾Ð´ÐµÐ»ÑÑ ÑÐµÑÐµÐ· Ollama."""
+    """½µ³°¸  »¾º°»½¾¹ ·º¾²¾¹ ¼¾´µ» µµ· Ollama."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -18,12 +18,12 @@ class LocalLLM:
         self.enabled = brain.config.get("local_llm", {}).get("enabled", False)
         
         if self.enabled:
-            self.brain.logger.info(f"ÐÐ¾ÐºÐ°Ð»ÑÐ½Ð°Ñ LLM Ð²ÐºÐ»ÑÑÐµÐ½Ð°: {self.model} ÑÐµÑÐµÐ· {self.ollama_url}")
+            self.brain.logger.info(f"¾º°»½° LLM ²º»µ½°: {self.model} µµ· {self.ollama_url}")
         else:
-            self.brain.logger.info("ÐÐ¾ÐºÐ°Ð»ÑÐ½Ð°Ñ LLM Ð¾ÑÐºÐ»ÑÑÐµÐ½Ð°")
+            self.brain.logger.info("¾º°»½° LLM ¾º»µ½°")
 
     def is_available(self) -> bool:
-        """ÐÑÐ¾Ð²ÐµÑÐºÐ° Ð´Ð¾ÑÑÑÐ¿Ð½Ð¾ÑÑÐ¸ Ollama."""
+        """¾²µº° ´¾¿½¾¸ Ollama."""
         if not self.enabled:
             return False
         
@@ -34,23 +34,23 @@ class LocalLLM:
             return False
 
     def list_models(self) -> List[str]:
-        """Ð¡Ð¿Ð¸ÑÐ¾Ðº Ð´Ð¾ÑÑÑÐ¿Ð½ÑÑ Ð¼Ð¾Ð´ÐµÐ»ÐµÐ¹."""
+        """¡¿¸¾º ´¾¿½ ¼¾´µ»µ¹."""
         try:
             response = requests.get(f"{self.ollama_url}/api/tags", timeout=5)
             if response.status_code == 200:
                 data = response.json()
                 return [model["name"] for model in data.get("models", [])]
         except Exception as e:
-            self.brain.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° Ð¿Ð¾Ð»ÑÑÐµÐ½Ð¸Ñ ÑÐ¿Ð¸ÑÐºÐ° Ð¼Ð¾Ð´ÐµÐ»ÐµÐ¹: {e}")
+            self.brain.logger.error(f"¸±º° ¿¾»µ½¸ ¿¸º° ¼¾´µ»µ¹: {e}")
         
         return []
 
     def generate(self, prompt: str, system: str = None) -> Dict:
-        """ÐÐµÐ½ÐµÑÐ°ÑÐ¸Ñ Ð¾ÑÐ²ÐµÑÐ°."""
+        """µ½µ°¸ ¾²µ°."""
         if not self.is_available():
             return {
                 "status": "error",
-                "message": "Ollama Ð½Ðµ Ð´Ð¾ÑÑÑÐ¿Ð½Ð°. Ð£ÑÑÐ°Ð½Ð¾Ð²Ð¸ÑÐµ Ñ https://ollama.ai"
+                "message": "Ollama ½µ ´¾¿½°. £°½¾²¸µ  https://ollama.ai"
             }
         
         try:
@@ -80,20 +80,20 @@ class LocalLLM:
             else:
                 return {
                     "status": "error",
-                    "message": f"ÐÑÐ¸Ð±ÐºÐ° Ollama: {response.status_code}"
+                    "message": f"¸±º° Ollama: {response.status_code}"
                 }
         
         except requests.exceptions.Timeout:
-            return {"status": "error", "message": "Ð¢Ð°Ð¹Ð¼Ð°ÑÑ Ð·Ð°Ð¿ÑÐ¾ÑÐ° Ðº Ollama"}
+            return {"status": "error", "message": "¢°¹¼° ·°¿¾° º Ollama"}
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
     def chat(self, messages: List[Dict]) -> Dict:
-        """Ð§Ð°Ñ Ñ Ð¼Ð¾Ð´ÐµÐ»ÑÑ."""
+        """§°  ¼¾´µ»."""
         if not self.is_available():
             return {
                 "status": "error",
-                "message": "Ollama Ð½Ðµ Ð´Ð¾ÑÑÑÐ¿Ð½Ð°"
+                "message": "Ollama ½µ ´¾¿½°"
             }
         
         try:
@@ -121,20 +121,20 @@ class LocalLLM:
             else:
                 return {
                     "status": "error",
-                    "message": f"ÐÑÐ¸Ð±ÐºÐ° Ollama: {response.status_code}"
+                    "message": f"¸±º° Ollama: {response.status_code}"
                 }
         
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
     def set_model(self, model: str) -> Dict:
-        """Ð£ÑÑÐ°Ð½Ð¾Ð²ÐºÐ° Ð¼Ð¾Ð´ÐµÐ»Ð¸."""
+        """£°½¾²º° ¼¾´µ»¸."""
         available = self.list_models()
         
         if model not in available:
             return {
                 "status": "error",
-                "message": f"ÐÐ¾Ð´ÐµÐ»Ñ '{model}' Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½Ð°. ÐÐ¾ÑÑÑÐ¿Ð½ÑÐµ: {', '.join(available)}"
+                "message": f"¾´µ» '{model}' ½µ ½°¹´µ½°. ¾¿½µ: {', '.join(available)}"
             }
         
         self.model = model
@@ -142,23 +142,23 @@ class LocalLLM:
         
         return {
             "status": "ok",
-            "message": f"ÐÐ¾Ð´ÐµÐ»Ñ ÑÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½Ð°: {model}"
+            "message": f"¾´µ» °½¾²»µ½°: {model}"
         }
 
     def enable(self) -> Dict:
-        """ÐÐºÐ»ÑÑÐµÐ½Ð¸Ðµ Ð»Ð¾ÐºÐ°Ð»ÑÐ½Ð¾Ð¹ LLM."""
+        """º»µ½¸µ »¾º°»½¾¹ LLM."""
         self.enabled = True
         self.brain.config.set("local_llm.enabled", True)
-        return {"status": "ok", "message": "ÐÐ¾ÐºÐ°Ð»ÑÐ½Ð°Ñ LLM Ð²ÐºÐ»ÑÑÐµÐ½Ð°"}
+        return {"status": "ok", "message": "¾º°»½° LLM ²º»µ½°"}
 
     def disable(self) -> Dict:
-        """ÐÑÐºÐ»ÑÑÐµÐ½Ð¸Ðµ Ð»Ð¾ÐºÐ°Ð»ÑÐ½Ð¾Ð¹ LLM."""
+        """º»µ½¸µ »¾º°»½¾¹ LLM."""
         self.enabled = False
         self.brain.config.set("local_llm.enabled", False)
-        return {"status": "ok", "message": "ÐÐ¾ÐºÐ°Ð»ÑÐ½Ð°Ñ LLM Ð¾ÑÐºÐ»ÑÑÐµÐ½Ð°"}
+        return {"status": "ok", "message": "¾º°»½° LLM ¾º»µ½°"}
 
     def get_status(self) -> Dict:
-        """Ð¡ÑÐ°ÑÑÑ Ð»Ð¾ÐºÐ°Ð»ÑÐ½Ð¾Ð¹ LLM."""
+        """¡° »¾º°»½¾¹ LLM."""
         return {
             "enabled": self.enabled,
             "available": self.is_available(),
