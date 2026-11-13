@@ -1,5 +1,5 @@
 """
-Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ ÑÐ°Ð¹Ð»Ð°Ð¼Ð¸ JARVIS
+ÃÂ£ÃÂ¿ÃÃÂ°ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ°ÃÂ¼ÃÂ¸ JARVIS
 """
 
 import os
@@ -10,13 +10,13 @@ from send2trash import send2trash
 
 
 class FileModule:
-    """Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ ÑÐ°Ð¹Ð»Ð¾Ð²Ð¾Ð¹ ÑÐ¸ÑÑÐµÐ¼Ð¾Ð¹."""
+    """ÃÂ£ÃÂ¿ÃÃÂ°ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ¾ÃÂ²ÃÂ¾ÃÂ¹ ÃÃÂ¸ÃÃÃÂµÃÂ¼ÃÂ¾ÃÂ¹."""
 
     def __init__(self, brain):
         self.brain = brain
 
     def list_directory(self, path: str = ".") -> List[Dict]:
-        """Ð¡Ð¿Ð¸ÑÐ¾Ðº ÑÐ°Ð¹Ð»Ð¾Ð² Ð² Ð´Ð¸ÑÐµÐºÑÐ¾ÑÐ¸Ð¸."""
+        """ÃÂ¡ÃÂ¿ÃÂ¸ÃÃÂ¾ÃÂº ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ¾ÃÂ² ÃÂ² ÃÂ´ÃÂ¸ÃÃÂµÃÂºÃÃÂ¾ÃÃÂ¸ÃÂ¸."""
         try:
             items = []
             for item in Path(path).iterdir():
@@ -30,7 +30,7 @@ class FileModule:
             return [{"error": str(e)}]
 
     def create_file(self, path: str, content: str = "") -> Dict:
-        """Ð¡Ð¾Ð·Ð´Ð°ÑÑ ÑÐ°Ð¹Ð»."""
+        """ÃÂ¡ÃÂ¾ÃÂ·ÃÂ´ÃÂ°ÃÃ ÃÃÂ°ÃÂ¹ÃÂ»."""
         try:
             with open(path, 'w', encoding='utf-8') as f:
                 f.write(content)
@@ -39,15 +39,15 @@ class FileModule:
             return {"status": "error", "message": str(e)}
 
     def delete_file(self, path: str) -> Dict:
-        """Ð£Ð´Ð°Ð»Ð¸ÑÑ ÑÐ°Ð¹Ð» Ð² ÐºÐ¾ÑÐ·Ð¸Ð½Ñ."""
+        """ÃÂ£ÃÂ´ÃÂ°ÃÂ»ÃÂ¸ÃÃ ÃÃÂ°ÃÂ¹ÃÂ» ÃÂ² ÃÂºÃÂ¾ÃÃÂ·ÃÂ¸ÃÂ½Ã."""
         try:
             send2trash(path)
-            return {"status": "ok", "message": f"Ð¤Ð°Ð¹Ð» '{path}' Ð¿ÐµÑÐµÐ¼ÐµÑÑÐ½ Ð² ÐºÐ¾ÑÐ·Ð¸Ð½Ñ"}
+            return {"status": "ok", "message": f"ÃÂ¤ÃÂ°ÃÂ¹ÃÂ» '{path}' ÃÂ¿ÃÂµÃÃÂµÃÂ¼ÃÂµÃÃÃÂ½ ÃÂ² ÃÂºÃÂ¾ÃÃÂ·ÃÂ¸ÃÂ½Ã"}
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
     def copy_file(self, src: str, dst: str) -> Dict:
-        """ÐÐ¾Ð¿Ð¸ÑÐ¾Ð²Ð°ÑÑ ÑÐ°Ð¹Ð»."""
+        """ÃÃÂ¾ÃÂ¿ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÃ ÃÃÂ°ÃÂ¹ÃÂ»."""
         try:
             shutil.copy2(src, dst)
             return {"status": "ok", "src": src, "dst": dst}
@@ -55,7 +55,7 @@ class FileModule:
             return {"status": "error", "message": str(e)}
 
     def move_file(self, src: str, dst: str) -> Dict:
-        """ÐÐµÑÐµÐ¼ÐµÑÑÐ¸ÑÑ ÑÐ°Ð¹Ð»."""
+        """ÃÃÂµÃÃÂµÃÂ¼ÃÂµÃÃÃÂ¸ÃÃ ÃÃÂ°ÃÂ¹ÃÂ»."""
         try:
             shutil.move(src, dst)
             return {"status": "ok", "src": src, "dst": dst}
@@ -63,7 +63,7 @@ class FileModule:
             return {"status": "error", "message": str(e)}
 
     def create_directory(self, path: str) -> Dict:
-        """Ð¡Ð¾Ð·Ð´Ð°ÑÑ Ð´Ð¸ÑÐµÐºÑÐ¾ÑÐ¸Ñ."""
+        """ÃÂ¡ÃÂ¾ÃÂ·ÃÂ´ÃÂ°ÃÃ ÃÂ´ÃÂ¸ÃÃÂµÃÂºÃÃÂ¾ÃÃÂ¸Ã."""
         try:
             Path(path).mkdir(parents=True, exist_ok=True)
             return {"status": "ok", "path": path}
