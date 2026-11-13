@@ -5,43 +5,43 @@ echo   JARVIS Ultimate - Build Script
 echo ==========================================
 echo.
 
-REM ÐÑÐ¾Ð²ÐµÑÐºÐ° Python
-echo [1/5] ÐÑÐ¾Ð²ÐµÑÐºÐ° Python...
+REM ÃÃÃÂ¾ÃÂ²ÃÂµÃÃÂºÃÂ° Python
+echo [1/5] ÃÃÃÂ¾ÃÂ²ÃÂµÃÃÂºÃÂ° Python...
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo ÐÑÐ¸Ð±ÐºÐ°: Python Ð½Ðµ ÑÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½!
+    echo ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ°: Python ÃÂ½ÃÂµ ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½!
     pause
     exit /b 1
 )
 echo OK
 
-REM Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð²Ð¸ÑÑÑÐ°Ð»ÑÐ½Ð¾Ð³Ð¾ Ð¾ÐºÑÑÐ¶ÐµÐ½Ð¸Ñ
-echo [2/5] Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð²Ð¸ÑÑÑÐ°Ð»ÑÐ½Ð¾Ð³Ð¾ Ð¾ÐºÑÑÐ¶ÐµÐ½Ð¸Ñ...
+REM ÃÂ¡ÃÂ¾ÃÂ·ÃÂ´ÃÂ°ÃÂ½ÃÂ¸ÃÂµ ÃÂ²ÃÂ¸ÃÃÃÃÂ°ÃÂ»ÃÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ¾ÃÂºÃÃÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã
+echo [2/5] ÃÂ¡ÃÂ¾ÃÂ·ÃÂ´ÃÂ°ÃÂ½ÃÂ¸ÃÂµ ÃÂ²ÃÂ¸ÃÃÃÃÂ°ÃÂ»ÃÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ¾ÃÂºÃÃÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã...
 if not exist "venv" (
     python -m venv venv
 )
 call venv\Scripts\activate.bat
 echo OK
 
-REM Ð£ÑÑÐ°Ð½Ð¾Ð²ÐºÐ° Ð·Ð°Ð²Ð¸ÑÐ¸Ð¼Ð¾ÑÑÐµÐ¹
-echo [3/5] Ð£ÑÑÐ°Ð½Ð¾Ð²ÐºÐ° Ð·Ð°Ð²Ð¸ÑÐ¸Ð¼Ð¾ÑÑÐµÐ¹...
+REM ÃÂ£ÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ²ÃÂ¸ÃÃÂ¸ÃÂ¼ÃÂ¾ÃÃÃÂµÃÂ¹
+echo [3/5] ÃÂ£ÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ²ÃÂ¸ÃÃÂ¸ÃÂ¼ÃÂ¾ÃÃÃÂµÃÂ¹...
 pip install -r requirements.txt
 echo OK
 
-REM Ð¡Ð±Ð¾ÑÐºÐ° exe
-echo [4/5] Ð¡Ð±Ð¾ÑÐºÐ° JARVIS.exe...
+REM ÃÂ¡ÃÂ±ÃÂ¾ÃÃÂºÃÂ° exe
+echo [4/5] ÃÂ¡ÃÂ±ÃÂ¾ÃÃÂºÃÂ° JARVIS.exe...
 cd build
 pyinstaller jarvis.spec --clean --noconfirm
 if errorlevel 1 (
-    echo ÐÑÐ¸Ð±ÐºÐ° ÑÐ±Ð¾ÑÐºÐ¸!
+    echo ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÃÂ±ÃÂ¾ÃÃÂºÃÂ¸!
     pause
     exit /b 1
 )
 cd ..
 echo OK
 
-REM ÐÐ¾Ð¿Ð¸ÑÐ¾Ð²Ð°Ð½Ð¸Ðµ ÐºÐ¾Ð½ÑÐ¸Ð³ÑÑÐ°ÑÐ¸Ð¸
-echo [5/5] ÐÐ¾Ð¿Ð¸ÑÐ¾Ð²Ð°Ð½Ð¸Ðµ ÑÐ°Ð¹Ð»Ð¾Ð²...
+REM ÃÃÂ¾ÃÂ¿ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ¸ÃÂµ ÃÂºÃÂ¾ÃÂ½ÃÃÂ¸ÃÂ³ÃÃÃÂ°ÃÃÂ¸ÃÂ¸
+echo [5/5] ÃÃÂ¾ÃÂ¿ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ¸ÃÂµ ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ¾ÃÂ²...
 if not exist "dist\JARVIS" mkdir dist\JARVIS
 copy config.json dist\JARVIS\
 copy .env.example dist\JARVIS\.env
@@ -52,7 +52,7 @@ echo OK
 
 echo.
 echo ==========================================
-echo   Ð¡Ð±Ð¾ÑÐºÐ° Ð·Ð°Ð²ÐµÑÑÐµÐ½Ð° ÑÑÐ¿ÐµÑÐ½Ð¾!
-echo   Ð¤Ð°Ð¹Ð»: dist\JARVIS\JARVIS.exe
+echo   ÃÂ¡ÃÂ±ÃÂ¾ÃÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ²ÃÂµÃÃÃÂµÃÂ½ÃÂ° ÃÃÃÂ¿ÃÂµÃÃÂ½ÃÂ¾!
+echo   ÃÂ¤ÃÂ°ÃÂ¹ÃÂ»: dist\JARVIS\JARVIS.exe
 echo ==========================================
 pause
