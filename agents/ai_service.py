@@ -1,6 +1,6 @@
 """
 JARVIS - AI Service for Agents
-Сервис для интеграции OpenAI API с агентами
+   OpenAI API  
 """
 
 import os
@@ -10,7 +10,7 @@ from openai import OpenAI
 
 
 class AgentAIService:
-    """AI-сервис для генерации кода агентами."""
+    """AI-    ."""
 
     def __init__(self, api_key: Optional[str] = None):
         self.logger = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ class AgentAIService:
         context: Optional[Dict] = None,
         language: str = "python"
     ) -> Dict[str, Any]:
-        """Генерация кода с помощью AI."""
+        """    AI."""
         if not self.client:
             return {
                 'status': 'error',
@@ -38,10 +38,10 @@ class AgentAIService:
             }
 
         try:
-            # Формируем промпт в зависимости от типа агента
+            #       
             prompt = self._build_prompt(task, agent_type, context, language)
 
-            # Вызываем OpenAI API
+            #  OpenAI API
             response = self.client.chat.completions.create(
                 model=os.getenv("OPENAI_MODEL", "gpt-4"),
                 messages=[
@@ -81,73 +81,73 @@ class AgentAIService:
         context: Optional[Dict],
         language: str
     ) -> str:
-        """Построение промпта для AI."""
+        """   AI."""
         context_str = ""
         if context:
-            context_str = f"\n\nКонтекст: {context}"
+            context_str = f"\n\n: {context}"
 
         if agent_type == "web_developer":
-            return f"""Создай веб-приложение или сайт для задачи: {task}{context_str}
+            return f""" -    : {task}{context_str}
 
-Требования:
-- Используй современный HTML5, CSS3, JavaScript
-- Адаптивный дизайн
-- Чистый и читаемый код
-- Комментарии на русском языке
+:
+-   HTML5, CSS3, JavaScript
+-  
+-    
+-    
 
-Верни полный код файлов в формате:
+     :
 ```filename
-код
+
 ```"""
 
         elif agent_type == "programmer":
-            return f"""Напиши код на {language} для задачи: {task}{context_str}
+            return f"""   {language}  : {task}{context_str}
 
-Требования:
-- Чистый и эффективный код
-- Обработка ошибок
-- Документация и комментарии
-- Следуй best practices для {language}
+:
+-    
+-  
+-   
+-  best practices  {language}
 
-Верни полный код в формате:
+    :
 ```{language}
-код
+
 ```"""
 
         elif agent_type == "data_analyst":
-            return f"""Создай код для анализа данных: {task}{context_str}
+            return f"""    : {task}{context_str}
 
-Требования:
-- Используй pandas, numpy, matplotlib/seaborn
-- Статистический анализ
-- Визуализация данных
-- Чистый и документированный код
+:
+-  pandas, numpy, matplotlib/seaborn
+-  
+-  
+-    
 
-Верни полный код в формате:
+    :
 ```python
-код
+
 ```"""
 
         else:
-            return f"""Выполни задачу: {task}{context_str}
+            return f""" : {task}{context_str}
 
-Верни результат в формате кода."""
+    ."""
 
     def _get_system_prompt(self, agent_type: str) -> str:
-        """Получить системный промпт для агента."""
+        """    ."""
         prompts = {
-            "web_developer": "Ты - опытный веб-разработчик. Создавай современные, адаптивные и красивые веб-приложения. Используй лучшие практики HTML, CSS и JavaScript.",
-            "programmer": "Ты - профессиональный программист. Пиши чистый, эффективный и хорошо документированный код. Следуй принципам SOLID и DRY.",
-            "data_analyst": "Ты - эксперт по анализу данных. Создавай код для обработки, анализа и визуализации данных с использованием pandas, numpy и matplotlib."
+            "web_developer": " -  -.  ,    -.    HTML, CSS  JavaScript.",
+            "programmer": " -  .  ,     .   SOLID  DRY.",
+            "data_analyst": " -    .    ,       pandas, numpy  matplotlib."
         }
-        return prompts.get(agent_type, "Ты - полезный AI-ассистент.")
+        return prompts.get(agent_type, " -  AI-.")
 
     def parse_code_blocks(self, text: str) -> Dict[str, str]:
-        """Извлечение блоков кода из ответа AI."""
+        """     AI."""
         import re
 
         files = {}
-        # Паттерн для поиска блоков кода: ```filename\nкод\n```
+        #     : ```filename\n\n```
         pattern = r'```(\w+)?\n(.*?)```'
         matches = re.findall(pattern, text, re.DOTALL)
 
@@ -155,18 +155,18 @@ class AgentAIService:
             filename = f"file_{i+1}.{lang or 'txt'}"
             files[filename] = code.strip()
 
-        # Если не найдено блоков с именами, возвращаем весь текст как один файл
+        #      ,      
         if not files:
             files['generated_code.txt'] = text
 
         return files
 
 
-# Глобальный экземпляр для использования в агентах
+#      
 _ai_service_instance = None
 
 def get_ai_service() -> AgentAIService:
-    """Получить глобальный экземпляр AI-сервиса."""
+    """   AI-."""
     global _ai_service_instance
     if _ai_service_instance is None:
         _ai_service_instance = AgentAIService()
