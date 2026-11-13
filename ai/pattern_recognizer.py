@@ -1,5 +1,5 @@
 """
-Ð Ð°ÑÐ¿Ð¾Ð·Ð½Ð°Ð²Ð°Ð½Ð¸Ðµ Ð¿Ð°ÑÑÐµÑÐ½Ð¾Ð² JARVIS
+ °¿¾·½°²°½¸µ ¿°µ½¾² JARVIS
 """
 
 import json
@@ -11,7 +11,7 @@ import re
 
 
 class PatternRecognizer:
-    """Ð Ð°ÑÐ¿Ð¾Ð·Ð½Ð°Ð²Ð°Ð½Ð¸Ðµ Ð¿Ð°ÑÑÐµÑÐ½Ð¾Ð² Ð² Ð¿Ð¾Ð²ÐµÐ´ÐµÐ½Ð¸Ð¸ Ð¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»Ñ."""
+    """ °¿¾·½°²°½¸µ ¿°µ½¾² ² ¿¾²µ´µ½¸¸ ¿¾»·¾²°µ»."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -21,7 +21,7 @@ class PatternRecognizer:
         self.suggestions: List[Dict] = []
 
     def _load_patterns(self) -> Dict:
-        """ÐÐ°Ð³ÑÑÐ·ÐºÐ° Ð¿Ð°ÑÑÐµÑÐ½Ð¾Ð²."""
+        """°³·º° ¿°µ½¾²."""
         if self.patterns_file.exists():
             with open(self.patterns_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
@@ -33,23 +33,23 @@ class PatternRecognizer:
         }
 
     def _save_patterns(self):
-        """Ð¡Ð¾ÑÑÐ°Ð½ÐµÐ½Ð¸Ðµ Ð¿Ð°ÑÑÐµÑÐ½Ð¾Ð²."""
+        """¡¾°½µ½¸µ ¿°µ½¾²."""
         with open(self.patterns_file, 'w', encoding='utf-8') as f:
             json.dump(self.patterns, f, ensure_ascii=False, indent=2)
 
     def analyze_command_history(self, history: List[Dict]) -> List[Dict]:
-        """ÐÐ½Ð°Ð»Ð¸Ð· Ð¸ÑÑÐ¾ÑÐ¸Ð¸ ÐºÐ¾Ð¼Ð°Ð½Ð´ Ð´Ð»Ñ Ð²ÑÑÐ²Ð»ÐµÐ½Ð¸Ñ Ð¿Ð°ÑÑÐµÑÐ½Ð¾Ð²."""
+        """½°»¸· ¸¾¸¸ º¾¼°½´ ´» ²²»µ½¸ ¿°µ½¾²."""
         suggestions = []
         
-        # 1. ÐÐ¾Ð²ÑÐ¾ÑÑÑÑÐ¸ÐµÑÑ ÐºÐ¾Ð¼Ð°Ð½Ð´Ñ Ð² Ð¾Ð´Ð½Ð¾ Ð²ÑÐµÐ¼Ñ
+        # 1. ¾²¾¸µ º¾¼°½´ ² ¾´½¾ ²µ¼
         time_patterns = self._detect_time_patterns(history)
         suggestions.extend(time_patterns)
         
-        # 2. ÐÐ¾ÑÐ»ÐµÐ´Ð¾Ð²Ð°ÑÐµÐ»ÑÐ½Ð¾ÑÑÐ¸ ÐºÐ¾Ð¼Ð°Ð½Ð´
+        # 2. ¾»µ´¾²°µ»½¾¸ º¾¼°½´
         sequence_patterns = self._detect_sequence_patterns(history)
         suggestions.extend(sequence_patterns)
         
-        # 3. Ð§Ð°ÑÑÐ¾ Ð¸ÑÐ¿Ð¾Ð»ÑÐ·ÑÐµÐ¼ÑÐµ ÐºÐ¾Ð¼Ð°Ð½Ð´Ñ
+        # 3. §°¾ ¸¿¾»·µ¼µ º¾¼°½´
         frequent_commands = self._detect_frequent_commands(history)
         suggestions.extend(frequent_commands)
         
@@ -59,7 +59,7 @@ class PatternRecognizer:
         return suggestions
 
     def _detect_time_patterns(self, history: List[Dict]) -> List[Dict]:
-        """ÐÐ±Ð½Ð°ÑÑÐ¶ÐµÐ½Ð¸Ðµ Ð²ÑÐµÐ¼ÐµÐ½Ð½ÑÑ Ð¿Ð°ÑÑÐµÑÐ½Ð¾Ð²."""
+        """±½°¶µ½¸µ ²µ¼µ½½ ¿°µ½¾²."""
         suggestions = []
         time_groups = defaultdict(list)
         
@@ -68,39 +68,39 @@ class PatternRecognizer:
                 dt = datetime.fromisoformat(entry["timestamp"])
                 hour = dt.hour
                 minute = dt.minute
-                # ÐÑÑÐ¿Ð¿Ð¸ÑÑÐµÐ¼ Ð¿Ð¾ 15-Ð¼Ð¸Ð½ÑÑÐ½ÑÐ¼ Ð¸Ð½ÑÐµÑÐ²Ð°Ð»Ð°Ð¼
+                # ¿¿¸µ¼ ¿¾ 15-¼¸½½¼ ¸½µ²°»°¼
                 time_slot = f"{hour:02d}:{(minute // 15) * 15:02d}"
                 time_groups[time_slot].append(entry["command"])
             except:
                 continue
         
-        # ÐÑÐµÐ¼ ÐºÐ¾Ð¼Ð°Ð½Ð´Ñ, ÐºÐ¾ÑÐ¾ÑÑÐµ Ð¿Ð¾Ð²ÑÐ¾ÑÑÑÑÑÑ Ð² Ð¾Ð´Ð½Ð¾ Ð²ÑÐµÐ¼Ñ
+        # µ¼ º¾¼°½´, º¾¾µ ¿¾²¾ ² ¾´½¾ ²µ¼
         for time_slot, commands in time_groups.items():
             command_counts = defaultdict(int)
             for cmd in commands:
                 command_counts[cmd] += 1
             
             for cmd, count in command_counts.items():
-                if count >= 3:  # ÐÑÐ»Ð¸ ÐºÐ¾Ð¼Ð°Ð½Ð´Ð° Ð¿Ð¾Ð²ÑÐ¾ÑÑÐµÑÑÑ 3+ ÑÐ°Ð·Ð° Ð² ÑÑÐ¾ Ð²ÑÐµÐ¼Ñ
+                if count >= 3:  # »¸ º¾¼°½´° ¿¾²¾µ 3+ °·° ² ¾ ²µ¼
                     suggestions.append({
                         "type": "time_pattern",
                         "command": cmd,
                         "time": time_slot,
                         "count": count,
-                        "suggestion": f"ÐÑ ÑÐ°ÑÑÐ¾ Ð³Ð¾Ð²Ð¾ÑÐ¸ÑÐµ '{cmd}' Ð² {time_slot}. Ð¡Ð¾Ð·Ð´Ð°ÑÑ Ð°Ð²ÑÐ¾Ð¼Ð°ÑÐ¸ÑÐµÑÐºÐ¾Ðµ ÑÐ°ÑÐ¿Ð¸ÑÐ°Ð½Ð¸Ðµ?",
+                        "suggestion": f" °¾ ³¾²¾¸µ '{cmd}' ² {time_slot}. ¡¾·´° °²¾¼°¸µº¾µ °¿¸°½¸µ?",
                         "action": "create_schedule"
                     })
         
         return suggestions
 
     def _detect_sequence_patterns(self, history: List[Dict]) -> List[Dict]:
-        """ÐÐ±Ð½Ð°ÑÑÐ¶ÐµÐ½Ð¸Ðµ Ð¿Ð¾ÑÐ»ÐµÐ´Ð¾Ð²Ð°ÑÐµÐ»ÑÐ½Ð¾ÑÑÐµÐ¹ ÐºÐ¾Ð¼Ð°Ð½Ð´."""
+        """±½°¶µ½¸µ ¿¾»µ´¾²°µ»½¾µ¹ º¾¼°½´."""
         suggestions = []
         
         if len(history) < 3:
             return suggestions
         
-        # ÐÑÐµÐ¼ Ð¿Ð¾Ð²ÑÐ¾ÑÑÑÑÐ¸ÐµÑÑ Ð¿Ð¾ÑÐ»ÐµÐ´Ð¾Ð²Ð°ÑÐµÐ»ÑÐ½Ð¾ÑÑÐ¸ Ð¸Ð· 2-3 ÐºÐ¾Ð¼Ð°Ð½Ð´
+        # µ¼ ¿¾²¾¸µ ¿¾»µ´¾²°µ»½¾¸ ¸· 2-3 º¾¼°½´
         for seq_length in [2, 3]:
             sequences = defaultdict(int)
             
@@ -109,19 +109,19 @@ class PatternRecognizer:
                 sequences[seq] += 1
             
             for seq, count in sequences.items():
-                if count >= 2:  # ÐÑÐ»Ð¸ Ð¿Ð¾ÑÐ»ÐµÐ´Ð¾Ð²Ð°ÑÐµÐ»ÑÐ½Ð¾ÑÑÑ Ð¿Ð¾Ð²ÑÐ¾ÑÑÐµÑÑÑ 2+ ÑÐ°Ð·Ð°
+                if count >= 2:  # »¸ ¿¾»µ´¾²°µ»½¾ ¿¾²¾µ 2+ °·°
                     suggestions.append({
                         "type": "sequence_pattern",
                         "sequence": list(seq),
                         "count": count,
-                        "suggestion": f"ÐÑ ÑÐ°ÑÑÐ¾ Ð²ÑÐ¿Ð¾Ð»Ð½ÑÐµÑÐµ Ð¿Ð¾ÑÐ»ÐµÐ´Ð¾Ð²Ð°ÑÐµÐ»ÑÐ½Ð¾ÑÑÑ: {' â '.join(seq)}. Ð¡Ð¾Ð·Ð´Ð°ÑÑ Ð¼Ð°ÐºÑÐ¾Ñ?",
+                        "suggestion": f" °¾ ²¿¾»½µµ ¿¾»µ´¾²°µ»½¾: {' ¢ '.join(seq)}. ¡¾·´° ¼°º¾?",
                         "action": "create_macro"
                     })
         
         return suggestions
 
     def _detect_frequent_commands(self, history: List[Dict]) -> List[Dict]:
-        """ÐÐ±Ð½Ð°ÑÑÐ¶ÐµÐ½Ð¸Ðµ ÑÐ°ÑÑÐ¾ Ð¸ÑÐ¿Ð¾Ð»ÑÐ·ÑÐµÐ¼ÑÑ ÐºÐ¾Ð¼Ð°Ð½Ð´."""
+        """±½°¶µ½¸µ °¾ ¸¿¾»·µ¼ º¾¼°½´."""
         suggestions = []
         command_counts = defaultdict(int)
         
@@ -129,57 +129,57 @@ class PatternRecognizer:
             command_counts[entry["command"]] += 1
         
         for cmd, count in command_counts.items():
-            if count >= 10:  # ÐÑÐ»Ð¸ ÐºÐ¾Ð¼Ð°Ð½Ð´Ð° Ð¸ÑÐ¿Ð¾Ð»ÑÐ·ÑÐµÑÑÑ 10+ ÑÐ°Ð·
+            if count >= 10:  # »¸ º¾¼°½´° ¸¿¾»·µ 10+ °·
                 suggestions.append({
                     "type": "frequent_command",
                     "command": cmd,
                     "count": count,
-                    "suggestion": f"ÐÐ¾Ð¼Ð°Ð½Ð´Ð° '{cmd}' Ð¸ÑÐ¿Ð¾Ð»ÑÐ·ÑÐµÑÑÑ Ð¾ÑÐµÐ½Ñ ÑÐ°ÑÑÐ¾ ({count} ÑÐ°Ð·). Ð¡Ð¾Ð·Ð´Ð°ÑÑ Ð±ÑÑÑÑÑÐ¹ Ð°Ð»Ð¸Ð°Ñ?",
+                    "suggestion": f"¾¼°½´° '{cmd}' ¸¿¾»·µ ¾µ½ °¾ ({count} °·). ¡¾·´° ±¹ °»¸°?",
                     "action": "create_alias"
                 })
         
         return suggestions
 
     def get_suggestions(self) -> List[Dict]:
-        """ÐÐ¾Ð»ÑÑÐµÐ½Ð¸Ðµ ÑÐµÐºÑÑÐ¸Ñ Ð¿ÑÐµÐ´Ð»Ð¾Ð¶ÐµÐ½Ð¸Ð¹."""
+        """¾»µ½¸µ µº¸ ¿µ´»¾¶µ½¸¹."""
         return self.suggestions
 
     def accept_suggestion(self, index: int) -> Dict:
-        """ÐÑÐ¸Ð½ÑÑÐ¸Ðµ Ð¿ÑÐµÐ´Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ."""
+        """¸½¸µ ¿µ´»¾¶µ½¸."""
         if index >= len(self.suggestions):
-            return {"status": "error", "message": "ÐÑÐµÐ´Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½Ð¾"}
+            return {"status": "error", "message": "µ´»¾¶µ½¸µ ½µ ½°¹´µ½¾"}
         
         suggestion = self.suggestions[index]
         action = suggestion["action"]
         
         if action == "create_schedule":
-            # Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ ÑÐ°ÑÐ¿Ð¸ÑÐ°Ð½Ð¸Ñ
+            # ¡¾·´°½¸µ °¿¸°½¸
             return {
                 "status": "ok",
-                "message": f"Ð Ð°ÑÐ¿Ð¸ÑÐ°Ð½Ð¸Ðµ ÑÐ¾Ð·Ð´Ð°Ð½Ð¾ Ð´Ð»Ñ ÐºÐ¾Ð¼Ð°Ð½Ð´Ñ '{suggestion['command']}' Ð² {suggestion['time']}",
+                "message": f" °¿¸°½¸µ ¾·´°½¾ ´» º¾¼°½´ '{suggestion['command']}' ² {suggestion['time']}",
                 "action_taken": "schedule_created"
             }
         
         elif action == "create_macro":
-            # Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð¼Ð°ÐºÑÐ¾ÑÐ°
+            # ¡¾·´°½¸µ ¼°º¾°
             return {
                 "status": "ok",
-                "message": f"ÐÐ°ÐºÑÐ¾Ñ ÑÐ¾Ð·Ð´Ð°Ð½ Ð´Ð»Ñ Ð¿Ð¾ÑÐ»ÐµÐ´Ð¾Ð²Ð°ÑÐµÐ»ÑÐ½Ð¾ÑÑÐ¸: {' â '.join(suggestion['sequence'])}",
+                "message": f"°º¾ ¾·´°½ ´» ¿¾»µ´¾²°µ»½¾¸: {' ¢ '.join(suggestion['sequence'])}",
                 "action_taken": "macro_created"
             }
         
         elif action == "create_alias":
-            # Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð°Ð»Ð¸Ð°ÑÐ°
+            # ¡¾·´°½¸µ °»¸°°
             return {
                 "status": "ok",
-                "message": f"ÐÑÐµÐ´Ð»Ð¾Ð¶Ð¸ÑÐµ Ð°Ð»Ð¸Ð°Ñ Ð´Ð»Ñ ÐºÐ¾Ð¼Ð°Ð½Ð´Ñ '{suggestion['command']}'",
+                "message": f"µ´»¾¶¸µ °»¸° ´» º¾¼°½´ '{suggestion['command']}'",
                 "action_taken": "alias_pending"
             }
         
-        return {"status": "error", "message": "ÐÐµÐ¸Ð·Ð²ÐµÑÑÐ½Ð¾Ðµ Ð´ÐµÐ¹ÑÑÐ²Ð¸Ðµ"}
+        return {"status": "error", "message": "µ¸·²µ½¾µ ´µ¹²¸µ"}
 
     def learn_automation(self, trigger: str, action: str) -> Dict:
-        """ÐÐ±ÑÑÐµÐ½Ð¸Ðµ Ð½Ð¾Ð²Ð¾Ð¹ Ð°Ð²ÑÐ¾Ð¼Ð°ÑÐ¸Ð·Ð°ÑÐ¸Ð¸."""
+        """±µ½¸µ ½¾²¾¹ °²¾¼°¸·°¸¸."""
         automation = {
             "trigger": trigger,
             "action": action,
@@ -192,9 +192,9 @@ class PatternRecognizer:
         
         return {
             "status": "ok",
-            "message": f"ÐÐ²ÑÐ¾Ð¼Ð°ÑÐ¸Ð·Ð°ÑÐ¸Ñ Ð¾Ð±ÑÑÐµÐ½Ð°: '{trigger}' â '{action}'"
+            "message": f"²¾¼°¸·°¸ ¾±µ½°: '{trigger}' ¢ '{action}'"
         }
 
     def get_learned_automations(self) -> List[Dict]:
-        """ÐÐ¾Ð»ÑÑÐµÐ½Ð¸Ðµ Ð¾Ð±ÑÑÐµÐ½Ð½ÑÑ Ð°Ð²ÑÐ¾Ð¼Ð°ÑÐ¸Ð·Ð°ÑÐ¸Ð¹."""
+        """¾»µ½¸µ ¾±µ½½ °²¾¼°¸·°¸¹."""
         return self.patterns.get("learned_automations", [])
