@@ -1,5 +1,5 @@
 """
-API ÑÐµÑÐ²ÐµÑ JARVIS Ð´Ð»Ñ Ð¼Ð¾Ð±Ð¸Ð»ÑÐ½Ð¾Ð³Ð¾ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ
+API µ²µ JARVIS ´» ¼¾±¸»½¾³¾ ¿¸»¾¶µ½¸
 """
 
 import asyncio
@@ -13,16 +13,16 @@ from pathlib import Path
 try:
     from aiohttp import web
 except ImportError:
-    print("Ð£ÑÑÐ°Ð½Ð¾Ð²Ð¸ÑÐµ: pip install aiohttp")
+    print("£°½¾²¸µ: pip install aiohttp")
 
 
 class MobileServer:
-    """HTTP/WebSocket ÑÐµÑÐ²ÐµÑ Ð´Ð»Ñ Ð¼Ð¾Ð±Ð¸Ð»ÑÐ½Ð¾Ð³Ð¾ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ."""
+    """HTTP/WebSocket µ²µ ´» ¼¾±¸»½¾³¾ ¿¸»¾¶µ½¸."""
 
     def __init__(self, brain):
         self.brain = brain
         
-        # Ð§ÑÐµÐ½Ð¸Ðµ Ð¸Ð· Ð¿ÐµÑÐµÐ¼ÐµÐ½Ð½ÑÑ Ð¾ÐºÑÑÐ¶ÐµÐ½Ð¸Ñ
+        # §µ½¸µ ¸· ¿µµ¼µ½½ ¾º¶µ½¸
         self.host = brain.config.mobile_api_host
         self.port = brain.config.mobile_api_port
         self.secret = brain.config.mobile_api_secret
@@ -34,19 +34,19 @@ class MobileServer:
         self._setup_routes()
 
     def _load_tokens(self):
-        """ÐÐ°Ð³ÑÑÐ·ÐºÐ° API ÑÐ¾ÐºÐµÐ½Ð¾Ð²."""
+        """°³·º° API ¾ºµ½¾²."""
         if self.tokens_file.exists():
             with open(self.tokens_file, "r") as f:
                 self.tokens = json.load(f)
 
     def _save_tokens(self):
-        """Ð¡Ð¾ÑÑÐ°Ð½ÐµÐ½Ð¸Ðµ ÑÐ¾ÐºÐµÐ½Ð¾Ð²."""
+        """¡¾°½µ½¸µ ¾ºµ½¾²."""
         self.tokens_file.parent.mkdir(exist_ok=True)
         with open(self.tokens_file, "w") as f:
             json.dump(self.tokens, f, indent=2)
 
     def _setup_routes(self):
-        """ÐÐ°ÑÑÑÐ¾Ð¹ÐºÐ° Ð¼Ð°ÑÑÑÑÑÐ¾Ð²."""
+        """°¾¹º° ¼°¾²."""
         self.app.router.add_post("/api/auth/login", self.handle_login)
         self.app.router.add_post("/api/auth/register", self.handle_register)
         self.app.router.add_get("/api/status", self.handle_status)
@@ -58,7 +58,7 @@ class MobileServer:
         self.app.router.add_get("/ws", self.websocket_handler)
 
     def _verify_token(self, request) -> Optional[str]:
-        """ÐÑÐ¾Ð²ÐµÑÐºÐ° ÑÐ¾ÐºÐµÐ½Ð° Ð°Ð²ÑÐ¾ÑÐ¸Ð·Ð°ÑÐ¸Ð¸."""
+        """¾²µº° ¾ºµ½° °²¾¸·°¸¸."""
         auth = request.headers.get("Authorization", "")
         if auth.startswith("Bearer "):
             token = auth[7:]
@@ -67,7 +67,7 @@ class MobileServer:
         return None
 
     async def handle_login(self, request):
-        """ÐÐ²ÑÐ¾ÑÐ¸Ð·Ð°ÑÐ¸Ñ."""
+        """²¾¸·°¸."""
         data = await request.json()
         username = data.get("username")
         password = data.get("password")
@@ -85,7 +85,7 @@ class MobileServer:
         return web.json_response({"token": token, "username": username})
 
     async def handle_register(self, request):
-        """Ð ÐµÐ³Ð¸ÑÑÑÐ°ÑÐ¸Ñ Ð½Ð¾Ð²Ð¾Ð³Ð¾ ÑÑÑÑÐ¾Ð¹ÑÑÐ²Ð°."""
+        """ µ³¸°¸ ½¾²¾³¾ ¾¹²°."""
         data = await request.json()
         device_name = data.get("device_name")
         
@@ -100,7 +100,7 @@ class MobileServer:
         return web.json_response({"token": token, "device": device_name})
 
     async def handle_status(self, request):
-        """Ð¡ÑÐ°ÑÑÑ JARVIS."""
+        """¡° JARVIS."""
         user = self._verify_token(request)
         if not user:
             return web.json_response({"error": "Unauthorized"}, status=401)
@@ -109,7 +109,7 @@ class MobileServer:
         return web.json_response(status)
 
     async def handle_command(self, request):
-        """ÐÑÐ¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ðµ Ð³Ð¾Ð»Ð¾ÑÐ¾Ð²Ð¾Ð¹ ÐºÐ¾Ð¼Ð°Ð½Ð´Ñ."""
+        """¿¾»½µ½¸µ ³¾»¾¾²¾¹ º¾¼°½´."""
         user = self._verify_token(request)
         if not user:
             return web.json_response({"error": "Unauthorized"}, status=401)
@@ -121,7 +121,7 @@ class MobileServer:
         return web.json_response(result)
 
     async def handle_system_info(self, request):
-        """ÐÐ½ÑÐ¾ÑÐ¼Ð°ÑÐ¸Ñ Ð¾ ÑÐ¸ÑÑÐµÐ¼Ðµ."""
+        """½¾¼°¸ ¾ ¸µ¼µ."""
         user = self._verify_token(request)
         if not user:
             return web.json_response({"error": "Unauthorized"}, status=401)
@@ -130,7 +130,7 @@ class MobileServer:
         return web.json_response(info)
 
     async def handle_devices(self, request):
-        """Ð¡Ð¿Ð¸ÑÐ¾Ðº ÑÑÑÑÐ¾Ð¹ÑÑÐ² ÑÐ¼Ð½Ð¾Ð³Ð¾ Ð´Ð¾Ð¼Ð°."""
+        """¡¿¸¾º ¾¹² ¼½¾³¾ ´¾¼°."""
         user = self._verify_token(request)
         if not user:
             return web.json_response({"error": "Unauthorized"}, status=401)
@@ -140,10 +140,10 @@ class MobileServer:
             devices = await ha.get_states()
             return web.json_response({"devices": devices})
         
-        return web.json_response({"devices": [], "message": "Home Assistant Ð½Ðµ Ð¿Ð¾Ð´ÐºÐ»ÑÑÐµÐ½"})
+        return web.json_response({"devices": [], "message": "Home Assistant ½µ ¿¾´º»µ½"})
 
     async def handle_device_control(self, request):
-        """Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ ÑÑÑÑÐ¾Ð¹ÑÑÐ²Ð¾Ð¼."""
+        """£¿°²»µ½¸µ ¾¹²¾¼."""
         user = self._verify_token(request)
         if not user:
             return web.json_response({"error": "Unauthorized"}, status=401)
@@ -170,7 +170,7 @@ class MobileServer:
         return web.json_response({"error": "Home Assistant not connected"}, status=503)
 
     async def handle_sensors(self, request):
-        """ÐÐ°Ð½Ð½ÑÐµ Ð´Ð°ÑÑÐ¸ÐºÐ¾Ð²."""
+        """°½½µ ´°¸º¾²."""
         user = self._verify_token(request)
         if not user:
             return web.json_response({"error": "Unauthorized"}, status=401)
@@ -184,7 +184,7 @@ class MobileServer:
         return web.json_response({"sensors": []})
 
     async def websocket_handler(self, request):
-        """WebSocket Ð´Ð»Ñ real-time Ð¾Ð±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ð¹."""
+        """WebSocket ´» real-time ¾±½¾²»µ½¸¹."""
         ws = web.WebSocketResponse()
         await ws.prepare(request)
         
@@ -206,12 +206,12 @@ class MobileServer:
         return ws
 
     def start(self):
-        """ÐÐ°Ð¿ÑÑÐº ÑÐµÑÐ²ÐµÑÐ°."""
-        self.brain.logger.info(f"Mobile API ÑÐµÑÐ²ÐµÑ Ð·Ð°Ð¿ÑÑÐµÐ½ Ð½Ð° {self.host}:{self.port}")
+        """°¿º µ²µ°."""
+        self.brain.logger.info(f"Mobile API µ²µ ·°¿µ½ ½° {self.host}:{self.port}")
         web.run_app(self.app, host=self.host, port=self.port)
 
     def start_async(self):
-        """ÐÐ°Ð¿ÑÑÐº Ð² Ð¾ÑÐ´ÐµÐ»ÑÐ½Ð¾Ð¼ Ð¿Ð¾ÑÐ¾ÐºÐµ."""
+        """°¿º ² ¾´µ»½¾¼ ¿¾¾ºµ."""
         import threading
         thread = threading.Thread(target=self.start, daemon=True)
         thread.start()
