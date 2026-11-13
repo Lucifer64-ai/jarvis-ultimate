@@ -1,5 +1,5 @@
 """
-Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð¿ÑÐ¾ÑÐµÑÑÐ°Ð¼Ð¸ JARVIS
+£¿°²»µ½¸µ ¿¾µ°¼¸ JARVIS
 """
 
 import psutil
@@ -7,13 +7,13 @@ from typing import Dict, List
 
 
 class ProcessModule:
-    """Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð¿ÑÐ¾ÑÐµÑÑÐ°Ð¼Ð¸ ÑÐ¸ÑÑÐµÐ¼Ñ."""
+    """£¿°²»µ½¸µ ¿¾µ°¼¸ ¸µ¼."""
 
     def __init__(self, brain):
         self.brain = brain
 
     def list_processes(self, limit: int = 20) -> List[Dict]:
-        """Ð¡Ð¿Ð¸ÑÐ¾Ðº Ð·Ð°Ð¿ÑÑÐµÐ½Ð½ÑÑ Ð¿ÑÐ¾ÑÐµÑÑÐ¾Ð²."""
+        """¡¿¸¾º ·°¿µ½½ ¿¾µ¾²."""
         processes = []
         for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent']):
             try:
@@ -30,7 +30,7 @@ class ProcessModule:
         return processes[:limit]
 
     def kill_process(self, name: str) -> Dict:
-        """ÐÐ°Ð²ÐµÑÑÐ¸ÑÑ Ð¿ÑÐ¾ÑÐµÑÑ Ð¿Ð¾ Ð¸Ð¼ÐµÐ½Ð¸."""
+        """°²µ¸ ¿¾µ ¿¾ ¸¼µ½¸."""
         killed = []
         for proc in psutil.process_iter(['name']):
             try:
@@ -42,10 +42,10 @@ class ProcessModule:
 
         if killed:
             return {"status": "ok", "killed": killed}
-        return {"status": "error", "message": f"ÐÑÐ¾ÑÐµÑÑ '{name}' Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½"}
+        return {"status": "error", "message": f"¾µ '{name}' ½µ ½°¹´µ½"}
 
     def get_process_info(self, name: str) -> Dict:
-        """ÐÐ½ÑÐ¾ÑÐ¼Ð°ÑÐ¸Ñ Ð¾ Ð¿ÑÐ¾ÑÐµÑÑÐµ."""
+        """½¾¼°¸ ¾ ¿¾µµ."""
         for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent', 'status']):
             try:
                 if name.lower() in proc.info['name'].lower():
@@ -62,4 +62,4 @@ class ProcessModule:
             except (psutil.NoSuchProcess, psutil.AccessDenied):
                 pass
 
-        return {"status": "error", "message": f"ÐÑÐ¾ÑÐµÑÑ '{name}' Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½"}
+        return {"status": "error", "message": f"¾µ '{name}' ½µ ½°¹´µ½"}
