@@ -1,9 +1,10 @@
 """
 JARVIS - Programmer Agent
-Агент для написания кода на различных языках программирования
+Агент для написания кода на различных языках программирования с AI
 """
 
 from .base_agent import BaseAgent
+from .ai_service import get_ai_service
 from typing import Dict, Optional, Any
 
 
@@ -13,7 +14,7 @@ class ProgrammerAgent(BaseAgent):
     def __init__(self):
         super().__init__(
             name="Programmer",
-            description="Написание кода на Python, JavaScript, C++, Java и других языках"
+            description="Написание кода на Python, JavaScript, C++, Java и других языках с AI"
         )
         self.capabilities = [
             "Написание Python кода",
@@ -23,8 +24,10 @@ class ProgrammerAgent(BaseAgent):
             "Написание SQL запросов",
             "Создание скриптов автоматизации",
             "Рефакторинг кода",
-            "Оптимизация производительности"
+            "Оптимизация производительности",
+            "AI-генерация кода"
         ]
+        self.ai_service = get_ai_service()
 
     def can_handle(self, task: str) -> bool:
         """Проверить, может ли агент обработать задачу."""
@@ -40,6 +43,44 @@ class ProgrammerAgent(BaseAgent):
         """Выполнить задачу по написанию кода."""
         context = context or {}
 
+        # Пытаемся использовать AI для генерации
+        if self.ai_service.client:
+            return self._execute_with_ai(task, context)
+        else:
+            # Fallback на шаблоны если AI недоступен
+            return self._execute_with_templates(task, context)
+
+    def _execute_with_ai(self, task: str, context: Dict) -> Dict[str, Any]:
+        """Выполнить задачу с помощью AI."""
+        # Определяем язык программирования
+        language = self._detect_language(task)
+
+        result = self.ai_service.generate_code(
+            task=task,
+            agent_type="programmer",
+            context=context,
+            language=language
+        )
+
+        if result['status'] == 'success':
+            # Парсим блоки кода из ответа AI
+            files = self.ai_service.parse_code_blocks(result['code'])
+
+            return {
+                'status': 'success',
+                'type': 'ai_generated',
+                'message': f'AI написал код: {task}',
+                'files': files,
+                'language': language,
+                'tokens_used': result.get('tokens_used', 0),
+                'model': result.get('model', 'unknown')
+            }
+        else:
+            # Если AI ошибка, используем шаблоны
+            return self._execute_with_templates(task, context)
+
+    def _execute_with_templates(self, task: str, context: Dict) -> Dict[str, Any]:
+        """Выполнить задачу с помощью шаблонов (fallback)."""
         # Определяем язык программирования
         if "python" in task.lower():
             return self._create_python(task, context)
@@ -49,6 +90,25 @@ class ProgrammerAgent(BaseAgent):
             return self._create_sql(task, context)
         else:
             return self._create_generic_code(task, context)
+
+    def _detect_language(self, task: str) -> str:
+        """Определить язык программирования из задачи."""
+        task_lower = task.lower()
+
+        if "python" in task_lower:
+            return "python"
+        elif "javascript" in task_lower or "js" in task_lower:
+            return "javascript"
+        elif "typescript" in task_lower or "ts" in task_lower:
+            return "typescript"
+        elif "c++" in task_lower or "cpp" in task_lower:
+            return "cpp"
+        elif "java" in task_lower:
+            return "java"
+        elif "sql" in task_lower or "запрос" in task_lower:
+            return "sql"
+        else:
+            return "python"  # По умолчанию
 
     def _create_python(self, task: str, context: Dict) -> Dict[str, Any]:
         """Создать Python код."""
