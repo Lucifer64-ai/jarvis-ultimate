@@ -1,5 +1,5 @@
 """
-ÐÐ¾Ð½Ð¸ÑÐ¾ÑÐ¸Ð½Ð³ Ð´Ð°ÑÑÐ¸ÐºÐ¾Ð² ÑÐ¼Ð½Ð¾Ð³Ð¾ Ð´Ð¾Ð¼Ð°
+ÃÃÂ¾ÃÂ½ÃÂ¸ÃÃÂ¾ÃÃÂ¸ÃÂ½ÃÂ³ ÃÂ´ÃÂ°ÃÃÃÂ¸ÃÂºÃÂ¾ÃÂ² ÃÃÂ¼ÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ´ÃÂ¾ÃÂ¼ÃÂ°
 """
 
 from typing import Dict, List, Optional
@@ -7,7 +7,7 @@ import asyncio
 
 
 class SensorMonitor:
-    """ÐÐ¾Ð½Ð¸ÑÐ¾ÑÐ¸Ð½Ð³ Ð´Ð°ÑÑÐ¸ÐºÐ¾Ð² ÑÐ¼Ð½Ð¾Ð³Ð¾ Ð´Ð¾Ð¼Ð°."""
+    """ÃÃÂ¾ÃÂ½ÃÂ¸ÃÃÂ¾ÃÃÂ¸ÃÂ½ÃÂ³ ÃÂ´ÃÂ°ÃÃÃÂ¸ÃÂºÃÂ¾ÃÂ² ÃÃÂ¼ÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ´ÃÂ¾ÃÂ¼ÃÂ°."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -15,7 +15,7 @@ class SensorMonitor:
         self.alerts = {}
 
     async def get_all_sensors(self) -> List[Dict]:
-        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ Ð²ÑÐµ Ð´Ð°ÑÑÐ¸ÐºÐ¸."""
+        """ÃÃÂ¾ÃÂ»ÃÃÃÂ¸ÃÃ ÃÂ²ÃÃÂµ ÃÂ´ÃÂ°ÃÃÃÂ¸ÃÂºÃÂ¸."""
         states = await self.ha.get_states()
         if "error" in states:
             return []
@@ -34,7 +34,7 @@ class SensorMonitor:
         return sensors
 
     async def get_temperature(self) -> Dict:
-        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ ÑÐµÐ¼Ð¿ÐµÑÐ°ÑÑÑÑ."""
+        """ÃÃÂ¾ÃÂ»ÃÃÃÂ¸ÃÃ ÃÃÂµÃÂ¼ÃÂ¿ÃÂµÃÃÂ°ÃÃÃÃ."""
         sensors = await self.get_all_sensors()
         temps = [s for s in sensors if s.get("device_class") == "temperature"]
         if temps:
@@ -45,23 +45,23 @@ class SensorMonitor:
         return {"sensors": [], "average": 0}
 
     async def get_humidity(self) -> Dict:
-        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ Ð²Ð»Ð°Ð¶Ð½Ð¾ÑÑÑ."""
+        """ÃÃÂ¾ÃÂ»ÃÃÃÂ¸ÃÃ ÃÂ²ÃÂ»ÃÂ°ÃÂ¶ÃÂ½ÃÂ¾ÃÃÃ."""
         sensors = await self.get_all_sensors()
         hums = [s for s in sensors if s.get("device_class") == "humidity"]
         return {"sensors": hums}
 
     async def get_motion_sensors(self) -> List[Dict]:
-        """ÐÐ°ÑÑÐ¸ÐºÐ¸ Ð´Ð²Ð¸Ð¶ÐµÐ½Ð¸Ñ."""
+        """ÃÃÂ°ÃÃÃÂ¸ÃÂºÃÂ¸ ÃÂ´ÃÂ²ÃÂ¸ÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã."""
         sensors = await self.get_all_sensors()
         return [s for s in sensors if s.get("device_class") == "motion"]
 
     async def get_door_sensors(self) -> List[Dict]:
-        """ÐÐ°ÑÑÐ¸ÐºÐ¸ Ð´Ð²ÐµÑÐµÐ¹/Ð¾ÐºÐ¾Ð½."""
+        """ÃÃÂ°ÃÃÃÂ¸ÃÂºÃÂ¸ ÃÂ´ÃÂ²ÃÂµÃÃÂµÃÂ¹/ÃÂ¾ÃÂºÃÂ¾ÃÂ½."""
         sensors = await self.get_all_sensors()
         return [s for s in sensors if s.get("device_class") in ["door", "window", "opening"]]
 
     def set_alert(self, name: str, entity_id: str, condition: str, threshold: float):
-        """Ð£ÑÑÐ°Ð½Ð¾Ð²Ð¸ÑÑ Ð¾Ð¿Ð¾Ð²ÐµÑÐµÐ½Ð¸Ðµ."""
+        """ÃÂ£ÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂ¸ÃÃ ÃÂ¾ÃÂ¿ÃÂ¾ÃÂ²ÃÂµÃÃÂµÃÂ½ÃÂ¸ÃÂµ."""
         self.alerts[name] = {
             "entity_id": entity_id,
             "condition": condition,  # "above", "below"
@@ -70,7 +70,7 @@ class SensorMonitor:
         }
 
     async def check_alerts(self) -> List[Dict]:
-        """ÐÑÐ¾Ð²ÐµÑÐ¸ÑÑ Ð¾Ð¿Ð¾Ð²ÐµÑÐµÐ½Ð¸Ñ."""
+        """ÃÃÃÂ¾ÃÂ²ÃÂµÃÃÂ¸ÃÃ ÃÂ¾ÃÂ¿ÃÂ¾ÃÂ²ÃÂµÃÃÂµÃÂ½ÃÂ¸Ã."""
         triggered = []
         for name, alert in self.alerts.items():
             if not alert["active"]:
@@ -91,7 +91,7 @@ class SensorMonitor:
                     "entity_id": alert["entity_id"],
                     "value": value,
                     "threshold": alert["threshold"],
-                    "message": f"{name}: Ð·Ð½Ð°ÑÐµÐ½Ð¸Ðµ {value} Ð²ÑÑÐµ Ð¿Ð¾ÑÐ¾Ð³Ð° {alert['threshold']}"
+                    "message": f"{name}: ÃÂ·ÃÂ½ÃÂ°ÃÃÂµÃÂ½ÃÂ¸ÃÂµ {value} ÃÂ²ÃÃÃÂµ ÃÂ¿ÃÂ¾ÃÃÂ¾ÃÂ³ÃÂ° {alert['threshold']}"
                 })
             elif alert["condition"] == "below" and value < alert["threshold"]:
                 triggered.append({
@@ -99,7 +99,7 @@ class SensorMonitor:
                     "entity_id": alert["entity_id"],
                     "value": value,
                     "threshold": alert["threshold"],
-                    "message": f"{name}: Ð·Ð½Ð°ÑÐµÐ½Ð¸Ðµ {value} Ð½Ð¸Ð¶Ðµ Ð¿Ð¾ÑÐ¾Ð³Ð° {alert['threshold']}"
+                    "message": f"{name}: ÃÂ·ÃÂ½ÃÂ°ÃÃÂµÃÂ½ÃÂ¸ÃÂµ {value} ÃÂ½ÃÂ¸ÃÂ¶ÃÂµ ÃÂ¿ÃÂ¾ÃÃÂ¾ÃÂ³ÃÂ° {alert['threshold']}"
                 })
         
         return triggered
