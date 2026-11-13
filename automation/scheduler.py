@@ -1,5 +1,5 @@
 """
-ÐÐ»Ð°Ð½Ð¸ÑÐ¾Ð²ÑÐ¸Ðº Ð·Ð°Ð´Ð°Ñ JARVIS
+ÃÃÂ»ÃÂ°ÃÂ½ÃÂ¸ÃÃÂ¾ÃÂ²ÃÃÂ¸ÃÂº ÃÂ·ÃÂ°ÃÂ´ÃÂ°Ã JARVIS
 """
 
 import schedule
@@ -10,7 +10,7 @@ from datetime import datetime
 
 
 class TaskScheduler:
-    """ÐÐ»Ð°Ð½Ð¸ÑÐ¾Ð²ÑÐ¸Ðº Ð·Ð°Ð´Ð°Ñ."""
+    """ÃÃÂ»ÃÂ°ÃÂ½ÃÂ¸ÃÃÂ¾ÃÂ²ÃÃÂ¸ÃÂº ÃÂ·ÃÂ°ÃÂ´ÃÂ°Ã."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -18,7 +18,7 @@ class TaskScheduler:
         self.running = False
 
     def add_task(self, name: str, time_str: str, callback: Callable, days: List[str] = None):
-        """ÐÐ¾Ð±Ð°Ð²Ð¸ÑÑ Ð·Ð°Ð´Ð°ÑÑ."""
+        """ÃÃÂ¾ÃÂ±ÃÂ°ÃÂ²ÃÂ¸ÃÃ ÃÂ·ÃÂ°ÃÂ´ÃÂ°ÃÃ."""
         job = schedule.every()
         
         if days:
@@ -34,38 +34,38 @@ class TaskScheduler:
             "created": datetime.now().isoformat()
         }
         
-        self.brain.logger.info(f"ÐÐ°Ð´Ð°ÑÐ° '{name}' Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð° Ð½Ð° {time_str}")
+        self.brain.logger.info(f"ÃÃÂ°ÃÂ´ÃÂ°ÃÃÂ° '{name}' ÃÂ´ÃÂ¾ÃÂ±ÃÂ°ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ° ÃÂ½ÃÂ° {time_str}")
         return {"status": "ok", "name": name}
 
     def remove_task(self, name: str):
-        """Ð£Ð´Ð°Ð»Ð¸ÑÑ Ð·Ð°Ð´Ð°ÑÑ."""
+        """ÃÂ£ÃÂ´ÃÂ°ÃÂ»ÃÂ¸ÃÃ ÃÂ·ÃÂ°ÃÂ´ÃÂ°ÃÃ."""
         if name in self.tasks:
             schedule.clear(name)
             del self.tasks[name]
-            self.brain.logger.info(f"ÐÐ°Ð´Ð°ÑÐ° '{name}' ÑÐ´Ð°Ð»ÐµÐ½Ð°")
+            self.brain.logger.info(f"ÃÃÂ°ÃÂ´ÃÂ°ÃÃÂ° '{name}' ÃÃÂ´ÃÂ°ÃÂ»ÃÂµÃÂ½ÃÂ°")
             return {"status": "ok"}
-        return {"status": "error", "message": "ÐÐ°Ð´Ð°ÑÐ° Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½Ð°"}
+        return {"status": "error", "message": "ÃÃÂ°ÃÂ´ÃÂ°ÃÃÂ° ÃÂ½ÃÂµ ÃÂ½ÃÂ°ÃÂ¹ÃÂ´ÃÂµÃÂ½ÃÂ°"}
 
     def list_tasks(self) -> List[Dict]:
-        """Ð¡Ð¿Ð¸ÑÐ¾Ðº Ð·Ð°Ð´Ð°Ñ."""
+        """ÃÂ¡ÃÂ¿ÃÂ¸ÃÃÂ¾ÃÂº ÃÂ·ÃÂ°ÃÂ´ÃÂ°Ã."""
         return [
             {"name": name, **data}
             for name, data in self.tasks.items()
         ]
 
     def start(self):
-        """ÐÐ°Ð¿ÑÑÐº Ð¿Ð»Ð°Ð½Ð¸ÑÐ¾Ð²ÑÐ¸ÐºÐ°."""
+        """ÃÃÂ°ÃÂ¿ÃÃÃÂº ÃÂ¿ÃÂ»ÃÂ°ÃÂ½ÃÂ¸ÃÃÂ¾ÃÂ²ÃÃÂ¸ÃÂºÃÂ°."""
         self.running = True
         thread = threading.Thread(target=self._run, daemon=True)
         thread.start()
 
     def _run(self):
-        """ÐÑÐ½Ð¾Ð²Ð½Ð¾Ð¹ ÑÐ¸ÐºÐ» Ð¿Ð»Ð°Ð½Ð¸ÑÐ¾Ð²ÑÐ¸ÐºÐ°."""
+        """ÃÃÃÂ½ÃÂ¾ÃÂ²ÃÂ½ÃÂ¾ÃÂ¹ ÃÃÂ¸ÃÂºÃÂ» ÃÂ¿ÃÂ»ÃÂ°ÃÂ½ÃÂ¸ÃÃÂ¾ÃÂ²ÃÃÂ¸ÃÂºÃÂ°."""
         while self.running:
             schedule.run_pending()
             time.sleep(1)
 
     def stop(self):
-        """ÐÑÑÐ°Ð½Ð¾Ð²ÐºÐ° Ð¿Ð»Ð°Ð½Ð¸ÑÐ¾Ð²ÑÐ¸ÐºÐ°."""
+        """ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ° ÃÂ¿ÃÂ»ÃÂ°ÃÂ½ÃÂ¸ÃÃÂ¾ÃÂ²ÃÃÂ¸ÃÂºÃÂ°."""
         self.running = False
         schedule.clear()
