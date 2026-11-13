@@ -29,8 +29,8 @@ SolidCompression=yes
 WizardStyle=modern
 
 ; Visual Settings
-; WizardImageFile=assets\jarvis_installer.bmp  ; Ð¤Ð°Ð¹Ð» Ð¾ÑÑÑÑÑÑÐ²ÑÐµÑ
-; WizardSmallImageFile=assets\jarvis_installer_small.bmp  ; Ð¤Ð°Ð¹Ð» Ð¾ÑÑÑÑÑÑÐ²ÑÐµÑ
+; WizardImageFile=assets\jarvis_installer.bmp  ; ÃÂ¤ÃÂ°ÃÂ¹ÃÂ» ÃÂ¾ÃÂÃÂÃÂÃÂÃÂÃÂÃÂ²ÃÂÃÂµÃÂ
+; WizardSmallImageFile=assets\jarvis_installer_small.bmp  ; ÃÂ¤ÃÂ°ÃÂ¹ÃÂ» ÃÂ¾ÃÂÃÂÃÂÃÂÃÂÃÂÃÂ²ÃÂÃÂµÃÂ
 SetupIconFile=..\assets\jarvis.ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 
@@ -54,8 +54,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 6.1; Check: not IsAdminInstallMode
-Name: "autostart"; Description: "ÃÂÃÂÃÂÃÂ°ÃÂÃÂ¿ÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂ°ÃÂÃÂÃÂÃÂ JARVIS ÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¸ ÃÂÃÂÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂµ Windows"; GroupDescription: "ÃÂÃÂÃÂÃÂ¾ÃÂÃÂ¿ÃÂÃÂ¾ÃÂÃÂ»ÃÂÃÂ½ÃÂÃÂ¸ÃÂÃÂÃÂÃÂµÃÂÃÂ»ÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂµ ÃÂÃÂ½ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ÃÂÃÂ¹ÃÂÃÂºÃÂÃÂ¸:"; Flags: unchecked
-Name: "cleanmode"; Description: "ÃÂÃÂÃÂÃÂºÃÂÃÂ»ÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂ ÃÂÃÂÃÂÃÂµÃÂÃÂ¶ÃÂÃÂ¸ÃÂÃÂ¼ ÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂÃÂÃÂ¾ÃÂÃÂ³ÃÂÃÂ¾ ÃÂÃÂÃÂÃÂ°ÃÂÃÂ±ÃÂÃÂ¾ÃÂÃÂÃÂÃÂµÃÂÃÂ³ÃÂÃÂ¾ ÃÂÃÂÃÂÃÂÃÂÃÂ¾ÃÂÃÂ»ÃÂÃÂ°"; GroupDescription: "ÃÂÃÂÃÂÃÂ¾ÃÂÃÂ¿ÃÂÃÂ¾ÃÂÃÂ»ÃÂÃÂ½ÃÂÃÂ¸ÃÂÃÂÃÂÃÂµÃÂÃÂ»ÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂµ ÃÂÃÂ½ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ÃÂÃÂ¹ÃÂÃÂºÃÂÃÂ¸:"; Flags: unchecked
+Name: "autostart"; Description: "ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂ¿ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ JARVIS ÃÂÃÂÃÂÃÂ¿ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂµ Windows"; GroupDescription: "ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂ»ÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂµÃÂÃÂÃÂÃÂ»ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂµ ÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂ¹ÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂ¸:"; Flags: unchecked
+Name: "cleanmode"; Description: "ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂ»ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂµÃÂÃÂÃÂÃÂ¶ÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂ¼ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂ³ÃÂÃÂÃÂÃÂ¾ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂ±ÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂµÃÂÃÂÃÂÃÂ³ÃÂÃÂÃÂÃÂ¾ ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂ»ÃÂÃÂÃÂÃÂ°"; GroupDescription: "ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂ¿ÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂ»ÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂµÃÂÃÂÃÂÃÂ»ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂµ ÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂ¹ÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂ¸:"; Flags: unchecked
 
 [Files]
 ; Main Application - all files from package
@@ -68,8 +68,8 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: quicklaunchicon
 
 [Run]
-Filename: "{app}\{#MyAppExeName}"; Description: "ÃÂÃÂÃÂÃÂ°ÃÂÃÂ¿ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂ JARVIS Ultimate"; Flags: nowait postinstall skipifsilent
-Filename: "{app}\docs\README.md"; Description: "ÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ ÃÂÃÂ´ÃÂÃÂ¾ÃÂÃÂºÃÂÃÂÃÂÃÂ¼ÃÂÃÂµÃÂÃÂ½ÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂ¸ÃÂÃÂ"; Flags: shellexec skipifsilent
+Filename: "{app}\{#MyAppExeName}"; Description: "ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂ¿ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ JARVIS Ultimate"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\docs\README.md"; Description: "ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ ÃÂÃÂÃÂÃÂ´ÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂºÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¼ÃÂÃÂÃÂÃÂµÃÂÃÂÃÂÃÂ½ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂ"; Flags: shellexec skipifsilent
 
 [UninstallRun]
 ; Cleanup on uninstall
@@ -96,8 +96,8 @@ Name: "{app}\backups"
 [Code]
 function InitializeUninstall(): Boolean;
 begin
-  Result := MsgBox('ÃÂÃÂ ÃÂ´ÃÂµÃÂ¹ÃÂÃÂÃÂ²ÃÂ¸ÃÂÃÂµÃÂ»ÃÂÃÂ½ÃÂ¾ ÃÂÃÂ¾ÃÂÃÂ¸ÃÂÃÂµ ÃÂÃÂ´ÃÂ°ÃÂ»ÃÂ¸ÃÂÃÂ JARVIS Ultimate?' + #13#10 + #13#10 +
-                   'ÃÂÃÂÃÂµ ÃÂ½ÃÂ°ÃÂÃÂÃÂÃÂ¾ÃÂ¹ÃÂºÃÂ¸ ÃÂ¸ ÃÂ´ÃÂ°ÃÂ½ÃÂ½ÃÂÃÂµ ÃÂ±ÃÂÃÂ´ÃÂÃÂ ÃÂÃÂ´ÃÂ°ÃÂ»ÃÂµÃÂ½ÃÂ.', 
+  Result := MsgBox('ÃÂÃÂÃÂÃÂ ÃÂÃÂ´ÃÂÃÂµÃÂÃÂ¹ÃÂÃÂÃÂÃÂÃÂÃÂ²ÃÂÃÂ¸ÃÂÃÂÃÂÃÂµÃÂÃÂ»ÃÂÃÂÃÂÃÂ½ÃÂÃÂ¾ ÃÂÃÂÃÂÃÂ¾ÃÂÃÂÃÂÃÂ¸ÃÂÃÂÃÂÃÂµ ÃÂÃÂÃÂÃÂ´ÃÂÃÂ°ÃÂÃÂ»ÃÂÃÂ¸ÃÂÃÂÃÂÃÂ JARVIS Ultimate?' + #13#10 + #13#10 +
+                   'ÃÂÃÂÃÂÃÂÃÂÃÂµ ÃÂÃÂ½ÃÂÃÂ°ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¾ÃÂÃÂ¹ÃÂÃÂºÃÂÃÂ¸ ÃÂÃÂ¸ ÃÂÃÂ´ÃÂÃÂ°ÃÂÃÂ½ÃÂÃÂ½ÃÂÃÂÃÂÃÂµ ÃÂÃÂ±ÃÂÃÂÃÂÃÂ´ÃÂÃÂÃÂÃÂ ÃÂÃÂÃÂÃÂ´ÃÂÃÂ°ÃÂÃÂ»ÃÂÃÂµÃÂÃÂ½ÃÂÃÂ.', 
                    mbConfirmation, MB_YESNO) = IDYES;
 end;
 
