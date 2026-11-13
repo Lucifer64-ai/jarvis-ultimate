@@ -16,7 +16,7 @@ class KeyboardLightingModule:
         try:
             rgb = tuple(max(0, min(255, int(value))) for value in (red, green, blue))
         except (TypeError, ValueError):
-            return {"status": "error", "message": "Цвет должен быть задан тремя числами от 0 до 255"}
+            return {"status": "error", "message": "Ð¦Ð²ÐµÑ Ð´Ð¾Ð»Ð¶ÐµÐ½ Ð±ÑÑÑ Ð·Ð°Ð´Ð°Ð½ ÑÑÐµÐ¼Ñ ÑÐ¸ÑÐ»Ð°Ð¼Ð¸ Ð¾Ñ 0 Ð´Ð¾ 255"}
 
         try:
             from openrgb import OpenRGBClient
@@ -24,7 +24,7 @@ class KeyboardLightingModule:
         except ImportError:
             return {
                 "status": "unavailable",
-                "message": "Для RGB-клавиатуры установите openrgb-python и включите локальный SDK Server в OpenRGB.",
+                "message": "ÐÐ»Ñ RGB-ÐºÐ»Ð°Ð²Ð¸Ð°ÑÑÑÑ ÑÑÑÐ°Ð½Ð¾Ð²Ð¸ÑÐµ openrgb-python Ð¸ Ð²ÐºÐ»ÑÑÐ¸ÑÐµ Ð»Ð¾ÐºÐ°Ð»ÑÐ½ÑÐ¹ SDK Server Ð² OpenRGB.",
             }
 
         try:
@@ -34,24 +34,24 @@ class KeyboardLightingModule:
             if not keyboards:
                 keyboards = [device for device in devices if "keyboard" in str(getattr(device, "name", "")).lower()]
             if not keyboards:
-                return {"status": "unavailable", "message": "OpenRGB не обнаружил совместимую клавиатуру"}
+                return {"status": "unavailable", "message": "OpenRGB Ð½Ðµ Ð¾Ð±Ð½Ð°ÑÑÐ¶Ð¸Ð» ÑÐ¾Ð²Ð¼ÐµÑÑÐ¸Ð¼ÑÑ ÐºÐ»Ð°Ð²Ð¸Ð°ÑÑÑÑ"}
 
             selected_index = 0 if device_index is None else int(device_index)
             if selected_index < 0 or selected_index >= len(keyboards):
-                return {"status": "error", "message": "Индекс клавиатуры вне диапазона", "count": len(keyboards)}
+                return {"status": "error", "message": "ÐÐ½Ð´ÐµÐºÑ ÐºÐ»Ð°Ð²Ð¸Ð°ÑÑÑÑ Ð²Ð½Ðµ Ð´Ð¸Ð°Ð¿Ð°Ð·Ð¾Ð½Ð°", "count": len(keyboards)}
 
             keyboard = keyboards[selected_index]
             keyboard.set_color(RGBColor(*rgb))
             return {
                 "status": "ok",
-                "message": f"Цвет клавиатуры установлен: RGB{rgb}",
+                "message": f"Ð¦Ð²ÐµÑ ÐºÐ»Ð°Ð²Ð¸Ð°ÑÑÑÑ ÑÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½: RGB{rgb}",
                 "device": str(getattr(keyboard, "name", "keyboard")),
             }
         except Exception as error:
-            self.brain.logger.warning("Не удалось изменить подсветку клавиатуры: %s", error)
+            self.brain.logger.warning("ÐÐµ ÑÐ´Ð°Ð»Ð¾ÑÑ Ð¸Ð·Ð¼ÐµÐ½Ð¸ÑÑ Ð¿Ð¾Ð´ÑÐ²ÐµÑÐºÑ ÐºÐ»Ð°Ð²Ð¸Ð°ÑÑÑÑ: %s", error)
             return {
                 "status": "error",
-                "message": "Не удалось подключиться к OpenRGB. Проверьте SDK Server и совместимость клавиатуры.",
+                "message": "ÐÐµ ÑÐ´Ð°Ð»Ð¾ÑÑ Ð¿Ð¾Ð´ÐºÐ»ÑÑÐ¸ÑÑÑÑ Ðº OpenRGB. ÐÑÐ¾Ð²ÐµÑÑÑÐµ SDK Server Ð¸ ÑÐ¾Ð²Ð¼ÐµÑÑÐ¸Ð¼Ð¾ÑÑÑ ÐºÐ»Ð°Ð²Ð¸Ð°ÑÑÑÑ.",
             }
 
     def off(self, device_index: int | None = None) -> Dict:
