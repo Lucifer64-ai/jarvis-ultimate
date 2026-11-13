@@ -1,5 +1,5 @@
 """
-Ð¡Ð¸ÑÑÐµÐ¼Ð° ÑÐ¾Ð±ÑÑÐ¸Ð¹ JARVIS
+ÃÂ¡ÃÂ¸ÃÂÃÂÃÂµÃÂ¼ÃÂ° ÃÂÃÂ¾ÃÂ±ÃÂÃÂÃÂ¸ÃÂ¹ JARVIS
 """
 
 from typing import Dict, List, Callable
@@ -8,7 +8,7 @@ import threading
 
 
 class EventBus:
-    """Ð¨Ð¸Ð½Ð° ÑÐ¾Ð±ÑÑÐ¸Ð¹ Ð´Ð»Ñ ÑÐ²ÑÐ·Ð¸ Ð¼ÐµÐ¶Ð´Ñ Ð¼Ð¾Ð´ÑÐ»ÑÐ¼Ð¸."""
+    """ÃÂ¨ÃÂ¸ÃÂ½ÃÂ° ÃÂÃÂ¾ÃÂ±ÃÂÃÂÃÂ¸ÃÂ¹ ÃÂ´ÃÂ»ÃÂ ÃÂÃÂ²ÃÂÃÂ·ÃÂ¸ ÃÂ¼ÃÂµÃÂ¶ÃÂ´ÃÂ ÃÂ¼ÃÂ¾ÃÂ´ÃÂÃÂ»ÃÂÃÂ¼ÃÂ¸."""
 
     def __init__(self):
         self._listeners: Dict[str, List[Callable]] = defaultdict(list)
@@ -29,7 +29,7 @@ class EventBus:
 
 
     def publish(self, event_type: str, data: Dict = None):
-        """Алиас для emit() - публикация события."""
+        """ÐÐ»Ð¸Ð°Ñ Ð´Ð»Ñ emit() - Ð¿ÑÐ±Ð»Ð¸ÐºÐ°ÑÐ¸Ñ ÑÐ¾Ð±ÑÑÐ¸Ñ."""
         self.emit(event_type, data)
 
     def process_events(self):
@@ -42,7 +42,7 @@ class EventBus:
                 try:
                     listener(event["data"])
                 except Exception as e:
-                    print(f"ÐÑÐ¸Ð±ÐºÐ° Ð¾Ð±ÑÐ°Ð±Ð¾ÑÑÐ¸ÐºÐ° ÑÐ¾Ð±ÑÑÐ¸Ñ: {e}")
+                    print(f"ÃÂÃÂÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ¾ÃÂ±ÃÂÃÂ°ÃÂ±ÃÂ¾ÃÂÃÂÃÂ¸ÃÂºÃÂ° ÃÂÃÂ¾ÃÂ±ÃÂÃÂÃÂ¸ÃÂ: {e}")
 
     def clear(self):
         self._listeners.clear()
