@@ -1,5 +1,5 @@
 """
-Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð¿Ð¸ÑÐ°Ð½Ð¸ÐµÐ¼ JARVIS
+£¿°²»µ½¸µ ¿¸°½¸µ¼ JARVIS
 """
 
 import psutil
@@ -7,13 +7,13 @@ from typing import Dict
 
 
 class PowerModule:
-    """ÐÐ¾Ð½Ð¸ÑÐ¾ÑÐ¸Ð½Ð³ Ð¿Ð¸ÑÐ°Ð½Ð¸Ñ."""
+    """¾½¸¾¸½³ ¿¸°½¸."""
 
     def __init__(self, brain):
         self.brain = brain
 
     def get_battery_info(self) -> Dict:
-        """ÐÐ½ÑÐ¾ÑÐ¼Ð°ÑÐ¸Ñ Ð¾ Ð±Ð°ÑÐ°ÑÐµÐµ."""
+        """½¾¼°¸ ¾ ±°°µµ."""
         battery = psutil.sensors_battery()
         if battery is None:
             return {"status": "ok", "available": False}
@@ -27,10 +27,10 @@ class PowerModule:
         }
 
     def get_power_status(self) -> Dict:
-        """Ð¡ÑÐ°ÑÑÑ Ð¿Ð¸ÑÐ°Ð½Ð¸Ñ."""
+        """¡° ¿¸°½¸."""
         battery = self.get_battery_info()
         if not battery.get("available"):
-            return {"status": "ok", "source": "AC", "message": "ÐÐ¸ÑÐ°Ð½Ð¸Ðµ Ð¾Ñ ÑÐµÑÐ¸"}
+            return {"status": "ok", "source": "AC", "message": "¸°½¸µ ¾ µ¸"}
 
         if battery.get("plugged"):
             return {"status": "ok", "source": "AC", "percent": battery["percent"]}
