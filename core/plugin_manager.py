@@ -1,5 +1,5 @@
 """
-ÃÃÃÃÂµÃÃÂ½ÃÃÂµÃÃÂ´ÃÃÂ¶ÃÃÂµÃÃ ÃÃÂ¿ÃÃÂ»ÃÃÂ°ÃÃÂ³ÃÃÂ¸ÃÃÂ½ÃÃÂ¾ÃÃÂ² JARVIS
+µ½µ´¶µ ¿»°³¸½¾² JARVIS
 """
 
 import importlib
@@ -9,7 +9,7 @@ from typing import Dict, List, Optional
 
 
 class PluginManager:
-    """ÃÃÃÃÂ°ÃÃÂ³ÃÃÃÃÃÃÂ·ÃÃÂºÃÃÂ° ÃÃÂ¸ ÃÃÃÃÂ¿ÃÃÃÃÂ°ÃÃÂ²ÃÃÂ»ÃÃÂµÃÃÂ½ÃÃÂ¸ÃÃÂµ ÃÃÂ¿ÃÃÂ»ÃÃÂ°ÃÃÂ³ÃÃÂ¸ÃÃÂ½ÃÃÂ°ÃÃÂ¼ÃÃÂ¸."""
+    """°³·º° ¸ ¿°²»µ½¸µ ¿»°³¸½°¼¸."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -44,17 +44,17 @@ class PluginManager:
             if hasattr(module, "setup"):
                 plugin = module.setup(self.brain)
                 self.loaded[name] = plugin
-                self.brain.logger.info(f"ÃÃÃÃÂ»ÃÃÂ°ÃÃÂ³ÃÃÂ¸ÃÃÂ½ '{name}' ÃÃÂ·ÃÃÂ°ÃÃÂ³ÃÃÃÃÃÃÂ¶ÃÃÂµÃÃÂ½")
+                self.brain.logger.info(f"»°³¸½ '{name}' ·°³¶µ½")
                 return {"status": "ok", "name": name}
             else:
-                return {"status": "error", "message": "ÃÃÃÃÂ»ÃÃÂ°ÃÃÂ³ÃÃÂ¸ÃÃÂ½ ÃÃÂ½ÃÃÂµ ÃÃÂ¸ÃÃÂ¼ÃÃÂµÃÃÂµÃÃ ÃÃÃÃÃÃÂ½ÃÃÂºÃÃÃÃÂ¸ÃÃÂ¸ setup()"}
+                return {"status": "error", "message": "»°³¸½ ½µ ¸¼µµ ½º¸¸ setup()"}
         except Exception as e:
-            self.brain.logger.error(f"ÃÃÃÃÃÃÂ¸ÃÃÂ±ÃÃÂºÃÃÂ° ÃÃÂ·ÃÃÂ°ÃÃÂ³ÃÃÃÃÃÃÂ·ÃÃÂºÃÃÂ¸ ÃÃÂ¿ÃÃÂ»ÃÃÂ°ÃÃÂ³ÃÃÂ¸ÃÃÂ½ÃÃÂ° {name}: {e}")
+            self.brain.logger.error(f"¸±º° ·°³·º¸ ¿»°³¸½° {name}: {e}")
             return {"status": "error", "message": str(e)}
 
 
     def load_plugins(self) -> List[Dict]:
-        """ÃÃÂ°ÃÂ³ÃÃÃÂ·ÃÂ¸ÃÃ ÃÂ²ÃÃÂµ ÃÂ¾ÃÂ±ÃÂ½ÃÂ°ÃÃÃÂ¶ÃÂµÃÂ½ÃÂ½ÃÃÂµ ÃÂ¿ÃÂ»ÃÂ°ÃÂ³ÃÂ¸ÃÂ½Ã."""
+        """°³·¸ ²µ ¾±½°¶µ½½µ ¿»°³¸½."""
         results = []
         plugins = self.discover_plugins()
         for name in plugins:
@@ -69,7 +69,7 @@ class PluginManager:
                 plugin.shutdown()
             del self.loaded[name]
             return {"status": "ok"}
-        return {"status": "error", "message": "ÃÃÃÃÂ»ÃÃÂ°ÃÃÂ³ÃÃÂ¸ÃÃÂ½ ÃÃÂ½ÃÃÂµ ÃÃÂ·ÃÃÂ°ÃÃÂ³ÃÃÃÃÃÃÂ¶ÃÃÂµÃÃÂ½"}
+        return {"status": "error", "message": "»°³¸½ ½µ ·°³¶µ½"}
 
     def list_plugins(self) -> List[Dict]:
         available = self.discover_plugins()
