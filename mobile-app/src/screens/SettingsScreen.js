@@ -7,12 +7,12 @@ export default function SettingsScreen({ navigation }) {
 
   const handleLogout = () => {
     Alert.alert(
-      'Выход',
-      'Вы уверены, что хотите выйти?',
+      '¾´',
+      ' ²µµ½, ¾ ¾¸µ ²¹¸?',
       [
-        { text: 'Отмена', style: 'cancel' },
+        { text: '¼µ½°', style: 'cancel' },
         {
-          text: 'Выйти',
+          text: '¹¸',
           style: 'destructive',
           onPress: () => {
             logout();
@@ -26,31 +26,31 @@ export default function SettingsScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.title}>Настройки</Text>
+        <Text style={styles.title}>°¾¹º¸</Text>
         
         <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuText}>Подключение к серверу</Text>
-          <Text style={styles.menuValue}>Настроено</Text>
+          <Text style={styles.menuText}>¾´º»µ½¸µ º µ²µ</Text>
+          <Text style={styles.menuValue}>°¾µ½¾</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuText}>Уведомления</Text>
-          <Text style={styles.menuValue}>Включены</Text>
+          <Text style={styles.menuText}>£²µ´¾¼»µ½¸</Text>
+          <Text style={styles.menuValue}>º»µ½</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuText}>Тема</Text>
-          <Text style={styles.menuValue}>Тёмная</Text>
+          <Text style={styles.menuText}>¢µ¼°</Text>
+          <Text style={styles.menuValue}>¢¼½°</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuText}>Язык</Text>
-          <Text style={styles.menuValue}>Русский</Text>
+          <Text style={styles.menuText}>¯·º</Text>
+          <Text style={styles.menuValue}> º¸¹</Text>
         </TouchableOpacity>
       </View>
 
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutText}>Выйти из аккаунта</Text>
+        <Text style={styles.logoutText}>¹¸ ¸· °ºº°½°</Text>
       </TouchableOpacity>
 
       <View style={styles.footer}>
