@@ -11,7 +11,7 @@ export default function CommandScreen() {
 
   const sendCommand = async () => {
     if (!command.trim()) {
-      Alert.alert('Ошибка', 'Введите команду');
+      Alert.alert('¸±º°', '²µ´¸µ º¾¼°½´');
       return;
     }
 
@@ -20,18 +20,18 @@ export default function CommandScreen() {
       const data = await ApiService.sendCommand(token, command);
       setResult(data);
     } catch (error) {
-      Alert.alert('Ошибка', 'Не удалось выполнить команду');
+      Alert.alert('¸±º°', 'µ ´°»¾ ²¿¾»½¸ º¾¼°½´');
     } finally {
       setLoading(false);
     }
   };
 
   const quickCommands = [
-    'Который час?',
-    'Какая погода?',
-    'Статус системы',
-    'Открой YouTube',
-    'Выключи свет',
+    '¾¾¹ °?',
+    '°º° ¿¾³¾´°?',
+    '¡° ¸µ¼',
+    'º¾¹ YouTube',
+    'º»¸ ²µ',
   ];
 
   return (
@@ -40,7 +40,7 @@ export default function CommandScreen() {
         <View style={styles.inputCard}>
           <TextInput
             style={styles.input}
-            placeholder="Введите команду..."
+            placeholder="²µ´¸µ º¾¼°½´..."
             placeholderTextColor="#666"
             value={command}
             onChangeText={setCommand}
@@ -52,13 +52,13 @@ export default function CommandScreen() {
             disabled={loading}
           >
             <Text style={styles.sendButtonText}>
-              {loading ? 'Выполнение...' : 'Отправить'}
+              {loading ? '¿¾»½µ½¸µ...' : '¿°²¸'}
             </Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.quickCommands}>
-          <Text style={styles.sectionTitle}>Быстрые команды</Text>
+          <Text style={styles.sectionTitle}>µ º¾¼°½´</Text>
           {quickCommands.map((cmd, index) => (
             <TouchableOpacity
               key={index}
@@ -72,7 +72,7 @@ export default function CommandScreen() {
 
         {result && (
           <View style={styles.resultCard}>
-            <Text style={styles.sectionTitle}>Результат</Text>
+            <Text style={styles.sectionTitle}> µ·»°</Text>
             <Text style={styles.resultText}>
               {JSON.stringify(result, null, 2)}
             </Text>
