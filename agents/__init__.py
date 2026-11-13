@@ -1,6 +1,6 @@
 """
 JARVIS - Agents Module
-Система специализированных агентов для выполнения задач
+System of specialized agents for task execution
 """
 
 from .base_agent import BaseAgent
@@ -14,15 +14,15 @@ from .ai_service import AgentAIService, get_ai_service
 from .file_saver import FileSaver, get_file_saver
 
 __all__ = [
-    'BaseAgent',
-    'WebDeveloperAgent',
-    'ProgrammerAgent',
-    'DataAnalystAgent',
-    'DesignerAgent',
-    'DevOpsAgent',
-    'AgentManager',
-    'AgentAIService',
-    'get_ai_service',
-    'FileSaver',
-    'get_file_saver'
+    "BaseAgent",
+    "WebDeveloperAgent",
+    "ProgrammerAgent",
+    "DataAnalystAgent",
+    "DesignerAgent",
+    "DevOpsAgent",
+    "AgentManager",
+    "AgentAIService",
+    "get_ai_service",
+    "FileSaver",
+    "get_file_saver"
 ]
