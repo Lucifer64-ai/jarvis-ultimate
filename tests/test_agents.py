@@ -1,52 +1,51 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-JARVIS - Тестирование системы агентов
+JARVIS - Agent System Testing
 """
 
 import sys
 import os
-import json
 from pathlib import Path
 
-# Добавляем путь к проекту
-sys.path.insert(0, str(Path(__file__).parent))
+# Add project path
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from agents.agent_manager import AgentManager
 from agents.file_saver import get_file_saver
 
 
 def test_agent_manager():
-    """Тестирование AgentManager."""
-    print("=" * 60)
-    print("ТЕСТ 1: Инициализация AgentManager")
-    print("=" * 60)
+    """Test AgentManager initialization."""
+    print("=" * 70)
+    print("TEST 1: AgentManager Initialization")
+    print("=" * 70)
 
     manager = AgentManager()
-
-    # Проверяем регистрацию агентов
     agents = manager.list_agents()
-    print(f"\n✅ Зарегистрировано агентов: {len(agents)}")
+
+    print(f"\n✅ Registered agents: {len(agents)}")
 
     for agent in agents:
-        print(f"  • {agent['name']}: {agent['description']}")
-        print(f"    Возможностей: {len(agent['capabilities'])}")
+        print(f"  • {agent['name']}")
+        print(f"    {agent['description']}")
+        print(f"    Capabilities: {len(agent['capabilities'])}")
 
     return manager
 
 
 def test_can_handle(manager):
-    """Тестирование метода can_handle."""
-    print("\n" + "=" * 60)
-    print("ТЕСТ 2: Проверка распознавания задач")
-    print("=" * 60)
+    """Test task recognition."""
+    print("\n" + "=" * 70)
+    print("TEST 2: Task Recognition")
+    print("=" * 70)
 
     test_tasks = [
-        ("Создай лендинг для кофейни", "Web Developer"),
-        ("Напиши Python скрипт для парсинга", "Programmer"),
-        ("Проанализируй данные из CSV", "Data Analyst"),
-        ("Создай дизайн мобильного приложения", "Designer"),
-        ("Создай Docker файл для проекта", "DevOps"),
+        ("Create landing page for coffee shop", "Web Developer"),
+        ("Write Python script for parsing", "Programmer"),
+        ("Analyze data from CSV", "Data Analyst"),
+        ("Create mobile app design", "Designer"),
+        ("Create Docker file for project", "DevOps"),
     ]
 
     for task, expected_agent in test_tasks:
@@ -55,140 +54,128 @@ def test_can_handle(manager):
             status = "✅" if agent.name == expected_agent else "⚠️"
             print(f"{status} '{task[:40]}...' → {agent.name}")
         else:
-            print(f"❌ '{task[:40]}...' → Агент не найден")
+            print(f"❌ '{task[:40]}...' → Agent not found")
 
 
 def test_execute_tasks(manager):
-    """Тестирование выполнения задач."""
-    print("\n" + "=" * 60)
-    print("ТЕСТ 3: Выполнение задач (без AI)")
-    print("=" * 60)
+    """Test task execution."""
+    print("\n" + "=" * 70)
+    print("TEST 3: Task Execution (without AI)")
+    print("=" * 70)
 
     test_tasks = [
-        "Создай лендинг для кофейни",
-        "Напиши Python скрипт для парсинга",
-        "Создай цветовую схему для сайта",
-        "Создай Docker файл для проекта",
+        "Create landing page for coffee shop",
+        "Write Python script for parsing",
+        "Create color scheme for website",
+        "Create Docker file for project",
     ]
 
     for task in test_tasks:
-        print(f"\n📋 Задача: {task}")
+        print(f"\n📋 Task: {task}")
         result = manager.execute_task(task)
 
-        if result.get('status') == 'success':
-            print(f"  ✅ Статус: {result.get('type', 'unknown')}")
-            print(f"  📁 Файлов создано: {len(result.get('files', {}))}")
+        if result.get("status") == "success":
+            print(f"  ✅ Status: {result.get('type', 'unknown')}")
+            print(f"  📁 Files created: {len(result.get('files', {}))}")
 
-            # Показываем имена файлов
-            for filename in list(result.get('files', {}).keys())[:3]:
+            for filename in list(result.get("files", {}).keys())[:3]:
                 print(f"     • {filename}")
         else:
-            print(f"  ❌ Ошибка: {result.get('message', 'Неизвестная ошибка')}")
+            print(f"  ❌ Error: {result.get('message', 'Unknown error')}")
 
 
 def test_file_saver():
-    """Тестирование FileSaver."""
-    print("\n" + "=" * 60)
-    print("ТЕСТ 4: Сохранение файлов на диск")
-    print("=" * 60)
+    """Test FileSaver."""
+    print("\n" + "=" * 70)
+    print("TEST 4: File Saving to Disk")
+    print("=" * 70)
 
     file_saver = get_file_saver()
 
-    # Тестовые файлы
     test_files = {
-        'test.html': '<!DOCTYPE html><html><body><h1>Test</h1></body></html>',
-        'test.css': 'body { margin: 0; padding: 0; }',
-        'test.js': 'console.log("Hello from JARVIS!");'
+        "test.html": "<!DOCTYPE html><html><body><h1>Test</h1></body></html>",
+        "test.css": "body { margin: 0; padding: 0; }",
+        "test.js": 'console.log("Hello from JARVIS!");'
     }
 
     result = file_saver.save_files(
         files=test_files,
-        project_name="Тестовый проект",
+        project_name="Test Project",
         agent_name="Test Agent"
     )
 
-    if result.get('status') == 'success':
-        print(f"✅ Проект создан: {result.get('project_dir')}")
-        print(f"📁 Сохранено файлов: {result.get('files_saved')}")
+    if result.get("status") == "success":
+        print(f"✅ Project created: {result.get('project_dir')}")
+        print(f"📁 Files saved: {result.get('files_saved')}")
 
-        for file_info in result.get('files', []):
-            print(f"  • {file_info['filename']} ({file_info['size']} байт)")
+        for file_info in result.get("files", []):
+            print(f"  • {file_info['filename']} ({file_info['size']} bytes)")
     else:
-        print(f"❌ Ошибка: {result.get('message')}")
+        print(f"❌ Error: {result.get('message')}")
 
 
 def test_voice_commands(manager):
-    """Тестирование голосовых команд."""
-    print("\n" + "=" * 60)
-    print("ТЕСТ 5: Голосовые команды")
-    print("=" * 60)
+    """Test voice commands."""
+    print("\n" + "=" * 70)
+    print("TEST 5: Voice Commands")
+    print("=" * 70)
 
     commands = [
-        "какие агенты",
-        "история задач",
-        "возможности агента Web Developer",
-        "статус агента Programmer"
+        "what agents are available",
+        "task history",
+        "Web Developer agent capabilities",
+        "Programmer agent status"
     ]
 
     for command in commands:
-        print(f"\n🎤 Команда: '{command}'")
+        print(f"\n🎤 Command: '{command}'")
 
-        # Имитируем обработку команды
-        if "какие агенты" in command:
+        if "what agents" in command:
             agents = manager.list_agents()
-            print(f"  ✅ Найдено агентов: {len(agents)}")
+            print(f"  ✅ Found agents: {len(agents)}")
             for agent in agents[:3]:
                 print(f"     • {agent['name']}")
 
-        elif "история задач" in command:
+        elif "task history" in command:
             history = manager.get_task_history()
-            print(f"  ✅ Задач в истории: {len(history)}")
+            print(f"  ✅ Tasks in history: {len(history)}")
 
-        elif "возможности" in command:
+        elif "capabilities" in command:
             agent_name = "Web Developer"
             agent = manager.get_agent(agent_name)
             if agent:
-                print(f"  ✅ Возможности {agent_name}:")
+                print(f"  ✅ {agent_name} capabilities:")
                 for cap in agent.capabilities[:3]:
                     print(f"     • {cap}")
 
-        elif "статус" in command:
+        elif "status" in command:
             agent_name = "Programmer"
             agent = manager.get_agent(agent_name)
             if agent:
                 status = agent.get_status()
-                print(f"  ✅ Статус {agent_name}:")
-                print(f"     • Задач выполнено: {status['tasks_completed']}")
+                print(f"  ✅ {agent_name} status:")
+                print(f"     • Tasks completed: {status['tasks_completed']}")
 
 
 def main():
-    """Главная функция тестирования."""
-    print("\n" + "🤖" * 30)
-    print("JARVIS AGENT SYSTEM - ТЕСТИРОВАНИЕ")
-    print("🤖" * 30 + "\n")
+    """Main testing function."""
+    print("\n" + "🤖" * 35)
+    print("JARVIS AGENT SYSTEM - TESTING")
+    print("🤖" * 35 + "\n")
 
     try:
-        # Тест 1: Инициализация
         manager = test_agent_manager()
-
-        # Тест 2: Распознавание задач
         test_can_handle(manager)
-
-        # Тест 3: Выполнение задач
         test_execute_tasks(manager)
-
-        # Тест 4: Сохранение файлов
         test_file_saver()
-
-        # Тест 5: Голосовые команды
         test_voice_commands(manager)
 
-        print("\n" + "=" * 60)
-        print("✅ ВСЕ ТЕСТЫ ЗАВЕРШЕНЫ УСПЕШНО!")
-        print("=" * 60)
+        print("\n" + "=" * 70)
+        print("✅ ALL TESTS COMPLETED SUCCESSFULLY!")
+        print("=" * 70)
 
     except Exception as e:
-        print(f"\n❌ Ошибка при тестировании: {e}")
+        print(f"\n❌ Testing error: {e}")
         import traceback
         traceback.print_exc()
         return 1
