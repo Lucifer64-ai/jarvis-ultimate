@@ -1,5 +1,5 @@
 """
-ML-Ð´Ð²Ð¸Ð¶Ð¾Ðº JARVIS Ð´Ð»Ñ ÑÐ°ÑÐ¿Ð¾Ð·Ð½Ð°Ð²Ð°Ð½Ð¸Ñ ÐºÐ¾Ð¼Ð°Ð½Ð´
+ML-´²¸¶¾º JARVIS ´» °¿¾·½°²°½¸ º¾¼°½´
 """
 
 import json
@@ -14,7 +14,7 @@ from sklearn.svm import SVC
 
 
 class MLEngine:
-    """ML Ð´Ð»Ñ ÐºÐ»Ð°ÑÑÐ¸ÑÐ¸ÐºÐ°ÑÐ¸Ð¸ Ð³Ð¾Ð»Ð¾ÑÐ¾Ð²ÑÑ ÐºÐ¾Ð¼Ð°Ð½Ð´."""
+    """ML ´» º»°¸¸º°¸¸ ³¾»¾¾² º¾¼°½´."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -30,7 +30,7 @@ class MLEngine:
             self._train_default_model()
 
     def _load_training_data(self) -> Dict[str, List[str]]:
-        """ÐÐ°Ð³ÑÑÐ·ÐºÐ° stored training data Ð´Ð»Ñ Ð´Ð¾Ð¿.Ð¾Ð±ÑÑÐµÐ½Ð¸Ñ."""
+        """°³·º° stored training data ´» ´¾¿.¾±µ½¸."""
         if self.training_data_path.exists():
             try:
                 with open(self.training_data_path, "r", encoding="utf-8") as file:
@@ -38,43 +38,43 @@ class MLEngine:
                 if isinstance(data, dict):
                     return data
             except Exception as error:
-                self.brain.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ training data: {error}")
+                self.brain.logger.error(f"¸±º° ·°³·º¸ training data: {error}")
         return self._get_default_training_data()
 
     def _save_training_data(self):
-        """Ð¡Ð¾ÑÑÐ°Ð½ÐµÐ½Ð¸Ðµ training data Ð² ÑÐ°Ð¹Ð»."""
+        """¡¾°½µ½¸µ training data ² °¹»."""
         self.training_data_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.training_data_path, "w", encoding="utf-8") as file:
             json.dump(self.training_data, file, ensure_ascii=False, indent=2)
 
     def _get_default_training_data(self) -> Dict[str, List[str]]:
-        """ÐÐ°Ð·Ð¾Ð²ÑÐ¹ Ð½Ð°Ð±Ð¾Ñ ÐºÐ¾Ð¼Ð°Ð½Ð´."""
+        """°·¾²¹ ½°±¾ º¾¼°½´."""
         return {
-            "system_shutdown": ["Ð²ÑÐºÐ»ÑÑÐ¸ ÐºÐ¾Ð¼Ð¿ÑÑÑÐµÑ", "Ð²ÑÐºÐ»ÑÑÐ¸ Ð¿Ðº", "Ð·Ð°Ð²ÐµÑÑÐ¸ ÑÐ°Ð±Ð¾ÑÑ"],
-            "system_restart": ["Ð¿ÐµÑÐµÐ·Ð°Ð³ÑÑÐ·Ð¸ ÐºÐ¾Ð¼Ð¿ÑÑÑÐµÑ", "Ð¿ÐµÑÐµÐ·Ð°Ð³ÑÑÐ·Ð¸ Ð¿Ðº", "ÑÐµÑÑÐ°ÑÑ"],
-            "system_lock": ["Ð·Ð°Ð±Ð»Ð¾ÐºÐ¸ÑÑÐ¹ ÑÐºÑÐ°Ð½", "Ð·Ð°Ð±Ð»Ð¾ÐºÐ¸ÑÑÐ¹ ÐºÐ¾Ð¼Ð¿ÑÑÑÐµÑ", "Ð»Ð¾Ðº"],
-            "info_time": ["ÐºÐ¾ÑÐ¾ÑÑÐ¹ ÑÐ°Ñ", "ÑÐºÐ¾Ð»ÑÐºÐ¾ Ð²ÑÐµÐ¼ÐµÐ½Ð¸", "Ð²ÑÐµÐ¼Ñ"],
-            "info_date": ["ÐºÐ°ÐºÐ°Ñ Ð´Ð°ÑÐ°", "ÐºÐ°ÐºÐ¾Ðµ ÑÐµÐ³Ð¾Ð´Ð½Ñ ÑÐ¸ÑÐ»Ð¾", "Ð´Ð°ÑÐ°"],
-            "info_weather": ["ÐºÐ°ÐºÐ°Ñ Ð¿Ð¾Ð³Ð¾Ð´Ð°", "Ð¿Ð¾Ð³Ð¾Ð´Ð° Ð½Ð° ÑÐµÐ³Ð¾Ð´Ð½Ñ", "Ð¿ÑÐ¾Ð³Ð½Ð¾Ð· Ð¿Ð¾Ð³Ð¾Ð´Ñ"],
-            "app_notepad": ["Ð¾ÑÐºÑÐ¾Ð¹ Ð±Ð»Ð¾ÐºÐ½Ð¾Ñ", "Ð·Ð°Ð¿ÑÑÑÐ¸ notepad", "Ð¾ÑÐºÑÐ¾Ð¹ Ð·Ð°Ð¼ÐµÑÐºÐ¸"],
-            "app_calculator": ["Ð¾ÑÐºÑÐ¾Ð¹ ÐºÐ°Ð»ÑÐºÑÐ»ÑÑÐ¾Ñ", "Ð·Ð°Ð¿ÑÑÑÐ¸ ÐºÐ°Ð»ÑÐºÑÐ»ÑÑÐ¾Ñ"],
-            "app_youtube": ["Ð¾ÑÐºÑÐ¾Ð¹ ÑÑÑÐ±", "Ð¾ÑÐºÑÐ¾Ð¹ youtube", "Ð·Ð°Ð¿ÑÑÑÐ¸ ÑÑÑÐ±"],
-            "control_volume": ["Ð³ÑÐ¾Ð¼ÐºÐ¾ÑÑÑ", "ÑÐ´ÐµÐ»Ð°Ð¹ Ð³ÑÐ¾Ð¼ÑÐµ", "ÑÐ´ÐµÐ»Ð°Ð¹ ÑÐ¸ÑÐµ"],
-            "control_mute": ["Ð±ÐµÐ· Ð·Ð²ÑÐºÐ°", "Ð²ÑÐºÐ»ÑÑÐ¸ Ð·Ð²ÑÐº", "mute"],
-            "control_minimize": ["ÑÐ²ÐµÑÐ½Ð¸ Ð²ÑÐµ Ð¾ÐºÐ½Ð°", "Ð¿Ð¾ÐºÐ°Ð¶Ð¸ ÑÐ°Ð±Ð¾ÑÐ¸Ð¹ ÑÑÐ¾Ð»", "Ð¼Ð¸Ð½Ð¸Ð¼Ð¸Ð·Ð¸ÑÐ¾Ð²Ð°ÑÑ"],
-            "network_speed": ["ÑÐµÑÑ ÑÐºÐ¾ÑÐ¾ÑÑÐ¸", "ÑÐºÐ¾ÑÐ¾ÑÑÑ Ð¸Ð½ÑÐµÑÐ½ÐµÑÐ°", "Ð¿ÑÐ¾Ð²ÐµÑÑ Ð¸Ð½ÑÐµÑÐ½ÐµÑ"],
-            "network_ip": ["ÐºÐ°ÐºÐ¾Ð¹ ip Ð°Ð´ÑÐµÑ", "Ð¼Ð¾Ð¹ ip", "Ð°Ð¹Ð¿Ð¸ Ð°Ð´ÑÐµÑ"],
+            "system_shutdown": ["²º»¸ º¾¼¿µ", "²º»¸ ¿º", "·°²µ¸ °±¾"],
+            "system_restart": ["¿µµ·°³·¸ º¾¼¿µ", "¿µµ·°³·¸ ¿º", "µ°"],
+            "system_lock": ["·°±»¾º¸¹ º°½", "·°±»¾º¸¹ º¾¼¿µ", "»¾º"],
+            "info_time": ["º¾¾¹ °", "º¾»º¾ ²µ¼µ½¸", "²µ¼"],
+            "info_date": ["º°º° ´°°", "º°º¾µ µ³¾´½ ¸»¾", "´°°"],
+            "info_weather": ["º°º° ¿¾³¾´°", "¿¾³¾´° ½° µ³¾´½", "¿¾³½¾· ¿¾³¾´"],
+            "app_notepad": ["¾º¾¹ ±»¾º½¾", "·°¿¸ notepad", "¾º¾¹ ·°¼µº¸"],
+            "app_calculator": ["¾º¾¹ º°»º»¾", "·°¿¸ º°»º»¾"],
+            "app_youtube": ["¾º¾¹ ±", "¾º¾¹ youtube", "·°¿¸ ±"],
+            "control_volume": ["³¾¼º¾", "´µ»°¹ ³¾¼µ", "´µ»°¹ ¸µ"],
+            "control_mute": ["±µ· ·²º°", "²º»¸ ·²º", "mute"],
+            "control_minimize": ["²µ½¸ ²µ ¾º½°", "¿¾º°¶¸ °±¾¸¹ ¾»", "¼¸½¸¼¸·¸¾²°"],
+            "network_speed": ["µ º¾¾¸", "º¾¾ ¸½µ½µ°", "¿¾²µ ¸½µ½µ"],
+            "network_ip": ["º°º¾¹ ip °´µ", "¼¾¹ ip", "°¹¿¸ °´µ"],
         }
 
     def _build_model(self) -> Pipeline:
-        """Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ pipeline Ð¼Ð¾Ð´ÐµÐ»Ð¸."""
+        """¡¾·´°½¸µ pipeline ¼¾´µ»¸."""
         return Pipeline([
             ("tfidf", TfidfVectorizer(analyzer="char_wb", ngram_range=(2, 5))),
             ("svm", SVC(kernel="linear", probability=True)),
         ])
 
     def _prepare_training_batch(self):
-        """ÐÐ¾Ð´Ð³Ð¾ÑÐ¾Ð²ÐºÐ° X/y Ð¸ ÑÐ¸Ð»ÑÑÑÐ°ÑÐ¸Ñ Ð¿ÑÑÑÑÑ/Ð½ÐµÐ²Ð°Ð»Ð¸Ð´Ð½ÑÑ Ð´Ð°Ð½Ð½ÑÑ."""
+        """¾´³¾¾²º° X/y ¸ ¸»°¸ ¿/½µ²°»¸´½ ´°½½."""
         X = []
         y = []
         for category, examples in self.training_data.items():
@@ -87,12 +87,12 @@ class MLEngine:
         return X, y
 
     def _train_default_model(self):
-        """ÐÐ±ÑÑÐµÐ½Ð¸Ðµ Ð±Ð°Ð·Ð¾Ð²Ð¾Ð¹ Ð¼Ð¾Ð´ÐµÐ»Ð¸ Ð½Ð° Ð¿ÑÐ¸Ð¼ÐµÑÐ°Ñ."""
+        """±µ½¸µ ±°·¾²¾¹ ¼¾´µ»¸ ½° ¿¸¼µ°."""
         X, y = self._prepare_training_batch()
         if len(set(y)) < 2:
             self.model = None
             self.classes = []
-            self.brain.logger.warning("ÐÐµÐ´Ð¾ÑÑÐ°ÑÐ¾ÑÐ½Ð¾ ÐºÐ°ÑÐµÐ³Ð¾ÑÐ¸Ð¹ Ð´Ð»Ñ Ð¾Ð±ÑÑÐµÐ½Ð¸Ñ Ð¼Ð¾Ð´ÐµÐ»Ð¸ ÐºÐ¾Ð¼Ð°Ð½Ð´")
+            self.brain.logger.warning("µ´¾°¾½¾ º°µ³¾¸¹ ´» ¾±µ½¸ ¼¾´µ»¸ º¾¼°½´")
             return
 
         model = self._build_model()
@@ -100,10 +100,10 @@ class MLEngine:
         self.model = model
         self.classes = model.classes_.tolist()
         self._save_model()
-        self.brain.logger.info(f"ML Ð¼Ð¾Ð´ÐµÐ»Ñ Ð¾Ð±ÑÑÐµÐ½Ð° Ð½Ð° {len(X)} Ð¿ÑÐ¸Ð¼ÐµÑÐ°Ñ")
+        self.brain.logger.info(f"ML ¼¾´µ» ¾±µ½° ½° {len(X)} ¿¸¼µ°")
 
     def _save_model(self):
-        """Ð¡Ð¾ÑÑÐ°Ð½ÐµÐ½Ð¸Ðµ Ð¼Ð¾Ð´ÐµÐ»Ð¸."""
+        """¡¾°½µ½¸µ ¼¾´µ»¸."""
         if self.model is None:
             return
         self.model_path.parent.mkdir(parents=True, exist_ok=True)
@@ -113,22 +113,22 @@ class MLEngine:
         }, self.model_path)
 
     def _load_model(self):
-        """ÐÐ°Ð³ÑÑÐ·ÐºÐ° Ð¼Ð¾Ð´ÐµÐ»Ð¸."""
+        """°³·º° ¼¾´µ»¸."""
         try:
             data = joblib.load(self.model_path)
             self.model = data["model"]
             self.classes = data.get("classes", [])
-            self.brain.logger.info("ML Ð¼Ð¾Ð´ÐµÐ»Ñ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½Ð°")
+            self.brain.logger.info("ML ¼¾´µ» ·°³¶µ½°")
         except Exception as error:
-            self.brain.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ ML Ð¼Ð¾Ð´ÐµÐ»Ð¸: {error}")
+            self.brain.logger.error(f"¸±º° ·°³·º¸ ML ¼¾´µ»¸: {error}")
             self._train_default_model()
 
     def predict(self, text: str) -> Dict:
-        """ÐÑÐµÐ´ÑÐºÐ°Ð·Ð°Ð½Ð¸Ðµ ÐºÐ°ÑÐµÐ³Ð¾ÑÐ¸Ð¸ ÐºÐ¾Ð¼Ð°Ð½Ð´Ñ."""
+        """µ´º°·°½¸µ º°µ³¾¸¸ º¾¼°½´."""
         if self.model is None:
-            return {"status": "error", "message": "ÐÐ¾Ð´ÐµÐ»Ñ Ð½Ðµ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½Ð°"}
+            return {"status": "error", "message": "¾´µ» ½µ ·°³¶µ½°"}
         if not isinstance(text, str) or not text.strip():
-            return {"status": "error", "message": "Ð¢ÐµÐºÑÑ ÐºÐ¾Ð¼Ð°Ð½Ð´Ñ Ð¿ÑÑÑ"}
+            return {"status": "error", "message": "¢µº º¾¼°½´ ¿"}
 
         try:
             cleaned = text.strip()
@@ -145,11 +145,11 @@ class MLEngine:
             return {"status": "error", "message": str(error)}
 
     def add_training_data(self, category: str, examples: List[str]):
-        """ÐÐ¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð´Ð°Ð½Ð½ÑÑ Ð¸ Ð¿ÐµÑÐµÐ¾Ð±ÑÑÐµÐ½Ð¸Ðµ Ð¼Ð¾Ð´ÐµÐ»Ð¸."""
+        """¾±°²»µ½¸µ ´°½½ ¸ ¿µµ¾±µ½¸µ ¼¾´µ»¸."""
         if not isinstance(category, str) or not category.strip():
-            return {"status": "error", "message": "ÐÐ°ÑÐµÐ³Ð¾ÑÐ¸Ñ Ð½Ðµ Ð´Ð¾Ð»Ð¶Ð½Ð° Ð±ÑÑÑ Ð¿ÑÑÑÐ¾Ð¹"}
+            return {"status": "error", "message": "°µ³¾¸ ½µ ´¾»¶½° ± ¿¾¹"}
         if not isinstance(examples, list) or not any(isinstance(item, str) and item.strip() for item in examples):
-            return {"status": "error", "message": "ÐÑÐ¶Ð½Ð¾ Ð¿ÐµÑÐµÐ´Ð°ÑÑ ÑÐ¾ÑÑ Ð±Ñ Ð¾Ð´Ð¸Ð½ Ð½ÐµÐ¿ÑÑÑÐ¾Ð¹ Ð¿ÑÐ¸Ð¼ÐµÑ"}
+            return {"status": "error", "message": "¶½¾ ¿µµ´° ¾ ± ¾´¸½ ½µ¿¾¹ ¿¸¼µ"}
 
         category = category.strip()
         cleaned_examples = []
@@ -170,7 +170,7 @@ class MLEngine:
         if not X or len(set(y)) < 2:
             self.training_data[category] = [example for example in self.training_data[category] if example not in cleaned_examples]
             self._save_training_data()
-            return {"status": "error", "message": "ÐÐµÐ»ÑÐ·Ñ Ð¾Ð±ÑÑÐ¸ÑÑ Ð¼Ð¾Ð´ÐµÐ»Ñ: Ð½ÐµÐ´Ð¾ÑÑÐ°ÑÐ¾ÑÐ½Ð¾ Ð´Ð°Ð½Ð½ÑÑ Ñ Ð¼Ð¸Ð½Ð¸Ð¼ÑÐ¼ Ð´Ð²ÑÑ ÐºÐ°ÑÐµÐ³Ð¾ÑÐ¸Ð¹"}
+            return {"status": "error", "message": "µ»· ¾±¸ ¼¾´µ»: ½µ´¾°¾½¾ ´°½½  ¼¸½¸¼¼ ´² º°µ³¾¸¹"}
 
         try:
             new_model = self._build_model()
@@ -178,10 +178,10 @@ class MLEngine:
             self.model = new_model
             self.classes = new_model.classes_.tolist()
             self._save_model()
-            self.brain.logger.info(f"ÐÐ¾Ð±Ð°Ð²Ð»ÐµÐ½Ñ Ð¿ÑÐ¸Ð¼ÐµÑÑ Ð´Ð»Ñ ÐºÐ°ÑÐµÐ³Ð¾ÑÐ¸Ð¸ '{category}' Ð¸ Ð¼Ð¾Ð´ÐµÐ»Ñ Ð¿ÐµÑÐµÐ¾Ð±ÑÑÐµÐ½Ð°")
-            return {"status": "ok", "message": f"ÐÐ¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¾ {len(cleaned_examples)} Ð¿ÑÐ¸Ð¼ÐµÑÐ¾Ð² Ð´Ð»Ñ '{category}'"}
+            self.brain.logger.info(f"¾±°²»µ½ ¿¸¼µ ´» º°µ³¾¸¸ '{category}' ¸ ¼¾´µ» ¿µµ¾±µ½°")
+            return {"status": "ok", "message": f"¾±°²»µ½¾ {len(cleaned_examples)} ¿¸¼µ¾² ´» '{category}'"}
         except Exception as error:
-            self.brain.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° Ð¿ÐµÑÐµÐ¾Ð±ÑÑÐµÐ½Ð¸Ñ Ð¼Ð¾Ð´ÐµÐ»Ð¸: {error}")
+            self.brain.logger.error(f"¸±º° ¿µµ¾±µ½¸ ¼¾´µ»¸: {error}")
             return {"status": "error", "message": str(error)}
 
 
