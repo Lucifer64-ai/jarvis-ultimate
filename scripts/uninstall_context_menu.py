@@ -1,5 +1,5 @@
 """
-Ð¡ÐºÑÐ¸Ð¿Ñ ÑÐ´Ð°Ð»ÐµÐ½Ð¸Ñ ÐºÐ¾Ð½ÑÐµÐºÑÑÐ½Ð¾Ð³Ð¾ Ð¼ÐµÐ½Ñ Ð¿ÑÐ¾Ð²Ð¾Ð´Ð½Ð¸ÐºÐ° Windows
+ÃÂ¡ÃÂºÃÃÂ¸ÃÂ¿Ã ÃÃÂ´ÃÂ°ÃÂ»ÃÂµÃÂ½ÃÂ¸Ã ÃÂºÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ¼ÃÂµÃÂ½Ã ÃÂ¿ÃÃÂ¾ÃÂ²ÃÂ¾ÃÂ´ÃÂ½ÃÂ¸ÃÂºÃÂ° Windows
 """
 
 import winreg
@@ -7,27 +7,27 @@ import sys
 
 
 def uninstall_context_menu():
-    """Ð£Ð´Ð°Ð»ÐµÐ½Ð¸Ðµ ÐºÐ¾Ð½ÑÐµÐºÑÑÐ½Ð¾Ð³Ð¾ Ð¼ÐµÐ½Ñ."""
+    """ÃÂ£ÃÂ´ÃÂ°ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÂºÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ¼ÃÂµÃÂ½Ã."""
     try:
-        # Ð£Ð´Ð°Ð»ÐµÐ½Ð¸Ðµ Ð´Ð»Ñ ÑÐ°Ð¹Ð»Ð¾Ð²
+        # ÃÂ£ÃÂ´ÃÂ°ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÂ´ÃÂ»Ã ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ¾ÃÂ²
         try:
             winreg.DeleteKey(winreg.HKEY_CLASSES_ROOT, r"*\shell\JARVIS\command")
             winreg.DeleteKey(winreg.HKEY_CLASSES_ROOT, r"*\shell\JARVIS")
         except:
             pass
         
-        # Ð£Ð´Ð°Ð»ÐµÐ½Ð¸Ðµ Ð´Ð»Ñ Ð¿Ð°Ð¿Ð¾Ðº
+        # ÃÂ£ÃÂ´ÃÂ°ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÂ´ÃÂ»Ã ÃÂ¿ÃÂ°ÃÂ¿ÃÂ¾ÃÂº
         try:
             winreg.DeleteKey(winreg.HKEY_CLASSES_ROOT, r"Directory\shell\JARVIS\command")
             winreg.DeleteKey(winreg.HKEY_CLASSES_ROOT, r"Directory\shell\JARVIS")
         except:
             pass
         
-        print("ÐÐ¾Ð½ÑÐµÐºÑÑÐ½Ð¾Ðµ Ð¼ÐµÐ½Ñ ÑÐ´Ð°Ð»ÐµÐ½Ð¾ ÑÑÐ¿ÐµÑÐ½Ð¾")
+        print("ÃÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂµ ÃÂ¼ÃÂµÃÂ½Ã ÃÃÂ´ÃÂ°ÃÂ»ÃÂµÃÂ½ÃÂ¾ ÃÃÃÂ¿ÃÂµÃÃÂ½ÃÂ¾")
         return 0
     
     except Exception as e:
-        print(f"ÐÑÐ¸Ð±ÐºÐ° ÑÐ´Ð°Ð»ÐµÐ½Ð¸Ñ ÐºÐ¾Ð½ÑÐµÐºÑÑÐ½Ð¾Ð³Ð¾ Ð¼ÐµÐ½Ñ: {e}")
+        print(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÃÂ´ÃÂ°ÃÂ»ÃÂµÃÂ½ÃÂ¸Ã ÃÂºÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ¼ÃÂµÃÂ½Ã: {e}")
         return 1
 
 
