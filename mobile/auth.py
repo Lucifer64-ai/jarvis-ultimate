@@ -1,5 +1,5 @@
 """
-Аутентификация для мобильного API
+ÐÑÑÐµÐ½ÑÐ¸ÑÐ¸ÐºÐ°ÑÐ¸Ñ Ð´Ð»Ñ Ð¼Ð¾Ð±Ð¸Ð»ÑÐ½Ð¾Ð³Ð¾ API
 """
 
 import hashlib
@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 
 
 class AuthManager:
-    """Управление аутентификацией."""
+    """Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð°ÑÑÐµÐ½ÑÐ¸ÑÐ¸ÐºÐ°ÑÐ¸ÐµÐ¹."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -23,37 +23,37 @@ class AuthManager:
         self.tokens: Dict = self._load_tokens()
 
     def _load_users(self) -> Dict:
-        """Загрузка пользователей."""
+        """ÐÐ°Ð³ÑÑÐ·ÐºÐ° Ð¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»ÐµÐ¹."""
         if self.users_file.exists():
             with open(self.users_file, "r") as f:
                 return json.load(f)
         return {}
 
     def _save_users(self):
-        """Сохранение пользователей."""
+        """Ð¡Ð¾ÑÑÐ°Ð½ÐµÐ½Ð¸Ðµ Ð¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»ÐµÐ¹."""
         with open(self.users_file, "w") as f:
             json.dump(self.users, f, indent=2)
 
     def _load_tokens(self) -> Dict:
-        """Загрузка токенов."""
+        """ÐÐ°Ð³ÑÑÐ·ÐºÐ° ÑÐ¾ÐºÐµÐ½Ð¾Ð²."""
         if self.tokens_file.exists():
             with open(self.tokens_file, "r") as f:
                 return json.load(f)
         return {}
 
     def _save_tokens(self):
-        """Сохранение токенов."""
+        """Ð¡Ð¾ÑÑÐ°Ð½ÐµÐ½Ð¸Ðµ ÑÐ¾ÐºÐµÐ½Ð¾Ð²."""
         with open(self.tokens_file, "w") as f:
             json.dump(self.tokens, f, indent=2)
 
     def _hash_password(self, password: str) -> str:
-        """Хеширование пароля."""
+        """Ð¥ÐµÑÐ¸ÑÐ¾Ð²Ð°Ð½Ð¸Ðµ Ð¿Ð°ÑÐ¾Ð»Ñ."""
         return hashlib.sha256(password.encode()).hexdigest()
 
     def register_user(self, username: str, password: str) -> Dict:
-        """Регистрация нового пользователя."""
+        """Ð ÐµÐ³Ð¸ÑÑÑÐ°ÑÐ¸Ñ Ð½Ð¾Ð²Ð¾Ð³Ð¾ Ð¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»Ñ."""
         if username in self.users:
-            return {"status": "error", "message": "Пользователь уже существует"}
+            return {"status": "error", "message": "ÐÐ¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»Ñ ÑÐ¶Ðµ ÑÑÑÐµÑÑÐ²ÑÐµÑ"}
         
         self.users[username] = {
             "password_hash": self._hash_password(password),
@@ -64,15 +64,15 @@ class AuthManager:
         return {"status": "ok", "username": username}
 
     def authenticate(self, username: str, password: str) -> Dict:
-        """Аутентификация пользователя."""
+        """ÐÑÑÐµÐ½ÑÐ¸ÑÐ¸ÐºÐ°ÑÐ¸Ñ Ð¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»Ñ."""
         if username not in self.users:
-            return {"status": "error", "message": "Пользователь не найден"}
+            return {"status": "error", "message": "ÐÐ¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»Ñ Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½"}
         
         user = self.users[username]
         if user["password_hash"] != self._hash_password(password):
-            return {"status": "error", "message": "Неверный пароль"}
+            return {"status": "error", "message": "ÐÐµÐ²ÐµÑÐ½ÑÐ¹ Ð¿Ð°ÑÐ¾Ð»Ñ"}
         
-        # Генерация токена
+        # ÐÐµÐ½ÐµÑÐ°ÑÐ¸Ñ ÑÐ¾ÐºÐµÐ½Ð°
         token = secrets.token_hex(32)
         self.tokens[token] = {
             "username": username,
@@ -84,7 +84,7 @@ class AuthManager:
         return {"status": "ok", "token": token, "username": username}
 
     def verify_token(self, token: str) -> Optional[str]:
-        """Проверка токена."""
+        """ÐÑÐ¾Ð²ÐµÑÐºÐ° ÑÐ¾ÐºÐµÐ½Ð°."""
         if token not in self.tokens:
             return None
         
@@ -99,21 +99,21 @@ class AuthManager:
         return token_data.get("username")
 
     def revoke_token(self, token: str) -> Dict:
-        """Отзыв токена."""
+        """ÐÑÐ·ÑÐ² ÑÐ¾ÐºÐµÐ½Ð°."""
         if token in self.tokens:
             del self.tokens[token]
             self._save_tokens()
             return {"status": "ok"}
-        return {"status": "error", "message": "Токен не найден"}
+        return {"status": "error", "message": "Ð¢Ð¾ÐºÐµÐ½ Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½"}
 
     def list_users(self) -> list:
-        """Список пользователей."""
+        """Ð¡Ð¿Ð¸ÑÐ¾Ðº Ð¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»ÐµÐ¹."""
         return list(self.users.keys())
 
     def delete_user(self, username: str) -> Dict:
-        """Удаление пользователя."""
+        """Ð£Ð´Ð°Ð»ÐµÐ½Ð¸Ðµ Ð¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»Ñ."""
         if username in self.users:
             del self.users[username]
             self._save_users()
             return {"status": "ok"}
-        return {"status": "error", "message": "Пользователь не найден"}
+        return {"status": "error", "message": "ÐÐ¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»Ñ Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½"}
