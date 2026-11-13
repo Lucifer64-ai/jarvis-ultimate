@@ -1,5 +1,5 @@
 """
-HUD-Ð¸Ð½ÑÐµÑÑÐµÐ¹Ñ JARVIS Ð² ÑÑÐ¸Ð»Ðµ Iron Man
+HUD-ÃÂ¸ÃÂ½ÃÃÂµÃÃÃÂµÃÂ¹Ã JARVIS ÃÂ² ÃÃÃÂ¸ÃÂ»ÃÂµ Iron Man
 """
 
 import tkinter as tk
@@ -10,7 +10,7 @@ from datetime import datetime
 
 
 class HUDOverlay:
-    """ÐÐ¾Ð»Ð¾Ð³ÑÐ°ÑÐ¸ÑÐµÑÐºÐ¸Ð¹ HUD-Ð¾Ð²ÐµÑÐ»ÐµÐ¹."""
+    """ÃÃÂ¾ÃÂ»ÃÂ¾ÃÂ³ÃÃÂ°ÃÃÂ¸ÃÃÂµÃÃÂºÃÂ¸ÃÂ¹ HUD-ÃÂ¾ÃÂ²ÃÂµÃÃÂ»ÃÂµÃÂ¹."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -20,7 +20,7 @@ class HUDOverlay:
         self.config = brain.config.get("hud", {})
 
     def start(self):
-        """ÐÐ°Ð¿ÑÑÐº HUD Ð² Ð¾ÑÐ´ÐµÐ»ÑÐ½Ð¾Ð¼ Ð¿Ð¾ÑÐ¾ÐºÐµ."""
+        """ÃÃÂ°ÃÂ¿ÃÃÃÂº HUD ÃÂ² ÃÂ¾ÃÃÂ´ÃÂµÃÂ»ÃÃÂ½ÃÂ¾ÃÂ¼ ÃÂ¿ÃÂ¾ÃÃÂ¾ÃÂºÃÂµ."""
         if not self.config.get("enabled", True):
             return
         
@@ -28,14 +28,14 @@ class HUDOverlay:
         thread.start()
 
     def _run(self):
-        """ÐÑÐ½Ð¾Ð²Ð½Ð¾Ð¹ ÑÐ¸ÐºÐ» HUD."""
+        """ÃÃÃÂ½ÃÂ¾ÃÂ²ÃÂ½ÃÂ¾ÃÂ¹ ÃÃÂ¸ÃÂºÃÂ» HUD."""
         self.root = tk.Tk()
         self.root.overrideredirect(True)
         self.root.attributes('-topmost', True)
         self.root.attributes('-alpha', 0.7)
         self.root.configure(bg='black')
         
-        # Ð Ð°Ð·Ð¼ÐµÑ Ð¸ Ð¿Ð¾Ð·Ð¸ÑÐ¸Ñ
+        # ÃÂ ÃÂ°ÃÂ·ÃÂ¼ÃÂµÃ ÃÂ¸ ÃÂ¿ÃÂ¾ÃÂ·ÃÂ¸ÃÃÂ¸Ã
         width, height = 400, 300
         screen_width = self.root.winfo_screenwidth()
         
@@ -49,14 +49,14 @@ class HUDOverlay:
         
         self.root.geometry(f"{width}x{height}+{x}+{y}")
         
-        # Canvas Ð´Ð»Ñ ÑÐ¸ÑÐ¾Ð²Ð°Ð½Ð¸Ñ
+        # Canvas ÃÂ´ÃÂ»Ã ÃÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ¸Ã
         self.canvas = Canvas(self.root, width=width, height=height, bg='black', highlightthickness=0)
         self.canvas.pack()
         
-        # Ð Ð°Ð¼ÐºÐ°
+        # ÃÂ ÃÂ°ÃÂ¼ÃÂºÃÂ°
         self.canvas.create_rectangle(5, 5, width-5, height-5, outline='#00d4ff', width=2)
         
-        # ÐÐ°Ð³Ð¾Ð»Ð¾Ð²Ð¾Ðº
+        # ÃÃÂ°ÃÂ³ÃÂ¾ÃÂ»ÃÂ¾ÃÂ²ÃÂ¾ÃÂº
         self.canvas.create_text(width//2, 25, text="J.A.R.V.I.S.", fill='#00d4ff', font=('Consolas', 16, 'bold'))
         
         self.running = True
@@ -64,15 +64,15 @@ class HUDOverlay:
         self.root.mainloop()
 
     def _update(self):
-        """ÐÐ±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ðµ Ð´Ð°Ð½Ð½ÑÑ HUD."""
+        """ÃÃÂ±ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÂ´ÃÂ°ÃÂ½ÃÂ½ÃÃ HUD."""
         if not self.running:
             return
         
         try:
-            # ÐÑÐ¸ÑÑÐºÐ° ÑÑÐ°ÑÑÑ Ð´Ð°Ð½Ð½ÑÑ
+            # ÃÃÃÂ¸ÃÃÃÂºÃÂ° ÃÃÃÂ°ÃÃÃ ÃÂ´ÃÂ°ÃÂ½ÃÂ½ÃÃ
             self.canvas.delete("data")
             
-            # ÐÑÐµÐ¼Ñ
+            # ÃÃÃÂµÃÂ¼Ã
             now = datetime.now().strftime("%H:%M:%S")
             self.canvas.create_text(200, 60, text=now, fill='#00d4ff', font=('Consolas', 14), tags="data")
             
@@ -89,23 +89,23 @@ class HUDOverlay:
             if battery:
                 self.canvas.create_text(50, 160, text=f"BAT: {battery.percent}%", fill='#ffaa00', font=('Consolas', 11), anchor='w', tags="data")
             
-            # Ð¡ÑÐ°ÑÑÑ
+            # ÃÂ¡ÃÃÂ°ÃÃÃ
             self.canvas.create_text(200, 250, text="SYSTEM ONLINE", fill='#00d4ff', font=('Consolas', 10), tags="data")
             
         except Exception as e:
-            self.brain.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° Ð¾Ð±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ñ HUD: {e}")
+            self.brain.logger.error(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ¾ÃÂ±ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¸Ã HUD: {e}")
         
-        # ÐÐ±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ðµ ÐºÐ°Ð¶Ð´ÑÐµ 2 ÑÐµÐºÑÐ½Ð´Ñ
+        # ÃÃÂ±ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÂºÃÂ°ÃÂ¶ÃÂ´ÃÃÂµ 2 ÃÃÂµÃÂºÃÃÂ½ÃÂ´Ã
         self.root.after(2000, self._update)
 
     def stop(self):
-        """ÐÑÑÐ°Ð½Ð¾Ð²ÐºÐ° HUD."""
+        """ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ° HUD."""
         self.running = False
         if self.root:
             self.root.quit()
 
     def show_message(self, message: str, duration: int = 3000):
-        """ÐÐ¾ÐºÐ°Ð·Ð°ÑÑ Ð²ÑÐµÐ¼ÐµÐ½Ð½Ð¾Ðµ ÑÐ¾Ð¾Ð±ÑÐµÐ½Ð¸Ðµ."""
+        """ÃÃÂ¾ÃÂºÃÂ°ÃÂ·ÃÂ°ÃÃ ÃÂ²ÃÃÂµÃÂ¼ÃÂµÃÂ½ÃÂ½ÃÂ¾ÃÂµ ÃÃÂ¾ÃÂ¾ÃÂ±ÃÃÂµÃÂ½ÃÂ¸ÃÂµ."""
         if not self.canvas:
             return
         
