@@ -1,6 +1,6 @@
 """
-JARVIS - Окно настроек API подключений
-Графический интерфейс для ввода и сохранения API ключей
+JARVIS - º½¾ ½°¾µº API ¿¾´º»µ½¸¹
+°¸µº¸¹ ¸½µµ¹ ´» ²²¾´° ¸ ¾°½µ½¸ API º»µ¹
 """
 
 import tkinter as tk
@@ -10,49 +10,49 @@ from pathlib import Path
 
 
 class SettingsWindow:
-    """Окно настроек API подключений."""
+    """º½¾ ½°¾µº API ¿¾´º»µ½¸¹."""
 
     def __init__(self, config_manager):
         self.config = config_manager
         self.root = tk.Tk()
-        self.root.title("JARVIS - Настройки API подключений")
+        self.root.title("JARVIS - °¾¹º¸ API ¿¾´º»µ½¸¹")
         self.root.geometry("600x700")
         self.root.resizable(False, False)
 
-        # Центрируем окно
+        # ¦µ½¸µ¼ ¾º½¾
         self.root.eval('tk::PlaceWindow . center')
 
-        # Стили
+        # ¡¸»¸
         self.style = ttk.Style()
         self.style.theme_use('clam')
 
-        # Переменные для полей ввода
+        # µµ¼µ½½µ ´» ¿¾»µ¹ ²²¾´°
         self.entries = {}
 
         self._create_ui()
         self._load_current_settings()
 
     def _create_ui(self):
-        """Создание интерфейса."""
-        # Заголовок
+        """¡¾·´°½¸µ ¸½µµ¹°."""
+        # °³¾»¾²¾º
         title_frame = ttk.Frame(self.root, padding="20")
         title_frame.pack(fill=tk.X)
 
         title_label = ttk.Label(
             title_frame,
-            text="🤖 JARVIS - Настройки API",
+            text="¤ JARVIS - °¾¹º¸ API",
             font=('Arial', 16, 'bold')
         )
         title_label.pack()
 
         subtitle_label = ttk.Label(
             title_frame,
-            text="Введите API ключи для подключения сервисов",
+            text="²µ´¸µ API º»¸ ´» ¿¾´º»µ½¸ µ²¸¾²",
             font=('Arial', 10)
         )
         subtitle_label.pack()
 
-        # Создаём прокручиваемую область
+        # ¡¾·´°¼ ¿¾º¸²°µ¼ ¾±»°
         canvas = tk.Canvas(self.root)
         scrollbar = ttk.Scrollbar(self.root, orient="vertical", command=canvas.yview)
         scrollable_frame = ttk.Frame(canvas)
@@ -67,47 +67,47 @@ class SettingsWindow:
 
         # === OpenAI ===
         self._create_section(scrollable_frame, "OpenAI (ChatGPT)", [
-            ("OPENAI_API_KEY", "API ключ OpenAI", True),
-            ("OPENAI_MODEL", "Модель (gpt-4, gpt-3.5-turbo)", False),
+            ("OPENAI_API_KEY", "API º» OpenAI", True),
+            ("OPENAI_MODEL", "¾´µ» (gpt-4, gpt-3.5-turbo)", False),
         ])
 
         # === Home Assistant ===
-        self._create_section(scrollable_frame, "Home Assistant (Умный дом)", [
-            ("HOME_ASSISTANT_URL", "URL сервера (http://192.168.1.100:8123)", False),
+        self._create_section(scrollable_frame, "Home Assistant (£¼½¹ ´¾¼)", [
+            ("HOME_ASSISTANT_URL", "URL µ²µ° (http://192.168.1.100:8123)", False),
             ("HOME_ASSISTANT_TOKEN", "Long-Lived Access Token", True),
         ])
 
         # === Weather API ===
-        self._create_section(scrollable_frame, "OpenWeatherMap (Погода)", [
-            ("OPENWEATHER_API_KEY", "API ключ погоды", True),
+        self._create_section(scrollable_frame, "OpenWeatherMap (¾³¾´°)", [
+            ("OPENWEATHER_API_KEY", "API º» ¿¾³¾´", True),
         ])
 
         # === News API ===
-        self._create_section(scrollable_frame, "NewsAPI (Новости)", [
-            ("NEWS_API_KEY", "API ключ новостей", True),
+        self._create_section(scrollable_frame, "NewsAPI (¾²¾¸)", [
+            ("NEWS_API_KEY", "API º» ½¾²¾µ¹", True),
         ])
 
         # === Mobile API ===
-        self._create_section(scrollable_frame, "Мобильное приложение", [
-            ("MOBILE_API_SECRET", "Секретный ключ для JWT", True),
-            ("MOBILE_API_PORT", "Порт сервера (8080)", False),
+        self._create_section(scrollable_frame, "¾±¸»½¾µ ¿¸»¾¶µ½¸µ", [
+            ("MOBILE_API_SECRET", "¡µºµ½¹ º» ´» JWT", True),
+            ("MOBILE_API_PORT", "¾ µ²µ° (8080)", False),
         ])
 
         # === WebSocket ===
-        self._create_section(scrollable_frame, "WebSocket сервер", [
-            ("WEBSOCKET_PORT", "Порт WebSocket (8765)", False),
+        self._create_section(scrollable_frame, "WebSocket µ²µ", [
+            ("WEBSOCKET_PORT", "¾ WebSocket (8765)", False),
         ])
 
         canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
 
-        # Кнопки управления
+        # ½¾¿º¸ ¿°²»µ½¸
         button_frame = ttk.Frame(self.root, padding="20")
         button_frame.pack(fill=tk.X)
 
         save_btn = ttk.Button(
             button_frame,
-            text="💾 Сохранить",
+            text="¾ ¡¾°½¸",
             command=self._save_settings,
             style='Accent.TButton'
         )
@@ -115,20 +115,20 @@ class SettingsWindow:
 
         cancel_btn = ttk.Button(
             button_frame,
-            text="❌ Отмена",
+            text=" ¼µ½°",
             command=self.root.destroy
         )
         cancel_btn.pack(side=tk.LEFT, padx=5)
 
         test_btn = ttk.Button(
             button_frame,
-            text="🧪 Тест подключений",
+            text="§ª ¢µ ¿¾´º»µ½¸¹",
             command=self._test_connections
         )
         test_btn.pack(side=tk.RIGHT, padx=5)
 
     def _create_section(self, parent, title, fields):
-        """Создание секции с полями ввода."""
+        """¡¾·´°½¸µ µº¸¸  ¿¾»¼¸ ²²¾´°."""
         section_frame = ttk.LabelFrame(parent, text=title, padding="15")
         section_frame.pack(fill=tk.X, padx=20, pady=10)
 
@@ -136,11 +136,11 @@ class SettingsWindow:
             field_frame = ttk.Frame(section_frame)
             field_frame.pack(fill=tk.X, pady=5)
 
-            # Метка
+            # µº°
             label = ttk.Label(field_frame, text=label_text, width=30)
             label.pack(side=tk.LEFT)
 
-            # Поле ввода
+            # ¾»µ ²²¾´°
             show_char = "*" if is_secret else ""
             entry = ttk.Entry(field_frame, show=show_char, width=35)
             entry.pack(side=tk.LEFT, padx=5)
@@ -148,7 +148,7 @@ class SettingsWindow:
             self.entries[field_name] = entry
 
     def _load_current_settings(self):
-        """Загрузка текущих настроек из .env файла."""
+        """°³·º° µº¸ ½°¾µº ¸· .env °¹»°."""
         env_file = Path('.env')
 
         if env_file.exists():
@@ -164,15 +164,15 @@ class SettingsWindow:
                             self.entries[key].insert(0, value)
 
     def _save_settings(self):
-        """Сохранение настроек в .env файл."""
-        # Собираем значения
+        """¡¾°½µ½¸µ ½°¾µº ² .env °¹»."""
+        # ¡¾±¸°µ¼ ·½°µ½¸
         settings = {}
         for key, entry in self.entries.items():
             value = entry.get().strip()
             if value:
                 settings[key] = value
 
-        # Создаём .env файл
+        # ¡¾·´°¼ .env °¹»
         env_file = Path('.env')
 
         try:
@@ -184,40 +184,40 @@ class SettingsWindow:
                     f.write(f"{key}={value}\n")
 
             messagebox.showinfo(
-                "Успех",
-                "✅ Настройки успешно сохранены!\n\nПерезапустите JARVIS для применения изменений."
+                "£¿µ",
+                " °¾¹º¸ ¿µ½¾ ¾°½µ½!\n\nµµ·°¿¸µ JARVIS ´» ¿¸¼µ½µ½¸ ¸·¼µ½µ½¸¹."
             )
 
             self.root.destroy()
 
         except Exception as e:
             messagebox.showerror(
-                "Ошибка",
-                f"❌ Не удалось сохранить настройки:\n{str(e)}"
+                "¸±º°",
+                f" µ ´°»¾ ¾°½¸ ½°¾¹º¸:\n{str(e)}"
             )
 
     def _test_connections(self):
-        """Тестирование подключений к API."""
+        """¢µ¸¾²°½¸µ ¿¾´º»µ½¸¹ º API."""
         messagebox.showinfo(
-            "Тест подключений",
-            "🧪 Тестирование подключений...\n\n"
-            "Эта функция проверит:\n"
-            "• OpenAI API\n"
-            "• Home Assistant\n"
-            "• OpenWeatherMap\n"
-            "• NewsAPI\n\n"
-            "(Функция в разработке)"
+            "¢µ ¿¾´º»µ½¸¹",
+            "§ª ¢µ¸¾²°½¸µ ¿¾´º»µ½¸¹...\n\n"
+            "­° ½º¸ ¿¾²µ¸:\n"
+            "¢ OpenAI API\n"
+            "¢ Home Assistant\n"
+            "¢ OpenWeatherMap\n"
+            "¢ NewsAPI\n\n"
+            "(¤½º¸ ² °·°±¾ºµ)"
         )
 
     def show(self):
-        """Показать окно."""
+        """¾º°·° ¾º½¾."""
         self.root.mainloop()
 
 
 def show_settings_window(config_manager=None):
-    """Функция для показа окна настроек."""
+    """¤½º¸ ´» ¿¾º°·° ¾º½° ½°¾µº."""
     if config_manager is None:
-        # Создаём простой конфиг-менеджер если не передан
+        # ¡¾·´°¼ ¿¾¾¹ º¾½¸³-¼µ½µ´¶µ µ»¸ ½µ ¿µµ´°½
         class SimpleConfig:
             def get_env(self, key, default=None):
                 return os.getenv(key, default)
@@ -229,5 +229,5 @@ def show_settings_window(config_manager=None):
 
 
 if __name__ == "__main__":
-    # Запуск окна настроек
+    # °¿º ¾º½° ½°¾µº
     show_settings_window()
