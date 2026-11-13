@@ -1,5 +1,5 @@
 """
-Менеджер обучения JARVIS - координирует все модули обучения
+ÐÐµÐ½ÐµÐ´Ð¶ÐµÑ Ð¾Ð±ÑÑÐµÐ½Ð¸Ñ JARVIS - ÐºÐ¾Ð¾ÑÐ´Ð¸Ð½Ð¸ÑÑÐµÑ Ð²ÑÐµ Ð¼Ð¾Ð´ÑÐ»Ð¸ Ð¾Ð±ÑÑÐµÐ½Ð¸Ñ
 """
 
 from typing import Dict, List
@@ -7,7 +7,7 @@ from datetime import datetime
 
 
 class LearningManager:
-    """Централизованное управление обучением."""
+    """Ð¦ÐµÐ½ÑÑÐ°Ð»Ð¸Ð·Ð¾Ð²Ð°Ð½Ð½Ð¾Ðµ ÑÐ¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð¾Ð±ÑÑÐµÐ½Ð¸ÐµÐ¼."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -20,29 +20,29 @@ class LearningManager:
         self._init_modules()
 
     def _init_modules(self):
-        """Инициализация модулей обучения."""
+        """ÐÐ½Ð¸ÑÐ¸Ð°Ð»Ð¸Ð·Ð°ÑÐ¸Ñ Ð¼Ð¾Ð´ÑÐ»ÐµÐ¹ Ð¾Ð±ÑÑÐµÐ½Ð¸Ñ."""
         modules = [
-            ("adaptive_ml", "ai.adaptive_ml", "AdaptiveMLEngine", "Адаптивный ML"),
-            ("alias_system", "ai.alias_system", "AliasSystem", "Система алиасов"),
-            ("user_profile", "ai.user_profile", "UserProfile", "Профиль пользователя"),
-            ("pattern_recognizer", "ai.pattern_recognizer", "PatternRecognizer", "Распознавание паттернов"),
-            ("local_llm", "ai.local_llm", "LocalLLM", "Локальная LLM"),
+            ("adaptive_ml", "ai.adaptive_ml", "AdaptiveMLEngine", "ÐÐ´Ð°Ð¿ÑÐ¸Ð²Ð½ÑÐ¹ ML"),
+            ("alias_system", "ai.alias_system", "AliasSystem", "Ð¡Ð¸ÑÑÐµÐ¼Ð° Ð°Ð»Ð¸Ð°ÑÐ¾Ð²"),
+            ("user_profile", "ai.user_profile", "UserProfile", "ÐÑÐ¾ÑÐ¸Ð»Ñ Ð¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»Ñ"),
+            ("pattern_recognizer", "ai.pattern_recognizer", "PatternRecognizer", "Ð Ð°ÑÐ¿Ð¾Ð·Ð½Ð°Ð²Ð°Ð½Ð¸Ðµ Ð¿Ð°ÑÑÐµÑÐ½Ð¾Ð²"),
+            ("local_llm", "ai.local_llm", "LocalLLM", "ÐÐ¾ÐºÐ°Ð»ÑÐ½Ð°Ñ LLM"),
         ]
 
         for attribute, module_name, class_name, label in modules:
             try:
                 module = __import__(module_name, fromlist=[class_name])
                 setattr(self, attribute, getattr(module, class_name)(self.brain))
-                self.brain.logger.info("✓ %s загружен", label)
+                self.brain.logger.info("â %s Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½", label)
             except Exception as error:
-                self.brain.logger.error("Ошибка загрузки %s: %s", label, error)
+                self.brain.logger.error("ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ %s: %s", label, error)
 
         try:
             from ai.optimization_agents import OptimizationManager
             self.optimization_manager = OptimizationManager(self.brain, self)
-            self.brain.logger.info("✓ Агенты оптимизации загружены")
+            self.brain.logger.info("â ÐÐ³ÐµÐ½ÑÑ Ð¾Ð¿ÑÐ¸Ð¼Ð¸Ð·Ð°ÑÐ¸Ð¸ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½Ñ")
         except Exception as error:
-            self.brain.logger.error("Ошибка загрузки агентов оптимизации: %s", error)
+            self.brain.logger.error("ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ Ð°Ð³ÐµÐ½ÑÐ¾Ð² Ð¾Ð¿ÑÐ¸Ð¼Ð¸Ð·Ð°ÑÐ¸Ð¸: %s", error)
 
     def process_command(self, text: str) -> Dict:
         """Process a command and attach current optimization status."""
@@ -76,14 +76,14 @@ class LearningManager:
 
                 recommendations = report.get("recommendations", [])
                 if recommendations:
-                    self.brain.logger.info("Рекомендации оптимизации: %s", "; ".join(recommendations))
+                    self.brain.logger.info("Ð ÐµÐºÐ¾Ð¼ÐµÐ½Ð´Ð°ÑÐ¸Ð¸ Ð¾Ð¿ÑÐ¸Ð¼Ð¸Ð·Ð°ÑÐ¸Ð¸: %s", "; ".join(recommendations))
 
                 hud = getattr(self.brain, "hud", None)
                 if hud and hasattr(hud, "set_optimization_status"):
                     hud.set_optimization_status(report)
 
             except Exception as error:
-                self.brain.logger.debug("Ошибка анализа оптимизации: %s", error)
+                self.brain.logger.debug("ÐÑÐ¸Ð±ÐºÐ° Ð°Ð½Ð°Ð»Ð¸Ð·Ð° Ð¾Ð¿ÑÐ¸Ð¼Ð¸Ð·Ð°ÑÐ¸Ð¸: %s", error)
 
         return result
 
@@ -93,12 +93,12 @@ class LearningManager:
 
     def learn_new_command(self, text: str, category: str) -> Dict:
         if not self.adaptive_ml:
-            return {"status": "error", "message": "Адаптивный ML не загружен"}
+            return {"status": "error", "message": "ÐÐ´Ð°Ð¿ÑÐ¸Ð²Ð½ÑÐ¹ ML Ð½Ðµ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½"}
         return self.adaptive_ml.add_training_example(text, category)
 
     def create_alias(self, alias: str, command: str) -> Dict:
         if not self.alias_system:
-            return {"status": "error", "message": "Система алиасов не загружена"}
+            return {"status": "error", "message": "Ð¡Ð¸ÑÑÐµÐ¼Ð° Ð°Ð»Ð¸Ð°ÑÐ¾Ð² Ð½Ðµ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½Ð°"}
         return self.alias_system.add_alias(alias, command)
 
     def get_learning_status(self) -> Dict:
@@ -141,21 +141,21 @@ class LearningManager:
         """Human-readable status line suitable for CLI and logs."""
         status = self.get_optimization_status()
         if not status["enabled"]:
-            return "Агенты оптимизации отключены или недоступны."
+            return "ÐÐ³ÐµÐ½ÑÑ Ð¾Ð¿ÑÐ¸Ð¼Ð¸Ð·Ð°ÑÐ¸Ð¸ Ð¾ÑÐºÐ»ÑÑÐµÐ½Ñ Ð¸Ð»Ð¸ Ð½ÐµÐ´Ð¾ÑÑÑÐ¿Ð½Ñ."
 
         cache = status.get("cache", {})
         return (
-            f"Оптимизация: {len(status['agent_names'])} агентов; "
-            f"рекомендаций: {status['recommendation_count']}; "
-            f"кэш: {cache.get('cache_entries', 0)} записей "
+            f"ÐÐ¿ÑÐ¸Ð¼Ð¸Ð·Ð°ÑÐ¸Ñ: {len(status['agent_names'])} Ð°Ð³ÐµÐ½ÑÐ¾Ð²; "
+            f"ÑÐµÐºÐ¾Ð¼ÐµÐ½Ð´Ð°ÑÐ¸Ð¹: {status['recommendation_count']}; "
+            f"ÐºÑÑ: {cache.get('cache_entries', 0)} Ð·Ð°Ð¿Ð¸ÑÐµÐ¹ "
             f"(hits={cache.get('hits', 0)}, misses={cache.get('misses', 0)})."
         )
 
     def get_optimization_report(self) -> Dict:
         if not self.optimization_manager:
-            return {"status": "error", "message": "Агенты оптимизации не загружены", "recommendations": []}
+            return {"status": "error", "message": "ÐÐ³ÐµÐ½ÑÑ Ð¾Ð¿ÑÐ¸Ð¼Ð¸Ð·Ð°ÑÐ¸Ð¸ Ð½Ðµ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½Ñ", "recommendations": []}
         if not self.brain.config.get("optimization.enabled", True):
-            return {"status": "disabled", "message": "Агенты оптимизации отключены", "recommendations": []}
+            return {"status": "disabled", "message": "ÐÐ³ÐµÐ½ÑÑ Ð¾Ð¿ÑÐ¸Ð¼Ð¸Ð·Ð°ÑÐ¸Ð¸ Ð¾ÑÐºÐ»ÑÑÐµÐ½Ñ", "recommendations": []}
         return self.optimization_manager.analyze()
 
     def analyze_patterns(self) -> List[Dict]:
@@ -166,4 +166,4 @@ class LearningManager:
     def get_greeting(self) -> str:
         if self.user_profile:
             return self.user_profile.get_greeting()
-        return "Здравствуйте, сэр."
+        return "ÐÐ´ÑÐ°Ð²ÑÑÐ²ÑÐ¹ÑÐµ, ÑÑÑ."
