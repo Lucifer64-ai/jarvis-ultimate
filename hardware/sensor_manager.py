@@ -1,5 +1,5 @@
 """
-Sensor Manager - Управление датчиками JARVIS
+Sensor Manager - Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð´Ð°ÑÑÐ¸ÐºÐ°Ð¼Ð¸ JARVIS
 """
 
 import time
@@ -8,13 +8,13 @@ import logging
 
 
 class SensorManager:
-    """Управление датчиками JARVIS."""
+    """Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð´Ð°ÑÑÐ¸ÐºÐ°Ð¼Ð¸ JARVIS."""
 
     def __init__(self, brain):
         self.brain = brain
         self.logger = brain.logger
         
-        # Датчики
+        # ÐÐ°ÑÑÐ¸ÐºÐ¸
         self.motion_detected = False
         self.distance_cm = 100.0
         self.temperature_c = 20.0
@@ -24,9 +24,9 @@ class SensorManager:
         self.initialized = False
 
     def initialize(self) -> Dict:
-        """Инициализация датчиков."""
+        """ÐÐ½Ð¸ÑÐ¸Ð°Ð»Ð¸Ð·Ð°ÑÐ¸Ñ Ð´Ð°ÑÑÐ¸ÐºÐ¾Ð²."""
         try:
-            # В реальной реализации:
+            # Ð ÑÐµÐ°Ð»ÑÐ½Ð¾Ð¹ ÑÐµÐ°Ð»Ð¸Ð·Ð°ÑÐ¸Ð¸:
             # import RPi.GPIO as GPIO
             # GPIO.setmode(GPIO.BCM)
             # 
@@ -46,23 +46,23 @@ class SensorManager:
             # self.dht_sensor = adafruit_dht.DHT22(self.dht_pin)
             
             self.initialized = True
-            self.logger.info("Датчики инициализированы")
-            return {"status": "ok", "message": "Датчики готовы к работе"}
+            self.logger.info("ÐÐ°ÑÑÐ¸ÐºÐ¸ Ð¸Ð½Ð¸ÑÐ¸Ð°Ð»Ð¸Ð·Ð¸ÑÐ¾Ð²Ð°Ð½Ñ")
+            return {"status": "ok", "message": "ÐÐ°ÑÑÐ¸ÐºÐ¸ Ð³Ð¾ÑÐ¾Ð²Ñ Ðº ÑÐ°Ð±Ð¾ÑÐµ"}
         except Exception as e:
-            self.logger.error(f"Ошибка инициализации датчиков: {e}")
+            self.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° Ð¸Ð½Ð¸ÑÐ¸Ð°Ð»Ð¸Ð·Ð°ÑÐ¸Ð¸ Ð´Ð°ÑÑÐ¸ÐºÐ¾Ð²: {e}")
             return {"status": "error", "message": str(e)}
 
     def read_motion(self) -> bool:
-        """Чтение датчика движения."""
+        """Ð§ÑÐµÐ½Ð¸Ðµ Ð´Ð°ÑÑÐ¸ÐºÐ° Ð´Ð²Ð¸Ð¶ÐµÐ½Ð¸Ñ."""
         if not self.initialized:
             return False
         
         try:
-            # В реальной реализации:
+            # Ð ÑÐµÐ°Ð»ÑÐ½Ð¾Ð¹ ÑÐµÐ°Ð»Ð¸Ð·Ð°ÑÐ¸Ð¸:
             # self.motion_detected = GPIO.input(self.motion_pin)
             # return self.motion_detected
             
-            # Для демонстрации - случайное значение
+            # ÐÐ»Ñ Ð´ÐµÐ¼Ð¾Ð½ÑÑÑÐ°ÑÐ¸Ð¸ - ÑÐ»ÑÑÐ°Ð¹Ð½Ð¾Ðµ Ð·Ð½Ð°ÑÐµÐ½Ð¸Ðµ
             import random
             self.motion_detected = random.choice([True, False])
             return self.motion_detected
@@ -70,12 +70,12 @@ class SensorManager:
             return False
 
     def read_distance(self) -> float:
-        """Чтение ультразвукового датчика расстояния."""
+        """Ð§ÑÐµÐ½Ð¸Ðµ ÑÐ»ÑÑÑÐ°Ð·Ð²ÑÐºÐ¾Ð²Ð¾Ð³Ð¾ Ð´Ð°ÑÑÐ¸ÐºÐ° ÑÐ°ÑÑÑÐ¾ÑÐ½Ð¸Ñ."""
         if not self.initialized:
             return 100.0
         
         try:
-            # В реальной реализации:
+            # Ð ÑÐµÐ°Ð»ÑÐ½Ð¾Ð¹ ÑÐµÐ°Ð»Ð¸Ð·Ð°ÑÐ¸Ð¸:
             # GPIO.output(self.trig_pin, True)
             # time.sleep(0.00001)
             # GPIO.output(self.trig_pin, False)
@@ -88,10 +88,10 @@ class SensorManager:
             #     pulse_end = time.time()
             # 
             # pulse_duration = pulse_end - pulse_start
-            # distance = pulse_duration * 17150  # Скорость звука
+            # distance = pulse_duration * 17150  # Ð¡ÐºÐ¾ÑÐ¾ÑÑÑ Ð·Ð²ÑÐºÐ°
             # self.distance_cm = round(distance, 2)
             
-            # Для демонстрации
+            # ÐÐ»Ñ Ð´ÐµÐ¼Ð¾Ð½ÑÑÑÐ°ÑÐ¸Ð¸
             import random
             self.distance_cm = random.uniform(10, 200)
             return self.distance_cm
@@ -99,15 +99,15 @@ class SensorManager:
             return 100.0
 
     def read_temperature(self) -> float:
-        """Чтение температуры."""
+        """Ð§ÑÐµÐ½Ð¸Ðµ ÑÐµÐ¼Ð¿ÐµÑÐ°ÑÑÑÑ."""
         if not self.initialized:
             return 20.0
         
         try:
-            # В реальной реализации:
+            # Ð ÑÐµÐ°Ð»ÑÐ½Ð¾Ð¹ ÑÐµÐ°Ð»Ð¸Ð·Ð°ÑÐ¸Ð¸:
             # self.temperature_c = self.dht_sensor.temperature
             
-            # Для демонстрации
+            # ÐÐ»Ñ Ð´ÐµÐ¼Ð¾Ð½ÑÑÑÐ°ÑÐ¸Ð¸
             import random
             self.temperature_c = random.uniform(18, 28)
             return round(self.temperature_c, 1)
@@ -115,15 +115,15 @@ class SensorManager:
             return 20.0
 
     def read_humidity(self) -> float:
-        """Чтение влажности."""
+        """Ð§ÑÐµÐ½Ð¸Ðµ Ð²Ð»Ð°Ð¶Ð½Ð¾ÑÑÐ¸."""
         if not self.initialized:
             return 50.0
         
         try:
-            # В реальной реализации:
+            # Ð ÑÐµÐ°Ð»ÑÐ½Ð¾Ð¹ ÑÐµÐ°Ð»Ð¸Ð·Ð°ÑÐ¸Ð¸:
             # self.humidity_percent = self.dht_sensor.humidity
             
-            # Для демонстрации
+            # ÐÐ»Ñ Ð´ÐµÐ¼Ð¾Ð½ÑÑÑÐ°ÑÐ¸Ð¸
             import random
             self.humidity_percent = random.uniform(30, 70)
             return round(self.humidity_percent, 1)
@@ -131,17 +131,17 @@ class SensorManager:
             return 50.0
 
     def read_light(self) -> int:
-        """Чтение датчика освещенности."""
+        """Ð§ÑÐµÐ½Ð¸Ðµ Ð´Ð°ÑÑÐ¸ÐºÐ° Ð¾ÑÐ²ÐµÑÐµÐ½Ð½Ð¾ÑÑÐ¸."""
         if not self.initialized:
             return 500
         
         try:
-            # В реальной реализации:
+            # Ð ÑÐµÐ°Ð»ÑÐ½Ð¾Ð¹ ÑÐµÐ°Ð»Ð¸Ð·Ð°ÑÐ¸Ð¸:
             # import adafruit_mcp3xxx.mcp3008 as MCP
             # from adafruit_mcp3xxx.analog_in import AnalogIn
             # light_value = light.value
             
-            # Для демонстрации
+            # ÐÐ»Ñ Ð´ÐµÐ¼Ð¾Ð½ÑÑÑÐ°ÑÐ¸Ð¸
             import random
             self.light_level = random.randint(0, 1000)
             return self.light_level
@@ -149,7 +149,7 @@ class SensorManager:
             return 500
 
     def get_all_readings(self) -> Dict:
-        """Получить все показания датчиков."""
+        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ Ð²ÑÐµ Ð¿Ð¾ÐºÐ°Ð·Ð°Ð½Ð¸Ñ Ð´Ð°ÑÑÐ¸ÐºÐ¾Ð²."""
         return {
             "motion": self.read_motion(),
             "distance_cm": self.read_distance(),
@@ -159,27 +159,27 @@ class SensorManager:
         }
 
     def is_someone_present(self) -> bool:
-        """Проверить присутствие человека."""
+        """ÐÑÐ¾Ð²ÐµÑÐ¸ÑÑ Ð¿ÑÐ¸ÑÑÑÑÑÐ²Ð¸Ðµ ÑÐµÐ»Ð¾Ð²ÐµÐºÐ°."""
         motion = self.read_motion()
         distance = self.read_distance()
         
-        # Если есть движение или кто-то близко
+        # ÐÑÐ»Ð¸ ÐµÑÑÑ Ð´Ð²Ð¸Ð¶ÐµÐ½Ð¸Ðµ Ð¸Ð»Ð¸ ÐºÑÐ¾-ÑÐ¾ Ð±Ð»Ð¸Ð·ÐºÐ¾
         return motion or distance < 100
 
     def get_environment_status(self) -> Dict:
-        """Статус окружающей среды."""
+        """Ð¡ÑÐ°ÑÑÑ Ð¾ÐºÑÑÐ¶Ð°ÑÑÐµÐ¹ ÑÑÐµÐ´Ñ."""
         temp = self.read_temperature()
         humidity = self.read_humidity()
         light = self.read_light()
         
         status = {
-            "temperature": f"{temp}°C",
+            "temperature": f"{temp}Â°C",
             "humidity": f"{humidity}%",
             "light": light,
             "comfort": "comfortable"
         }
         
-        # Оценка комфорта
+        # ÐÑÐµÐ½ÐºÐ° ÐºÐ¾Ð¼ÑÐ¾ÑÑÐ°
         if temp < 18 or temp > 26:
             status["comfort"] = "uncomfortable_temperature"
         elif humidity < 30 or humidity > 60:
@@ -188,9 +188,9 @@ class SensorManager:
         return status
 
     def cleanup(self):
-        """Очистка ресурсов."""
+        """ÐÑÐ¸ÑÑÐºÐ° ÑÐµÑÑÑÑÐ¾Ð²."""
         if self.initialized:
-            # В реальной реализации:
+            # Ð ÑÐµÐ°Ð»ÑÐ½Ð¾Ð¹ ÑÐµÐ°Ð»Ð¸Ð·Ð°ÑÐ¸Ð¸:
             # GPIO.cleanup()
             self.initialized = False
-            self.logger.info("Датчики очищены")
+            self.logger.info("ÐÐ°ÑÑÐ¸ÐºÐ¸ Ð¾ÑÐ¸ÑÐµÐ½Ñ")
