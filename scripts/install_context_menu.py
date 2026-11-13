@@ -1,5 +1,5 @@
 """
-ÃÂ¡ÃÂºÃÃÂ¸ÃÂ¿Ã ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ¸ ÃÂºÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ¼ÃÂµÃÂ½Ã ÃÂ¿ÃÃÂ¾ÃÂ²ÃÂ¾ÃÂ´ÃÂ½ÃÂ¸ÃÂºÃÂ° Windows
+ÃÃÂ¡ÃÃÂºÃÃÃÂ¸ÃÃÂ¿Ã ÃÃÃÃÃÂ°ÃÃÂ½ÃÃÂ¾ÃÃÂ²ÃÃÂºÃÃÂ¸ ÃÃÂºÃÃÂ¾ÃÃÂ½ÃÃÃÂµÃÃÂºÃÃÃÃÂ½ÃÃÂ¾ÃÃÂ³ÃÃÂ¾ ÃÃÂ¼ÃÃÂµÃÃÂ½Ã ÃÃÂ¿ÃÃÃÂ¾ÃÃÂ²ÃÃÂ¾ÃÃÂ´ÃÃÂ½ÃÃÂ¸ÃÃÂºÃÃÂ° Windows
 """
 
 import winreg
@@ -9,34 +9,34 @@ from pathlib import Path
 
 
 def install_context_menu():
-    """ÃÂ£ÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ° ÃÂºÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ¼ÃÂµÃÂ½Ã."""
+    """ÃÃÂ£ÃÃÃÃÂ°ÃÃÂ½ÃÃÂ¾ÃÃÂ²ÃÃÂºÃÃÂ° ÃÃÂºÃÃÂ¾ÃÃÂ½ÃÃÃÂµÃÃÂºÃÃÃÃÂ½ÃÃÂ¾ÃÃÂ³ÃÃÂ¾ ÃÃÂ¼ÃÃÂµÃÃÂ½Ã."""
     try:
-        # ÃÃÃÃ ÃÂº JARVIS
+        # ÃÃÃÃ ÃÃÂº JARVIS
         jarvis_path = sys.executable
         
-        # ÃÃÂ»Ã ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ¾ÃÂ²
+        # ÃÃÃÂ»Ã ÃÃÃÂ°ÃÃÂ¹ÃÃÂ»ÃÃÂ¾ÃÃÂ²
         file_key = r"*\shell\JARVIS"
         with winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, file_key) as key:
-            winreg.SetValueEx(key, "", 0, winreg.REG_SZ, "JARVIS - ÃÃÃÂºÃÃÃÃ ÃÃÂ°ÃÂ¹ÃÂ»")
+            winreg.SetValueEx(key, "", 0, winreg.REG_SZ, "JARVIS - ÃÃÃÃÂºÃÃÃÃ ÃÃÃÂ°ÃÃÂ¹ÃÃÂ»")
             winreg.SetValueEx(key, "Icon", 0, winreg.REG_SZ, jarvis_path)
         
         with winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, rf"{file_key}\command") as key:
             winreg.SetValueEx(key, "", 0, winreg.REG_SZ, f'"{jarvis_path}" open "%1"')
         
-        # ÃÃÂ»Ã ÃÂ¿ÃÂ°ÃÂ¿ÃÂ¾ÃÂº
+        # ÃÃÃÂ»Ã ÃÃÂ¿ÃÃÂ°ÃÃÂ¿ÃÃÂ¾ÃÃÂº
         folder_key = r"Directory\shell\JARVIS"
         with winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, folder_key) as key:
-            winreg.SetValueEx(key, "", 0, winreg.REG_SZ, "JARVIS - ÃÃÃÂºÃÃÃÃ ÃÂ¿ÃÂ°ÃÂ¿ÃÂºÃ")
+            winreg.SetValueEx(key, "", 0, winreg.REG_SZ, "JARVIS - ÃÃÃÃÂºÃÃÃÃ ÃÃÂ¿ÃÃÂ°ÃÃÂ¿ÃÃÂºÃ")
             winreg.SetValueEx(key, "Icon", 0, winreg.REG_SZ, jarvis_path)
         
         with winreg.CreateKey(winreg.HKEY_CLASSES_ROOT, rf"{folder_key}\command") as key:
             winreg.SetValueEx(key, "", 0, winreg.REG_SZ, f'"{jarvis_path}" open "%1"')
         
-        print("ÃÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂµ ÃÂ¼ÃÂµÃÂ½Ã ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¾ ÃÃÃÂ¿ÃÂµÃÃÂ½ÃÂ¾")
+        print("ÃÃÃÂ¾ÃÃÂ½ÃÃÃÂµÃÃÂºÃÃÃÃÂ½ÃÃÂ¾ÃÃÂµ ÃÃÂ¼ÃÃÂµÃÃÂ½Ã ÃÃÃÃÃÂ°ÃÃÂ½ÃÃÂ¾ÃÃÂ²ÃÃÂ»ÃÃÂµÃÃÂ½ÃÃÂ¾ ÃÃÃÃÂ¿ÃÃÂµÃÃÃÂ½ÃÃÂ¾")
         return 0
     
     except Exception as e:
-        print(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ¸ ÃÂºÃÂ¾ÃÂ½ÃÃÂµÃÂºÃÃÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ¼ÃÂµÃÂ½Ã: {e}")
+        print(f"ÃÃÃÃÂ¸ÃÃÂ±ÃÃÂºÃÃÂ° ÃÃÃÃÃÂ°ÃÃÂ½ÃÃÂ¾ÃÃÂ²ÃÃÂºÃÃÂ¸ ÃÃÂºÃÃÂ¾ÃÃÂ½ÃÃÃÂµÃÃÂºÃÃÃÃÂ½ÃÃÂ¾ÃÃÂ³ÃÃÂ¾ ÃÃÂ¼ÃÃÂµÃÃÂ½Ã: {e}")
         return 1
 
 
