@@ -1,6 +1,6 @@
 """
-Holographic HUD Interface - Виртуальное тело JARVIS
-Голографический интерфейс поверх рабочего стола в стиле Iron Man
+Holographic HUD Interface - ¸°»½¾µ µ»¾ JARVIS
+¾»¾³°¸µº¸¹ ¸½µµ¹ ¿¾²µ °±¾µ³¾ ¾»° ² ¸»µ Iron Man
 """
 
 import math
@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPainter, QDesktopWidget
 
 
 class HolographicHUD(QWidget):
-    """Голографический HUD интерфейс JARVIS."""
+    """¾»¾³°¸µº¸¹ HUD ¸½µµ¹ JARVIS."""
 
     status_requested = pyqtSignal(str)
     voice_requested = pyqtSignal(bool)
@@ -97,7 +97,7 @@ class HolographicHUD(QWidget):
                     self.update(QRect(0, 0, self.width(), self.height()))
             except Exception as exc:
                 if self.brain:
-                    self.brain.logger.debug("Не удалось обновить HUD метрики: %s", exc)
+                    self.brain.logger.debug("µ ´°»¾ ¾±½¾²¸ HUD ¼µ¸º¸: %s", exc)
             self._metrics_future = None
 
         if self._metrics_future is None:
@@ -168,7 +168,7 @@ class HolographicHUD(QWidget):
         self.draw_panel(painter, 50, 50, 300, 150, "TIME", [time.strftime("%H:%M:%S"), time.strftime("%d.%m.%Y")])
         self.draw_panel(painter, width - 350, 50, 300, 150, "MEMORY", [f"RAM: {self.ram_usage:.0f}%", f"CPU: {self.cpu_usage:.0f}%"])
         self.draw_panel(painter, 50, height - 200, 300, 150, "NETWORK", [f"Speed: {self.network_speed:.1f} MB/s", "Status: ONLINE"])
-        items = ["Оптимизация"] + self.optimization_recommendations[:3]
+        items = ["¿¸¼¸·°¸"] + self.optimization_recommendations[:3]
         self.draw_panel(painter, width - 430, height - 250, 380, 200, "JARVIS / OPTIMIZATION", items)
 
     def draw_panel(self, painter: QPainter, x: int, y: int, w: int, h: int, title: str, data: list):
