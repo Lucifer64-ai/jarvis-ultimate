@@ -1,5 +1,5 @@
 """
-Ð¡ÐµÑÐµÐ²ÑÐµ Ð¾Ð¿ÐµÑÐ°ÑÐ¸Ð¸ JARVIS.
+ÃÂ¡ÃÂµÃÃÂµÃÂ²ÃÃÂµ ÃÂ¾ÃÂ¿ÃÂµÃÃÂ°ÃÃÂ¸ÃÂ¸ JARVIS.
 """
 
 from concurrent.futures import Future, ThreadPoolExecutor
@@ -12,7 +12,7 @@ import speedtest
 
 
 class NetworkModule:
-    """Ð¡ÐµÑÐµÐ²ÑÐµ ÑÑÐ½ÐºÑÐ¸Ð¸ Ñ ÑÐ¾Ð½Ð¾Ð²ÑÐ¼ Ð²ÑÐ¿Ð¾Ð»Ð½ÐµÐ½Ð¸ÐµÐ¼ ÑÐµÑÑÐ° ÑÐºÐ¾ÑÐ¾ÑÑÐ¸."""
+    """ÃÂ¡ÃÂµÃÃÂµÃÂ²ÃÃÂµ ÃÃÃÂ½ÃÂºÃÃÂ¸ÃÂ¸ Ã ÃÃÂ¾ÃÂ½ÃÂ¾ÃÂ²ÃÃÂ¼ ÃÂ²ÃÃÂ¿ÃÂ¾ÃÂ»ÃÂ½ÃÂµÃÂ½ÃÂ¸ÃÂµÃÂ¼ ÃÃÂµÃÃÃÂ° ÃÃÂºÃÂ¾ÃÃÂ¾ÃÃÃÂ¸."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -23,7 +23,7 @@ class NetworkModule:
         self._speed_result: Dict | None = None
 
     def get_ip(self) -> Dict:
-        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ IP Ð°Ð´ÑÐµÑ."""
+        """ÃÃÂ¾ÃÂ»ÃÃÃÂ¸ÃÃ IP ÃÂ°ÃÂ´ÃÃÂµÃ."""
         try:
             response = requests.get('https://api.ipify.org?format=json', timeout=5)
             response.raise_for_status()
@@ -32,26 +32,26 @@ class NetworkModule:
             return {"status": "error", "message": str(e)}
 
     def speed_test(self) -> Dict:
-        """ÐÐ¾ÑÑÐ°Ð²Ð¸ÑÑ Ð´Ð»Ð¸ÑÐµÐ»ÑÐ½ÑÐ¹ ÑÐµÑÑ ÑÐºÐ¾ÑÐ¾ÑÑÐ¸ Ð² ÑÐ¾Ð½Ð¾Ð²ÑÑ Ð¾ÑÐµÑÐµÐ´Ñ.
+        """ÃÃÂ¾ÃÃÃÂ°ÃÂ²ÃÂ¸ÃÃ ÃÂ´ÃÂ»ÃÂ¸ÃÃÂµÃÂ»ÃÃÂ½ÃÃÂ¹ ÃÃÂµÃÃ ÃÃÂºÃÂ¾ÃÃÂ¾ÃÃÃÂ¸ ÃÂ² ÃÃÂ¾ÃÂ½ÃÂ¾ÃÂ²ÃÃ ÃÂ¾ÃÃÂµÃÃÂµÃÂ´Ã.
 
-        Ð ÐµÐ·ÑÐ»ÑÑÐ°Ñ Ð¼Ð¾Ð¶Ð½Ð¾ Ð¿Ð¾Ð»ÑÑÐ¸ÑÑ ÑÐµÑÐµÐ· get_speed_test_status(); Ð¿Ð¾Ð²ÑÐ¾ÑÐ½ÑÐ¹ Ð²ÑÐ·Ð¾Ð²
-        Ð²Ð¾ Ð²ÑÐµÐ¼Ñ Ð²ÑÐ¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ñ Ð²Ð¾Ð·Ð²ÑÐ°ÑÐ°ÐµÑ Ð¸Ð´ÐµÐ½ÑÐ¸ÑÐ¸ÐºÐ°ÑÐ¾Ñ ÑÐ¶Ðµ Ð·Ð°Ð¿ÑÑÐµÐ½Ð½Ð¾Ð¹ Ð·Ð°Ð´Ð°ÑÐ¸.
+        ÃÂ ÃÂµÃÂ·ÃÃÂ»ÃÃÃÂ°Ã ÃÂ¼ÃÂ¾ÃÂ¶ÃÂ½ÃÂ¾ ÃÂ¿ÃÂ¾ÃÂ»ÃÃÃÂ¸ÃÃ ÃÃÂµÃÃÂµÃÂ· get_speed_test_status(); ÃÂ¿ÃÂ¾ÃÂ²ÃÃÂ¾ÃÃÂ½ÃÃÂ¹ ÃÂ²ÃÃÂ·ÃÂ¾ÃÂ²
+        ÃÂ²ÃÂ¾ ÃÂ²ÃÃÂµÃÂ¼Ã ÃÂ²ÃÃÂ¿ÃÂ¾ÃÂ»ÃÂ½ÃÂµÃÂ½ÃÂ¸Ã ÃÂ²ÃÂ¾ÃÂ·ÃÂ²ÃÃÂ°ÃÃÂ°ÃÂµÃ ÃÂ¸ÃÂ´ÃÂµÃÂ½ÃÃÂ¸ÃÃÂ¸ÃÂºÃÂ°ÃÃÂ¾Ã ÃÃÂ¶ÃÂµ ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂµÃÂ½ÃÂ½ÃÂ¾ÃÂ¹ ÃÂ·ÃÂ°ÃÂ´ÃÂ°ÃÃÂ¸.
         """
         with self._lock:
             if self._speed_future and not self._speed_future.done():
                 return {"status": "pending", "job_id": self._speed_job_id,
-                        "message": "Ð¢ÐµÑÑ ÑÐºÐ¾ÑÐ¾ÑÑÐ¸ ÑÐ¶Ðµ Ð²ÑÐ¿Ð¾Ð»Ð½ÑÐµÑÑÑ"}
+                        "message": "ÃÂ¢ÃÂµÃÃ ÃÃÂºÃÂ¾ÃÃÂ¾ÃÃÃÂ¸ ÃÃÂ¶ÃÂµ ÃÂ²ÃÃÂ¿ÃÂ¾ÃÂ»ÃÂ½ÃÃÂµÃÃÃ"}
 
             self._speed_job_id = uuid.uuid4().hex
             self._speed_result = None
             self._speed_future = self._executor.submit(self._run_speed_test)
             self._speed_future.add_done_callback(self._on_speed_test_done)
             return {"status": "pending", "job_id": self._speed_job_id,
-                    "message": "Ð¢ÐµÑÑ ÑÐºÐ¾ÑÐ¾ÑÑÐ¸ Ð·Ð°Ð¿ÑÑÐµÐ½ Ð² ÑÐ¾Ð½Ðµ"}
+                    "message": "ÃÂ¢ÃÂµÃÃ ÃÃÂºÃÂ¾ÃÃÂ¾ÃÃÃÂ¸ ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂµÃÂ½ ÃÂ² ÃÃÂ¾ÃÂ½ÃÂµ"}
 
     @staticmethod
     def _run_speed_test() -> Dict:
-        """ÐÑÐ¿Ð¾Ð»Ð½Ð¸ÑÑ Ð±Ð»Ð¾ÐºÐ¸ÑÑÑÑÑÑ ÑÐ°Ð±Ð¾ÑÑ Ð² worker-Ð¿Ð¾ÑÐ¾ÐºÐµ."""
+        """ÃÃÃÂ¿ÃÂ¾ÃÂ»ÃÂ½ÃÂ¸ÃÃ ÃÂ±ÃÂ»ÃÂ¾ÃÂºÃÂ¸ÃÃÃÃÃÃ ÃÃÂ°ÃÂ±ÃÂ¾ÃÃ ÃÂ² worker-ÃÂ¿ÃÂ¾ÃÃÂ¾ÃÂºÃÂµ."""
         try:
             st = speedtest.Speedtest()
             st.get_best_server()
@@ -74,21 +74,21 @@ class NetworkModule:
             result = {"status": "error", "message": str(e)}
         with self._lock:
             self._speed_result = result
-        self.brain.logger.info("ÐÑÐ¾Ð²ÐµÑÐºÐ° ÑÐºÐ¾ÑÐ¾ÑÑÐ¸ Ð·Ð°Ð²ÐµÑÑÐµÐ½Ð°: %s", result)
+        self.brain.logger.info("ÃÃÃÂ¾ÃÂ²ÃÂµÃÃÂºÃÂ° ÃÃÂºÃÂ¾ÃÃÂ¾ÃÃÃÂ¸ ÃÂ·ÃÂ°ÃÂ²ÃÂµÃÃÃÂµÃÂ½ÃÂ°: %s", result)
 
     def get_speed_test_status(self, job_id: str | None = None) -> Dict:
-        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ ÑÑÐ°ÑÑÑ Ð¿Ð¾ÑÐ»ÐµÐ´Ð½ÐµÐ¹ Ð¿ÑÐ¾Ð²ÐµÑÐºÐ¸ ÑÐºÐ¾ÑÐ¾ÑÑÐ¸."""
+        """ÃÃÂ¾ÃÂ»ÃÃÃÂ¸ÃÃ ÃÃÃÂ°ÃÃÃ ÃÂ¿ÃÂ¾ÃÃÂ»ÃÂµÃÂ´ÃÂ½ÃÂµÃÂ¹ ÃÂ¿ÃÃÂ¾ÃÂ²ÃÂµÃÃÂºÃÂ¸ ÃÃÂºÃÂ¾ÃÃÂ¾ÃÃÃÂ¸."""
         with self._lock:
             if job_id and job_id != self._speed_job_id:
-                return {"status": "error", "message": "ÐÐ°Ð´Ð°ÑÐ° Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½Ð°"}
+                return {"status": "error", "message": "ÃÃÂ°ÃÂ´ÃÂ°ÃÃÂ° ÃÂ½ÃÂµ ÃÂ½ÃÂ°ÃÂ¹ÃÂ´ÃÂµÃÂ½ÃÂ°"}
             if self._speed_future is None:
-                return {"status": "idle", "message": "ÐÑÐ¾Ð²ÐµÑÐºÐ° ÐµÑÑ Ð½Ðµ Ð·Ð°Ð¿ÑÑÐºÐ°Ð»Ð°ÑÑ"}
+                return {"status": "idle", "message": "ÃÃÃÂ¾ÃÂ²ÃÂµÃÃÂºÃÂ° ÃÂµÃÃ ÃÂ½ÃÂµ ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂºÃÂ°ÃÂ»ÃÂ°ÃÃ"}
             if self._speed_result is not None:
                 return {"job_id": self._speed_job_id, **self._speed_result}
             return {"status": "pending", "job_id": self._speed_job_id}
 
     def check_connection(self) -> Dict:
-        """ÐÑÐ¾Ð²ÐµÑÐ¸ÑÑ Ð¿Ð¾Ð´ÐºÐ»ÑÑÐµÐ½Ð¸Ðµ Ðº Ð¸Ð½ÑÐµÑÐ½ÐµÑÑ."""
+        """ÃÃÃÂ¾ÃÂ²ÃÂµÃÃÂ¸ÃÃ ÃÂ¿ÃÂ¾ÃÂ´ÃÂºÃÂ»ÃÃÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÂº ÃÂ¸ÃÂ½ÃÃÂµÃÃÂ½ÃÂµÃÃ."""
         try:
             response = requests.get('https://www.google.com', timeout=5)
             response.raise_for_status()
@@ -97,5 +97,5 @@ class NetworkModule:
             return {"status": "ok", "connected": False}
 
     def close(self) -> None:
-        """ÐÑÑÐ°Ð½Ð¾Ð²Ð¸ÑÑ Ð¾ÑÐµÑÐµÐ´Ñ ÑÐ¾Ð½Ð¾Ð²ÑÑ Ð·Ð°Ð´Ð°Ñ Ð±ÐµÐ· Ð¾Ð¶Ð¸Ð´Ð°Ð½Ð¸Ñ Ð·Ð°Ð²ÐµÑÑÐµÐ½Ð¸Ñ ÑÐµÑÑÐ°."""
+        """ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂ¸ÃÃ ÃÂ¾ÃÃÂµÃÃÂµÃÂ´Ã ÃÃÂ¾ÃÂ½ÃÂ¾ÃÂ²ÃÃ ÃÂ·ÃÂ°ÃÂ´ÃÂ°Ã ÃÂ±ÃÂµÃÂ· ÃÂ¾ÃÂ¶ÃÂ¸ÃÂ´ÃÂ°ÃÂ½ÃÂ¸Ã ÃÂ·ÃÂ°ÃÂ²ÃÂµÃÃÃÂµÃÂ½ÃÂ¸Ã ÃÃÂµÃÃÃÂ°."""
         self._executor.shutdown(wait=False, cancel_futures=True)
