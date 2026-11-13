@@ -21,13 +21,13 @@ class DesktopControlModule:
             return pyautogui
         except Exception as error:
             raise RuntimeError(
-                "Управление рабочим столом недоступно; проверьте установку pyautogui и активную сессию"
+                "Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ ÑÐ°Ð±Ð¾ÑÐ¸Ð¼ ÑÑÐ¾Ð»Ð¾Ð¼ Ð½ÐµÐ´Ð¾ÑÑÑÐ¿Ð½Ð¾; Ð¿ÑÐ¾Ð²ÐµÑÑÑÐµ ÑÑÑÐ°Ð½Ð¾Ð²ÐºÑ pyautogui Ð¸ Ð°ÐºÑÐ¸Ð²Ð½ÑÑ ÑÐµÑÑÐ¸Ñ"
             ) from error
 
     def minimize_all(self) -> Dict:
         try:
             self._pyautogui().hotkey("win", "d")
-            return {"status": "ok", "message": "Показан рабочий стол"}
+            return {"status": "ok", "message": "ÐÐ¾ÐºÐ°Ð·Ð°Ð½ ÑÐ°Ð±Ð¾ÑÐ¸Ð¹ ÑÑÐ¾Ð»"}
         except Exception as error:
             return {"status": "error", "message": str(error)}
 
@@ -35,10 +35,10 @@ class DesktopControlModule:
         return self.minimize_all()
 
     def volume_up(self, steps: int = 3) -> Dict:
-        return self._volume_key("volumeup", steps, "Громкость увеличена")
+        return self._volume_key("volumeup", steps, "ÐÑÐ¾Ð¼ÐºÐ¾ÑÑÑ ÑÐ²ÐµÐ»Ð¸ÑÐµÐ½Ð°")
 
     def volume_down(self, steps: int = 3) -> Dict:
-        return self._volume_key("volumedown", steps, "Громкость уменьшена")
+        return self._volume_key("volumedown", steps, "ÐÑÐ¾Ð¼ÐºÐ¾ÑÑÑ ÑÐ¼ÐµÐ½ÑÑÐµÐ½Ð°")
 
     def _volume_key(self, key: str, steps: int, message: str) -> Dict:
         try:
@@ -51,7 +51,7 @@ class DesktopControlModule:
     def mute(self) -> Dict:
         try:
             self._pyautogui().press("volumemute")
-            return {"status": "ok", "message": "Звук переключён"}
+            return {"status": "ok", "message": "ÐÐ²ÑÐº Ð¿ÐµÑÐµÐºÐ»ÑÑÑÐ½"}
         except Exception as error:
             return {"status": "error", "message": str(error)}
 
@@ -59,9 +59,9 @@ class DesktopControlModule:
         try:
             import ctypes
             if not hasattr(ctypes, "windll"):
-                return {"status": "error", "message": "Блокировка экрана поддерживается только в Windows"}
+                return {"status": "error", "message": "ÐÐ»Ð¾ÐºÐ¸ÑÐ¾Ð²ÐºÐ° ÑÐºÑÐ°Ð½Ð° Ð¿Ð¾Ð´Ð´ÐµÑÐ¶Ð¸Ð²Ð°ÐµÑÑÑ ÑÐ¾Ð»ÑÐºÐ¾ Ð² Windows"}
             ctypes.windll.user32.LockWorkStation()
-            return {"status": "ok", "message": "Экран заблокирован"}
+            return {"status": "ok", "message": "Ð­ÐºÑÐ°Ð½ Ð·Ð°Ð±Ð»Ð¾ÐºÐ¸ÑÐ¾Ð²Ð°Ð½"}
         except Exception as error:
             return {"status": "error", "message": str(error)}
 
@@ -86,13 +86,13 @@ class DesktopControlModule:
         }
         keys = shortcuts.get(name)
         if not keys:
-            return {"status": "error", "message": "Эта комбинация клавиш не разрешена"}
+            return {"status": "error", "message": "Ð­ÑÐ° ÐºÐ¾Ð¼Ð±Ð¸Ð½Ð°ÑÐ¸Ñ ÐºÐ»Ð°Ð²Ð¸Ñ Ð½Ðµ ÑÐ°Ð·ÑÐµÑÐµÐ½Ð°"}
         try:
             pyautogui = self._pyautogui()
             if len(keys) == 1:
                 pyautogui.press(keys[0])
             else:
                 pyautogui.hotkey(*keys)
-            return {"status": "ok", "message": f"Выполнена команда клавиатуры: {name}"}
+            return {"status": "ok", "message": f"ÐÑÐ¿Ð¾Ð»Ð½ÐµÐ½Ð° ÐºÐ¾Ð¼Ð°Ð½Ð´Ð° ÐºÐ»Ð°Ð²Ð¸Ð°ÑÑÑÑ: {name}"}
         except Exception as error:
             return {"status": "error", "message": str(error)}
