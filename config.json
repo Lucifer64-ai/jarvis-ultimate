@@ -4,7 +4,7 @@
   "language": "ru",
   "voice": {
     "rate": 180,
-    "wake_word": "ÃÂ´ÃÂ¶ÃÂ°ÃÃÂ²ÃÂ¸Ã",
+    "wake_word": "ÃÃÂ´ÃÃÂ¶ÃÃÂ°ÃÃÃÂ²ÃÃÂ¸Ã",
     "volume": 1.0
   },
   "hud": {
