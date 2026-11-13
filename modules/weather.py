@@ -1,5 +1,5 @@
 """
-Weather Module - Получение информации о погоде
+Weather Module - ÐÐ¾Ð»ÑÑÐµÐ½Ð¸Ðµ Ð¸Ð½ÑÐ¾ÑÐ¼Ð°ÑÐ¸Ð¸ Ð¾ Ð¿Ð¾Ð³Ð¾Ð´Ðµ
 """
 
 import requests
@@ -8,7 +8,7 @@ import logging
 
 
 class WeatherModule:
-    """Модуль для получения погоды."""
+    """ÐÐ¾Ð´ÑÐ»Ñ Ð´Ð»Ñ Ð¿Ð¾Ð»ÑÑÐµÐ½Ð¸Ñ Ð¿Ð¾Ð³Ð¾Ð´Ñ."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -16,24 +16,24 @@ class WeatherModule:
         self.api_key = brain.config.get_env("OPENWEATHER_API_KEY")
         self.base_url = "https://api.openweathermap.org/data/2.5"
         
-        # Кэш для减少 запросов
+        # ÐÑÑ Ð´Ð»Ñåå° Ð·Ð°Ð¿ÑÐ¾ÑÐ¾Ð²
         self.cache = {}
-        self.cache_timeout = 600  # 10 минут
+        self.cache_timeout = 600  # 10 Ð¼Ð¸Ð½ÑÑ
 
-    def get_weather(self, city: str = "Москва") -> Dict:
-        """Получить текущую погоду."""
+    def get_weather(self, city: str = "ÐÐ¾ÑÐºÐ²Ð°") -> Dict:
+        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ ÑÐµÐºÑÑÑÑ Ð¿Ð¾Ð³Ð¾Ð´Ñ."""
         if not self.api_key:
-            return {"status": "error", "message": "API ключ OpenWeather не настроен"}
+            return {"status": "error", "message": "API ÐºÐ»ÑÑ OpenWeather Ð½Ðµ Ð½Ð°ÑÑÑÐ¾ÐµÐ½"}
         
         try:
-            # Проверка кэша
+            # ÐÑÐ¾Ð²ÐµÑÐºÐ° ÐºÑÑÐ°
             cache_key = f"weather_{city}"
             if cache_key in self.cache:
                 import time
                 if time.time() - self.cache[cache_key]["time"] < self.cache_timeout:
                     return self.cache[cache_key]["data"]
             
-            # Запрос к API
+            # ÐÐ°Ð¿ÑÐ¾Ñ Ðº API
             url = f"{self.base_url}/weather"
             params = {
                 "q": city,
@@ -46,7 +46,7 @@ class WeatherModule:
             response.raise_for_status()
             data = response.json()
             
-            # Форматирование ответа
+            # Ð¤Ð¾ÑÐ¼Ð°ÑÐ¸ÑÐ¾Ð²Ð°Ð½Ð¸Ðµ Ð¾ÑÐ²ÐµÑÐ°
             weather_info = {
                 "status": "ok",
                 "city": city,
@@ -58,7 +58,7 @@ class WeatherModule:
                 "pressure": data["main"]["pressure"]
             }
             
-            # Сохранение в кэш
+            # Ð¡Ð¾ÑÑÐ°Ð½ÐµÐ½Ð¸Ðµ Ð² ÐºÑÑ
             import time
             self.cache[cache_key] = {
                 "data": weather_info,
@@ -68,16 +68,16 @@ class WeatherModule:
             return weather_info
             
         except requests.exceptions.RequestException as e:
-            self.logger.error(f"Ошибка получения погоды: {e}")
-            return {"status": "error", "message": f"Не удалось получить погоду: {e}"}
+            self.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° Ð¿Ð¾Ð»ÑÑÐµÐ½Ð¸Ñ Ð¿Ð¾Ð³Ð¾Ð´Ñ: {e}")
+            return {"status": "error", "message": f"ÐÐµ ÑÐ´Ð°Ð»Ð¾ÑÑ Ð¿Ð¾Ð»ÑÑÐ¸ÑÑ Ð¿Ð¾Ð³Ð¾Ð´Ñ: {e}"}
         except Exception as e:
-            self.logger.error(f"Ошибка обработки погоды: {e}")
+            self.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° Ð¾Ð±ÑÐ°Ð±Ð¾ÑÐºÐ¸ Ð¿Ð¾Ð³Ð¾Ð´Ñ: {e}")
             return {"status": "error", "message": str(e)}
 
-    def get_forecast(self, city: str = "Москва", days: int = 5) -> Dict:
-        """Получить прогноз погоды."""
+    def get_forecast(self, city: str = "ÐÐ¾ÑÐºÐ²Ð°", days: int = 5) -> Dict:
+        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ Ð¿ÑÐ¾Ð³Ð½Ð¾Ð· Ð¿Ð¾Ð³Ð¾Ð´Ñ."""
         if not self.api_key:
-            return {"status": "error", "message": "API ключ OpenWeather не настроен"}
+            return {"status": "error", "message": "API ÐºÐ»ÑÑ OpenWeather Ð½Ðµ Ð½Ð°ÑÑÑÐ¾ÐµÐ½"}
         
         try:
             url = f"{self.base_url}/forecast"
@@ -86,14 +86,14 @@ class WeatherModule:
                 "appid": self.api_key,
                 "units": "metric",
                 "lang": "ru",
-                "cnt": days * 8  # 8 интервалов в день (каждые 3 часа)
+                "cnt": days * 8  # 8 Ð¸Ð½ÑÐµÑÐ²Ð°Ð»Ð¾Ð² Ð² Ð´ÐµÐ½Ñ (ÐºÐ°Ð¶Ð´ÑÐµ 3 ÑÐ°ÑÐ°)
             }
             
             response = requests.get(url, params=params, timeout=10)
             response.raise_for_status()
             data = response.json()
             
-            # Группировка по дням
+            # ÐÑÑÐ¿Ð¿Ð¸ÑÐ¾Ð²ÐºÐ° Ð¿Ð¾ Ð´Ð½ÑÐ¼
             forecast = []
             for i in range(0, len(data["list"]), 8):
                 day_data = data["list"][i:i+8]
@@ -113,28 +113,28 @@ class WeatherModule:
             }
             
         except Exception as e:
-            self.logger.error(f"Ошибка получения прогноза: {e}")
+            self.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° Ð¿Ð¾Ð»ÑÑÐµÐ½Ð¸Ñ Ð¿ÑÐ¾Ð³Ð½Ð¾Ð·Ð°: {e}")
             return {"status": "error", "message": str(e)}
 
     def format_weather_message(self, weather: Dict) -> str:
-        """Форматирование погоды в сообщение."""
+        """Ð¤Ð¾ÑÐ¼Ð°ÑÐ¸ÑÐ¾Ð²Ð°Ð½Ð¸Ðµ Ð¿Ð¾Ð³Ð¾Ð´Ñ Ð² ÑÐ¾Ð¾Ð±ÑÐµÐ½Ð¸Ðµ."""
         if weather["status"] != "ok":
             return weather["message"]
         
         return (
-            f"В городе {weather['city']} сейчас {weather['temperature']}°C, "
+            f"Ð Ð³Ð¾ÑÐ¾Ð´Ðµ {weather['city']} ÑÐµÐ¹ÑÐ°Ñ {weather['temperature']}Â°C, "
             f"{weather['description']}. "
-            f"Ощущается как {weather['feels_like']}°C. "
-            f"Влажность {weather['humidity']}%, ветер {weather['wind_speed']} м/с."
+            f"ÐÑÑÑÐ°ÐµÑÑÑ ÐºÐ°Ðº {weather['feels_like']}Â°C. "
+            f"ÐÐ»Ð°Ð¶Ð½Ð¾ÑÑÑ {weather['humidity']}%, Ð²ÐµÑÐµÑ {weather['wind_speed']} Ð¼/Ñ."
         )
 
     def format_forecast_message(self, forecast: Dict) -> str:
-        """Форматирование прогноза в сообщение."""
+        """Ð¤Ð¾ÑÐ¼Ð°ÑÐ¸ÑÐ¾Ð²Ð°Ð½Ð¸Ðµ Ð¿ÑÐ¾Ð³Ð½Ð¾Ð·Ð° Ð² ÑÐ¾Ð¾Ð±ÑÐµÐ½Ð¸Ðµ."""
         if forecast["status"] != "ok":
             return forecast["message"]
         
-        message = f"Прогноз для {forecast['city']}:\n"
+        message = f"ÐÑÐ¾Ð³Ð½Ð¾Ð· Ð´Ð»Ñ {forecast['city']}:\n"
         for day in forecast["forecast"]:
-            message += f"{day['date']}: от {day['temp_min']}°C до {day['temp_max']}°C, {day['description']}\n"
+            message += f"{day['date']}: Ð¾Ñ {day['temp_min']}Â°C Ð´Ð¾ {day['temp_max']}Â°C, {day['description']}\n"
         
         return message
