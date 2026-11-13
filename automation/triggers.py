@@ -1,5 +1,5 @@
 """
-Ð¡Ð¸ÑÑÐµÐ¼Ð° ÑÑÐ¸Ð³Ð³ÐµÑÐ¾Ð² JARVIS
+ÃÂ¡ÃÂ¸ÃÃÃÂµÃÂ¼ÃÂ° ÃÃÃÂ¸ÃÂ³ÃÂ³ÃÂµÃÃÂ¾ÃÂ² JARVIS
 """
 
 from typing import Dict, List, Callable
@@ -8,7 +8,7 @@ import time
 
 
 class TriggerManager:
-    """Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ ÑÑÐ¸Ð³Ð³ÐµÑÐ°Ð¼Ð¸."""
+    """ÃÂ£ÃÂ¿ÃÃÂ°ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÃÃÂ¸ÃÂ³ÃÂ³ÃÂµÃÃÂ°ÃÂ¼ÃÂ¸."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -16,34 +16,34 @@ class TriggerManager:
         self.running = False
 
     def add_trigger(self, name: str, condition: Callable, action: Callable):
-        """ÐÐ¾Ð±Ð°Ð²Ð¸ÑÑ ÑÑÐ¸Ð³Ð³ÐµÑ."""
+        """ÃÃÂ¾ÃÂ±ÃÂ°ÃÂ²ÃÂ¸ÃÃ ÃÃÃÂ¸ÃÂ³ÃÂ³ÃÂµÃ."""
         self.triggers[name] = {
             "condition": condition,
             "action": action,
             "active": True
         }
-        self.brain.logger.info(f"Ð¢ÑÐ¸Ð³Ð³ÐµÑ '{name}' Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½")
+        self.brain.logger.info(f"ÃÂ¢ÃÃÂ¸ÃÂ³ÃÂ³ÃÂµÃ '{name}' ÃÂ´ÃÂ¾ÃÂ±ÃÂ°ÃÂ²ÃÂ»ÃÂµÃÂ½")
         return {"status": "ok", "name": name}
 
     def remove_trigger(self, name: str):
-        """Ð£Ð´Ð°Ð»Ð¸ÑÑ ÑÑÐ¸Ð³Ð³ÐµÑ."""
+        """ÃÂ£ÃÂ´ÃÂ°ÃÂ»ÃÂ¸ÃÃ ÃÃÃÂ¸ÃÂ³ÃÂ³ÃÂµÃ."""
         if name in self.triggers:
             del self.triggers[name]
             return {"status": "ok"}
-        return {"status": "error", "message": "Ð¢ÑÐ¸Ð³Ð³ÐµÑ Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½"}
+        return {"status": "error", "message": "ÃÂ¢ÃÃÂ¸ÃÂ³ÃÂ³ÃÂµÃ ÃÂ½ÃÂµ ÃÂ½ÃÂ°ÃÂ¹ÃÂ´ÃÂµÃÂ½"}
 
     def list_triggers(self) -> List[str]:
-        """Ð¡Ð¿Ð¸ÑÐ¾Ðº ÑÑÐ¸Ð³Ð³ÐµÑÐ¾Ð²."""
+        """ÃÂ¡ÃÂ¿ÃÂ¸ÃÃÂ¾ÃÂº ÃÃÃÂ¸ÃÂ³ÃÂ³ÃÂµÃÃÂ¾ÃÂ²."""
         return list(self.triggers.keys())
 
     def start(self):
-        """ÐÐ°Ð¿ÑÑÐº Ð¿ÑÐ¾Ð²ÐµÑÐºÐ¸ ÑÑÐ¸Ð³Ð³ÐµÑÐ¾Ð²."""
+        """ÃÃÂ°ÃÂ¿ÃÃÃÂº ÃÂ¿ÃÃÂ¾ÃÂ²ÃÂµÃÃÂºÃÂ¸ ÃÃÃÂ¸ÃÂ³ÃÂ³ÃÂµÃÃÂ¾ÃÂ²."""
         self.running = True
         thread = threading.Thread(target=self._run, daemon=True)
         thread.start()
 
     def _run(self):
-        """ÐÑÐ½Ð¾Ð²Ð½Ð¾Ð¹ ÑÐ¸ÐºÐ» Ð¿ÑÐ¾Ð²ÐµÑÐºÐ¸ ÑÑÐ¸Ð³Ð³ÐµÑÐ¾Ð²."""
+        """ÃÃÃÂ½ÃÂ¾ÃÂ²ÃÂ½ÃÂ¾ÃÂ¹ ÃÃÂ¸ÃÂºÃÂ» ÃÂ¿ÃÃÂ¾ÃÂ²ÃÂµÃÃÂºÃÂ¸ ÃÃÃÂ¸ÃÂ³ÃÂ³ÃÂµÃÃÂ¾ÃÂ²."""
         while self.running:
             for name, trigger in self.triggers.items():
                 if not trigger["active"]:
@@ -51,13 +51,13 @@ class TriggerManager:
                 
                 try:
                     if trigger["condition"]():
-                        self.brain.logger.info(f"Ð¢ÑÐ¸Ð³Ð³ÐµÑ '{name}' ÑÑÐ°Ð±Ð¾ÑÐ°Ð»")
+                        self.brain.logger.info(f"ÃÂ¢ÃÃÂ¸ÃÂ³ÃÂ³ÃÂµÃ '{name}' ÃÃÃÂ°ÃÂ±ÃÂ¾ÃÃÂ°ÃÂ»")
                         trigger["action"]()
                 except Exception as e:
-                    self.brain.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° ÑÑÐ¸Ð³Ð³ÐµÑÐ° '{name}': {e}")
+                    self.brain.logger.error(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÃÃÂ¸ÃÂ³ÃÂ³ÃÂµÃÃÂ° '{name}': {e}")
             
             time.sleep(5)
 
     def stop(self):
-        """ÐÑÑÐ°Ð½Ð¾Ð²ÐºÐ° Ð¿ÑÐ¾Ð²ÐµÑÐºÐ¸ ÑÑÐ¸Ð³Ð³ÐµÑÐ¾Ð²."""
+        """ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃÂ° ÃÂ¿ÃÃÂ¾ÃÂ²ÃÂµÃÃÂºÃÂ¸ ÃÃÃÂ¸ÃÂ³ÃÂ³ÃÂµÃÃÂ¾ÃÂ²."""
         self.running = False
