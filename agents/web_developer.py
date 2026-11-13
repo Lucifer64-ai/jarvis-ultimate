@@ -1,9 +1,10 @@
 """
 JARVIS - Web Developer Agent
-Агент для создания сайтов и веб-приложений
+Агент для создания сайтов и веб-приложений с AI-генерацией
 """
 
 from .base_agent import BaseAgent
+from .ai_service import get_ai_service
 from typing import Dict, Optional, Any
 import json
 
@@ -14,7 +15,7 @@ class WebDeveloperAgent(BaseAgent):
     def __init__(self):
         super().__init__(
             name="Web Developer",
-            description="Создание сайтов, лендингов, веб-приложений"
+            description="Создание сайтов, лендингов, веб-приложений с AI"
         )
         self.capabilities = [
             "Создание HTML/CSS сайтов",
@@ -23,8 +24,10 @@ class WebDeveloperAgent(BaseAgent):
             "Генерация JavaScript кода",
             "Создание форм и валидация",
             "Адаптивный дизайн",
-            "SEO оптимизация"
+            "SEO оптимизация",
+            "AI-генерация кода"
         ]
+        self.ai_service = get_ai_service()
 
     def can_handle(self, task: str) -> bool:
         """Проверить, может ли агент обработать задачу."""
@@ -39,6 +42,39 @@ class WebDeveloperAgent(BaseAgent):
         """Выполнить задачу по созданию сайта."""
         context = context or {}
 
+        # Пытаемся использовать AI для генерации
+        if self.ai_service.client:
+            return self._execute_with_ai(task, context)
+        else:
+            # Fallback на шаблоны если AI недоступен
+            return self._execute_with_templates(task, context)
+
+    def _execute_with_ai(self, task: str, context: Dict) -> Dict[str, Any]:
+        """Выполнить задачу с помощью AI."""
+        result = self.ai_service.generate_code(
+            task=task,
+            agent_type="web_developer",
+            context=context
+        )
+
+        if result['status'] == 'success':
+            # Парсим блоки кода из ответа AI
+            files = self.ai_service.parse_code_blocks(result['code'])
+
+            return {
+                'status': 'success',
+                'type': 'ai_generated',
+                'message': f'AI создал веб-приложение: {task}',
+                'files': files,
+                'tokens_used': result.get('tokens_used', 0),
+                'model': result.get('model', 'unknown')
+            }
+        else:
+            # Если AI ошибка, используем шаблоны
+            return self._execute_with_templates(task, context)
+
+    def _execute_with_templates(self, task: str, context: Dict) -> Dict[str, Any]:
+        """Выполнить задачу с помощью шаблонов (fallback)."""
         # Определяем тип задачи
         if "лендинг" in task.lower() or "landing" in task.lower():
             return self._create_landing(task, context)
@@ -249,7 +285,7 @@ document.getElementById('mainForm').addEventListener('submit', (e) => {
         return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
     if (!emailRegex.test(email)) {
         alert('Пожалуйста, введите корректный email');
         return;
