@@ -21,13 +21,13 @@ class DesktopControlModule:
             return pyautogui
         except Exception as error:
             raise RuntimeError(
-                "Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ ÑÐ°Ð±Ð¾ÑÐ¸Ð¼ ÑÑÐ¾Ð»Ð¾Ð¼ Ð½ÐµÐ´Ð¾ÑÑÑÐ¿Ð½Ð¾; Ð¿ÑÐ¾Ð²ÐµÑÑÑÐµ ÑÑÑÐ°Ð½Ð¾Ð²ÐºÑ pyautogui Ð¸ Ð°ÐºÑÐ¸Ð²Ð½ÑÑ ÑÐµÑÑÐ¸Ñ"
+                "ÃÂ£ÃÂ¿ÃÃÂ°ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÃÂ°ÃÂ±ÃÂ¾ÃÃÂ¸ÃÂ¼ ÃÃÃÂ¾ÃÂ»ÃÂ¾ÃÂ¼ ÃÂ½ÃÂµÃÂ´ÃÂ¾ÃÃÃÃÂ¿ÃÂ½ÃÂ¾; ÃÂ¿ÃÃÂ¾ÃÂ²ÃÂµÃÃÃÃÂµ ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂºÃ pyautogui ÃÂ¸ ÃÂ°ÃÂºÃÃÂ¸ÃÂ²ÃÂ½ÃÃ ÃÃÂµÃÃÃÂ¸Ã"
             ) from error
 
     def minimize_all(self) -> Dict:
         try:
             self._pyautogui().hotkey("win", "d")
-            return {"status": "ok", "message": "ÐÐ¾ÐºÐ°Ð·Ð°Ð½ ÑÐ°Ð±Ð¾ÑÐ¸Ð¹ ÑÑÐ¾Ð»"}
+            return {"status": "ok", "message": "ÃÃÂ¾ÃÂºÃÂ°ÃÂ·ÃÂ°ÃÂ½ ÃÃÂ°ÃÂ±ÃÂ¾ÃÃÂ¸ÃÂ¹ ÃÃÃÂ¾ÃÂ»"}
         except Exception as error:
             return {"status": "error", "message": str(error)}
 
@@ -35,10 +35,10 @@ class DesktopControlModule:
         return self.minimize_all()
 
     def volume_up(self, steps: int = 3) -> Dict:
-        return self._volume_key("volumeup", steps, "ÐÑÐ¾Ð¼ÐºÐ¾ÑÑÑ ÑÐ²ÐµÐ»Ð¸ÑÐµÐ½Ð°")
+        return self._volume_key("volumeup", steps, "ÃÃÃÂ¾ÃÂ¼ÃÂºÃÂ¾ÃÃÃ ÃÃÂ²ÃÂµÃÂ»ÃÂ¸ÃÃÂµÃÂ½ÃÂ°")
 
     def volume_down(self, steps: int = 3) -> Dict:
-        return self._volume_key("volumedown", steps, "ÐÑÐ¾Ð¼ÐºÐ¾ÑÑÑ ÑÐ¼ÐµÐ½ÑÑÐµÐ½Ð°")
+        return self._volume_key("volumedown", steps, "ÃÃÃÂ¾ÃÂ¼ÃÂºÃÂ¾ÃÃÃ ÃÃÂ¼ÃÂµÃÂ½ÃÃÃÂµÃÂ½ÃÂ°")
 
     def _volume_key(self, key: str, steps: int, message: str) -> Dict:
         try:
@@ -51,7 +51,7 @@ class DesktopControlModule:
     def mute(self) -> Dict:
         try:
             self._pyautogui().press("volumemute")
-            return {"status": "ok", "message": "ÐÐ²ÑÐº Ð¿ÐµÑÐµÐºÐ»ÑÑÑÐ½"}
+            return {"status": "ok", "message": "ÃÃÂ²ÃÃÂº ÃÂ¿ÃÂµÃÃÂµÃÂºÃÂ»ÃÃÃÃÂ½"}
         except Exception as error:
             return {"status": "error", "message": str(error)}
 
@@ -59,9 +59,9 @@ class DesktopControlModule:
         try:
             import ctypes
             if not hasattr(ctypes, "windll"):
-                return {"status": "error", "message": "ÐÐ»Ð¾ÐºÐ¸ÑÐ¾Ð²ÐºÐ° ÑÐºÑÐ°Ð½Ð° Ð¿Ð¾Ð´Ð´ÐµÑÐ¶Ð¸Ð²Ð°ÐµÑÑÑ ÑÐ¾Ð»ÑÐºÐ¾ Ð² Windows"}
+                return {"status": "error", "message": "ÃÃÂ»ÃÂ¾ÃÂºÃÂ¸ÃÃÂ¾ÃÂ²ÃÂºÃÂ° ÃÃÂºÃÃÂ°ÃÂ½ÃÂ° ÃÂ¿ÃÂ¾ÃÂ´ÃÂ´ÃÂµÃÃÂ¶ÃÂ¸ÃÂ²ÃÂ°ÃÂµÃÃÃ ÃÃÂ¾ÃÂ»ÃÃÂºÃÂ¾ ÃÂ² Windows"}
             ctypes.windll.user32.LockWorkStation()
-            return {"status": "ok", "message": "Ð­ÐºÑÐ°Ð½ Ð·Ð°Ð±Ð»Ð¾ÐºÐ¸ÑÐ¾Ð²Ð°Ð½"}
+            return {"status": "ok", "message": "ÃÂ­ÃÂºÃÃÂ°ÃÂ½ ÃÂ·ÃÂ°ÃÂ±ÃÂ»ÃÂ¾ÃÂºÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½"}
         except Exception as error:
             return {"status": "error", "message": str(error)}
 
@@ -86,13 +86,13 @@ class DesktopControlModule:
         }
         keys = shortcuts.get(name)
         if not keys:
-            return {"status": "error", "message": "Ð­ÑÐ° ÐºÐ¾Ð¼Ð±Ð¸Ð½Ð°ÑÐ¸Ñ ÐºÐ»Ð°Ð²Ð¸Ñ Ð½Ðµ ÑÐ°Ð·ÑÐµÑÐµÐ½Ð°"}
+            return {"status": "error", "message": "ÃÂ­ÃÃÂ° ÃÂºÃÂ¾ÃÂ¼ÃÂ±ÃÂ¸ÃÂ½ÃÂ°ÃÃÂ¸Ã ÃÂºÃÂ»ÃÂ°ÃÂ²ÃÂ¸Ã ÃÂ½ÃÂµ ÃÃÂ°ÃÂ·ÃÃÂµÃÃÂµÃÂ½ÃÂ°"}
         try:
             pyautogui = self._pyautogui()
             if len(keys) == 1:
                 pyautogui.press(keys[0])
             else:
                 pyautogui.hotkey(*keys)
-            return {"status": "ok", "message": f"ÐÑÐ¿Ð¾Ð»Ð½ÐµÐ½Ð° ÐºÐ¾Ð¼Ð°Ð½Ð´Ð° ÐºÐ»Ð°Ð²Ð¸Ð°ÑÑÑÑ: {name}"}
+            return {"status": "ok", "message": f"ÃÃÃÂ¿ÃÂ¾ÃÂ»ÃÂ½ÃÂµÃÂ½ÃÂ° ÃÂºÃÂ¾ÃÂ¼ÃÂ°ÃÂ½ÃÂ´ÃÂ° ÃÂºÃÂ»ÃÂ°ÃÂ²ÃÂ¸ÃÂ°ÃÃÃÃ: {name}"}
         except Exception as error:
             return {"status": "error", "message": str(error)}
