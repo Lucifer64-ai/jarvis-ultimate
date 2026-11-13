@@ -1,5 +1,5 @@
 """
-ÃÃÂ¢ÃÃÃÂµÃÃÂ¹-ÃÃÂ¸ÃÃÂºÃÃÂ¾ÃÃÂ½ÃÃÂºÃÃÂ° JARVIS
+¢µ¹-¸º¾½º° JARVIS
 """
 
 import pystray
@@ -8,7 +8,7 @@ import threading
 
 
 class TrayIcon:
-    """ÃÃÃÂºÃÃÂ¾ÃÃÂ½ÃÃÂºÃÃÂ° ÃÃÂ² ÃÃÃÂ¸ÃÃÃÃÂµÃÃÂ¼ÃÃÂ½ÃÃÂ¾ÃÃÂ¼ ÃÃÃÃÂµÃÃÂµ."""
+    """º¾½º° ² ¸µ¼½¾¼ µµ."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -16,28 +16,28 @@ class TrayIcon:
         self._create_icon()
 
     def _create_icon(self):
-        """ÃÃÂ¡ÃÃÂ¾ÃÃÂ·ÃÃÂ´ÃÃÂ°ÃÃÂ½ÃÃÂ¸ÃÃÂµ ÃÃÂ¸ÃÃÂºÃÃÂ¾ÃÃÂ½ÃÃÂºÃÃÂ¸."""
-        # ÃÃÂ¡ÃÃÂ¾ÃÃÂ·ÃÃÂ´ÃÃÂ°ÃÃÂ½ÃÃÂ¸ÃÃÂµ ÃÃÂ¿ÃÃÃÂ¾ÃÃÃÃÂ¾ÃÃÂ¹ ÃÃÂ¸ÃÃÂºÃÃÂ¾ÃÃÂ½ÃÃÂºÃÃÂ¸ JARVIS
+        """¡¾·´°½¸µ ¸º¾½º¸."""
+        # ¡¾·´°½¸µ ¿¾¾¹ ¸º¾½º¸ JARVIS
         image = Image.new('RGB', (64, 64), color='#0f0f1e')
         dc = ImageDraw.Draw(image)
         
-        # ÃÃÃÃÃÂ³
+        # ³
         dc.ellipse([8, 8, 56, 56], outline='#00d4ff', width=3)
         
-        # ÃÃÃÃÂºÃÃÂ²ÃÃÂ° J
+        # º²° J
         dc.text((24, 18), "J", fill='#00d4ff')
         
         self.image = image
 
     def start(self):
-        """ÃÃÃÂ°ÃÃÂ¿ÃÃÃÃÂº ÃÃÂ¸ÃÃÂºÃÃÂ¾ÃÃÂ½ÃÃÂºÃÃÂ¸ ÃÃÂ² ÃÃÃÃÂµÃÃÂµ."""
+        """°¿º ¸º¾½º¸ ² µµ."""
         menu = pystray.Menu(
-            pystray.MenuItem("ÃÃÃÂ¾ÃÃÂºÃÃÂ°ÃÃÂ·ÃÃÂ°ÃÃ HUD", self._show_hud),
-            pystray.MenuItem("ÃÃÂ¡ÃÃÂºÃÃÃÃ HUD", self._hide_hud),
+            pystray.MenuItem("¾º°·° HUD", self._show_hud),
+            pystray.MenuItem("¡º HUD", self._hide_hud),
             pystray.Menu.SEPARATOR,
-            pystray.MenuItem("ÃÃÂ¡ÃÃÃÂ°ÃÃÃ", self._show_status),
+            pystray.MenuItem("¡°", self._show_status),
             pystray.Menu.SEPARATOR,
-            pystray.MenuItem("ÃÃÃÃÃÂ¾ÃÃÂ´", self._quit)
+            pystray.MenuItem("¾´", self._quit)
         )
         
         self.icon = pystray.Icon("jarvis", self.image, "JARVIS", menu)
@@ -46,26 +46,26 @@ class TrayIcon:
         thread.start()
 
     def _show_hud(self, icon, item):
-        """ÃÃÃÂ¾ÃÃÂºÃÃÂ°ÃÃÂ·ÃÃÂ°ÃÃ HUD."""
+        """¾º°·° HUD."""
         if hasattr(self.brain, 'hud'):
             self.brain.hud.start()
 
     def _hide_hud(self, icon, item):
-        """ÃÃÂ¡ÃÃÂºÃÃÃÃ HUD."""
+        """¡º HUD."""
         if hasattr(self.brain, 'hud'):
             self.brain.hud.stop()
 
     def _show_status(self, icon, item):
-        """ÃÃÃÂ¾ÃÃÂºÃÃÂ°ÃÃÂ·ÃÃÂ°ÃÃ ÃÃÃÃÂ°ÃÃÃ."""
+        """¾º°·° °."""
         status = self.brain.get_status()
-        self.brain.logger.info(f"ÃÃÂ¡ÃÃÃÂ°ÃÃÃ: {status}")
+        self.brain.logger.info(f"¡°: {status}")
 
     def _quit(self, icon, item):
-        """ÃÃÃÃÃÂ¾ÃÃÂ´ ÃÃÂ¸ÃÃÂ· ÃÃÂ¿ÃÃÃÂ¸ÃÃÂ»ÃÃÂ¾ÃÃÂ¶ÃÃÂµÃÃÂ½ÃÃÂ¸Ã."""
+        """¾´ ¸· ¿¸»¾¶µ½¸."""
         self.brain.stop()
         icon.stop()
 
     def stop(self):
-        """ÃÃÃÃÃÂ°ÃÃÂ½ÃÃÂ¾ÃÃÂ²ÃÃÂºÃÃÂ° ÃÃÂ¸ÃÃÂºÃÃÂ¾ÃÃÂ½ÃÃÂºÃÃÂ¸."""
+        """°½¾²º° ¸º¾½º¸."""
         if self.icon:
             self.icon.stop()
