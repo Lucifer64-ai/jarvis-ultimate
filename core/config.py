@@ -1,5 +1,5 @@
 """
-Централизованное управление конфигурацией JARVIS
+¦µ½°»¸·¾²°½½¾µ ¿°²»µ½¸µ º¾½¸³°¸µ¹ JARVIS
 """
 
 import os
@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 
 class Config:
-    """Менеджер конфигурации с поддержкой .env файлов."""
+    """µ½µ´¶µ º¾½¸³°¸¸  ¿¾´´µ¶º¾¹ .env °¹»¾²."""
 
     def __init__(self, config_file: str = "config.json"):
         load_dotenv()
