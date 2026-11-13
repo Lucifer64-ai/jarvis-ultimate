@@ -1,5 +1,5 @@
 """
-Управление окнами JARVIS
+Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð¾ÐºÐ½Ð°Ð¼Ð¸ JARVIS
 """
 
 import win32gui
@@ -8,13 +8,13 @@ from typing import Dict, List
 
 
 class WindowModule:
-    """Управление окнами Windows."""
+    """Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð¾ÐºÐ½Ð°Ð¼Ð¸ Windows."""
 
     def __init__(self, brain):
         self.brain = brain
 
     def list_windows(self) -> List[Dict]:
-        """Список открытых окон."""
+        """Ð¡Ð¿Ð¸ÑÐ¾Ðº Ð¾ÑÐºÑÑÑÑÑ Ð¾ÐºÐ¾Ð½."""
         windows = []
 
         def callback(hwnd, results):
@@ -30,20 +30,20 @@ class WindowModule:
         return windows
 
     def minimize_all(self) -> Dict:
-        """Свернуть все окна."""
+        """Ð¡Ð²ÐµÑÐ½ÑÑÑ Ð²ÑÐµ Ð¾ÐºÐ½Ð°."""
         try:
             import pyautogui
             pyautogui.hotkey('win', 'd')
-            return {"status": "ok", "message": "Все окна свёрнуты"}
+            return {"status": "ok", "message": "ÐÑÐµ Ð¾ÐºÐ½Ð° ÑÐ²ÑÑÐ½ÑÑÑ"}
         except Exception as e:
             return {"status": "error", "message": str(e)}
 
     def show_desktop(self) -> Dict:
-        """Показать рабочий стол."""
+        """ÐÐ¾ÐºÐ°Ð·Ð°ÑÑ ÑÐ°Ð±Ð¾ÑÐ¸Ð¹ ÑÑÐ¾Ð»."""
         return self.minimize_all()
 
     def close_window(self, title: str) -> Dict:
-        """Закрыть окно по заголовку."""
+        """ÐÐ°ÐºÑÑÑÑ Ð¾ÐºÐ½Ð¾ Ð¿Ð¾ Ð·Ð°Ð³Ð¾Ð»Ð¾Ð²ÐºÑ."""
         def callback(hwnd, target):
             if win32gui.IsWindowVisible(hwnd):
                 window_title = win32gui.GetWindowText(hwnd)
@@ -54,6 +54,6 @@ class WindowModule:
 
         try:
             win32gui.EnumWindows(lambda hwnd, _: callback(hwnd, title), None)
-            return {"status": "ok", "message": f"Окно '{title}' закрыто"}
+            return {"status": "ok", "message": f"ÐÐºÐ½Ð¾ '{title}' Ð·Ð°ÐºÑÑÑÐ¾"}
         except Exception as e:
             return {"status": "error", "message": str(e)}
