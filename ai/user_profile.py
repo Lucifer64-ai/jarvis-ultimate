@@ -1,5 +1,5 @@
 """
-Профиль пользователя JARVIS
+ÐÑÐ¾ÑÐ¸Ð»Ñ Ð¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»Ñ JARVIS
 """
 
 import json
@@ -10,7 +10,7 @@ from collections import Counter
 
 
 class UserProfile:
-    """Управление профилем и предпочтениями пользователя."""
+    """Ð£Ð¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð¿ÑÐ¾ÑÐ¸Ð»ÐµÐ¼ Ð¸ Ð¿ÑÐµÐ´Ð¿Ð¾ÑÑÐµÐ½Ð¸ÑÐ¼Ð¸ Ð¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»Ñ."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -20,14 +20,14 @@ class UserProfile:
         self.command_history: List[Dict] = []
 
     def _load_profile(self) -> Dict:
-        """Загрузка профиля."""
+        """ÐÐ°Ð³ÑÑÐ·ÐºÐ° Ð¿ÑÐ¾ÑÐ¸Ð»Ñ."""
         if self.profile_file.exists():
             with open(self.profile_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
         
         return {
             "name": None,
-            "preferred_name": "сэр",
+            "preferred_name": "ÑÑÑ",
             "language": "ru",
             "created": datetime.now().isoformat(),
             "last_active": datetime.now().isoformat(),
@@ -46,59 +46,59 @@ class UserProfile:
         }
 
     def _save_profile(self):
-        """Сохранение профиля."""
+        """Ð¡Ð¾ÑÑÐ°Ð½ÐµÐ½Ð¸Ðµ Ð¿ÑÐ¾ÑÐ¸Ð»Ñ."""
         with open(self.profile_file, 'w', encoding='utf-8') as f:
             json.dump(self.profile, f, ensure_ascii=False, indent=2)
 
     def set_name(self, name: str) -> Dict:
-        """Установка имени пользователя."""
+        """Ð£ÑÑÐ°Ð½Ð¾Ð²ÐºÐ° Ð¸Ð¼ÐµÐ½Ð¸ Ð¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÐµÐ»Ñ."""
         self.profile["name"] = name
         self._save_profile()
-        return {"status": "ok", "message": f"Имя установлено: {name}"}
+        return {"status": "ok", "message": f"ÐÐ¼Ñ ÑÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½Ð¾: {name}"}
 
     def set_preferred_name(self, preferred: str) -> Dict:
-        """Установка предпочтительного обращения."""
+        """Ð£ÑÑÐ°Ð½Ð¾Ð²ÐºÐ° Ð¿ÑÐµÐ´Ð¿Ð¾ÑÑÐ¸ÑÐµÐ»ÑÐ½Ð¾Ð³Ð¾ Ð¾Ð±ÑÐ°ÑÐµÐ½Ð¸Ñ."""
         self.profile["preferred_name"] = preferred
         self._save_profile()
-        return {"status": "ok", "message": f"Буду обращаться к вам: {preferred}"}
+        return {"status": "ok", "message": f"ÐÑÐ´Ñ Ð¾Ð±ÑÐ°ÑÐ°ÑÑÑÑ Ðº Ð²Ð°Ð¼: {preferred}"}
 
     def get_greeting(self) -> str:
-        """Получение приветствия."""
-        preferred = self.profile.get("preferred_name", "сэр")
+        """ÐÐ¾Ð»ÑÑÐµÐ½Ð¸Ðµ Ð¿ÑÐ¸Ð²ÐµÑÑÑÐ²Ð¸Ñ."""
+        preferred = self.profile.get("preferred_name", "ÑÑÑ")
         name = self.profile.get("name")
         
         if name:
-            return f"Здравствуйте, {name}. Рад вас видеть, {preferred}."
-        return f"Здравствуйте, {preferred}."
+            return f"ÐÐ´ÑÐ°Ð²ÑÑÐ²ÑÐ¹ÑÐµ, {name}. Ð Ð°Ð´ Ð²Ð°Ñ Ð²Ð¸Ð´ÐµÑÑ, {preferred}."
+        return f"ÐÐ´ÑÐ°Ð²ÑÑÐ²ÑÐ¹ÑÐµ, {preferred}."
 
     def update_activity(self):
-        """Обновление последней активности."""
+        """ÐÐ±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ðµ Ð¿Ð¾ÑÐ»ÐµÐ´Ð½ÐµÐ¹ Ð°ÐºÑÐ¸Ð²Ð½Ð¾ÑÑÐ¸."""
         self.profile["last_active"] = datetime.now().isoformat()
         self._save_profile()
 
     def log_command(self, command: str, module: str = "unknown"):
-        """Логирование команды."""
+        """ÐÐ¾Ð³Ð¸ÑÐ¾Ð²Ð°Ð½Ð¸Ðµ ÐºÐ¾Ð¼Ð°Ð½Ð´Ñ."""
         self.command_history.append({
             "command": command,
             "module": module,
             "timestamp": datetime.now().isoformat()
         })
         
-        # Ограничение истории
+        # ÐÐ³ÑÐ°Ð½Ð¸ÑÐµÐ½Ð¸Ðµ Ð¸ÑÑÐ¾ÑÐ¸Ð¸
         if len(self.command_history) > 1000:
             self.command_history = self.command_history[-1000:]
         
-        # Обновление статистики
+        # ÐÐ±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ðµ ÑÑÐ°ÑÐ¸ÑÑÐ¸ÐºÐ¸
         self.profile["statistics"]["total_commands"] += 1
         self._update_statistics()
         self._save_profile()
 
     def _update_statistics(self):
-        """Обновление статистики."""
+        """ÐÐ±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ðµ ÑÑÐ°ÑÐ¸ÑÑÐ¸ÐºÐ¸."""
         if not self.command_history:
             return
         
-        # Самые частые команды
+        # Ð¡Ð°Ð¼ÑÐµ ÑÐ°ÑÑÑÐµ ÐºÐ¾Ð¼Ð°Ð½Ð´Ñ
         commands = [entry["command"] for entry in self.command_history[-100:]]
         command_counts = Counter(commands)
         self.profile["statistics"]["favorite_commands"] = [
@@ -106,7 +106,7 @@ class UserProfile:
             for cmd, count in command_counts.most_common(5)
         ]
         
-        # Самые используемые модули
+        # Ð¡Ð°Ð¼ÑÐµ Ð¸ÑÐ¿Ð¾Ð»ÑÐ·ÑÐµÐ¼ÑÐµ Ð¼Ð¾Ð´ÑÐ»Ð¸
         modules = [entry["module"] for entry in self.command_history[-100:]]
         module_counts = Counter(modules)
         self.profile["statistics"]["most_used_modules"] = [
@@ -114,7 +114,7 @@ class UserProfile:
             for mod, count in module_counts.most_common(5)
         ]
         
-        # Активные часы
+        # ÐÐºÑÐ¸Ð²Ð½ÑÐµ ÑÐ°ÑÑ
         hours = []
         for entry in self.command_history[-100:]:
             try:
@@ -131,25 +131,25 @@ class UserProfile:
             ]
 
     def set_preference(self, key: str, value: Any) -> Dict:
-        """Установка предпочтения."""
+        """Ð£ÑÑÐ°Ð½Ð¾Ð²ÐºÐ° Ð¿ÑÐµÐ´Ð¿Ð¾ÑÑÐµÐ½Ð¸Ñ."""
         self.profile["preferences"][key] = value
         self._save_profile()
-        return {"status": "ok", "message": f"Предпочтение '{key}' установлено"}
+        return {"status": "ok", "message": f"ÐÑÐµÐ´Ð¿Ð¾ÑÑÐµÐ½Ð¸Ðµ '{key}' ÑÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½Ð¾"}
 
     def get_preference(self, key: str, default: Any = None) -> Any:
-        """Получение предпочтения."""
+        """ÐÐ¾Ð»ÑÑÐµÐ½Ð¸Ðµ Ð¿ÑÐµÐ´Ð¿Ð¾ÑÑÐµÐ½Ð¸Ñ."""
         return self.profile["preferences"].get(key, default)
 
     def get_profile(self) -> Dict:
-        """Получение полного профиля."""
+        """ÐÐ¾Ð»ÑÑÐµÐ½Ð¸Ðµ Ð¿Ð¾Ð»Ð½Ð¾Ð³Ð¾ Ð¿ÑÐ¾ÑÐ¸Ð»Ñ."""
         return self.profile
 
     def get_statistics(self) -> Dict:
-        """Получение статистики."""
+        """ÐÐ¾Ð»ÑÑÐµÐ½Ð¸Ðµ ÑÑÐ°ÑÐ¸ÑÑÐ¸ÐºÐ¸."""
         return self.profile.get("statistics", {})
 
     def reset_statistics(self) -> Dict:
-        """Сброс статистики."""
+        """Ð¡Ð±ÑÐ¾Ñ ÑÑÐ°ÑÐ¸ÑÑÐ¸ÐºÐ¸."""
         self.profile["statistics"] = {
             "total_commands": 0,
             "favorite_commands": [],
@@ -158,4 +158,4 @@ class UserProfile:
         }
         self.command_history = []
         self._save_profile()
-        return {"status": "ok", "message": "Статистика сброшена"}
+        return {"status": "ok", "message": "Ð¡ÑÐ°ÑÐ¸ÑÑÐ¸ÐºÐ° ÑÐ±ÑÐ¾ÑÐµÐ½Ð°"}
