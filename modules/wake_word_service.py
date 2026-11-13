@@ -1,5 +1,5 @@
 """
-Wake Word ÑÐµÑÐ²Ð¸Ñ - ÑÐ¾Ð½Ð¾Ð²Ð¾Ðµ Ð¿ÑÐ¾ÑÐ»ÑÑÐ¸Ð²Ð°Ð½Ð¸Ðµ "ÐÐ¶Ð°ÑÐ²Ð¸Ñ"
+Wake Word µ²¸ - ¾½¾²¾µ ¿¾»¸²°½¸µ "¶°²¸"
 """
 
 import threading
@@ -10,20 +10,20 @@ import logging
 
 
 class WakeWordService:
-    """Ð¡ÐµÑÐ²Ð¸Ñ ÑÐ¾Ð½Ð¾Ð²Ð¾Ð³Ð¾ Ð¿ÑÐ¾ÑÐ»ÑÑÐ¸Ð²Ð°Ð½Ð¸Ñ wake word."""
+    """¡µ²¸ ¾½¾²¾³¾ ¿¾»¸²°½¸ wake word."""
 
     def __init__(self, brain):
         self.brain = brain
         self.logger = brain.logger
-        self.wake_word = brain.config.get("voice.wake_word", "Ð´Ð¶Ð°ÑÐ²Ð¸Ñ")
+        self.wake_word = brain.config.get("voice.wake_word", "´¶°²¸")
         self.running = False
         self.thread: Optional[threading.Thread] = None
         self.callback: Optional[Callable] = None
 
     def start(self, callback: Callable = None) -> Dict:
-        """ÐÐ°Ð¿ÑÑÐº ÑÐµÑÐ²Ð¸ÑÐ°."""
+        """°¿º µ²¸°."""
         if self.running:
-            return {"status": "error", "message": "Ð¡ÐµÑÐ²Ð¸Ñ ÑÐ¶Ðµ Ð·Ð°Ð¿ÑÑÐµÐ½"}
+            return {"status": "error", "message": "¡µ²¸ ¶µ ·°¿µ½"}
         
         self.callback = callback
         self.running = True
@@ -31,31 +31,31 @@ class WakeWordService:
         self.thread = threading.Thread(target=self._listen_loop, daemon=True)
         self.thread.start()
         
-        self.logger.info(f"Wake word ÑÐµÑÐ²Ð¸Ñ Ð·Ð°Ð¿ÑÑÐµÐ½. Ð¡Ð»ÑÑÐ°Ñ '{self.wake_word}'")
-        return {"status": "ok", "message": f"Ð¡Ð»ÑÑÐ°Ñ '{self.wake_word}'"}
+        self.logger.info(f"Wake word µ²¸ ·°¿µ½. ¡»° '{self.wake_word}'")
+        return {"status": "ok", "message": f"¡»° '{self.wake_word}'"}
 
     def stop(self) -> Dict:
-        """ÐÑÑÐ°Ð½Ð¾Ð²ÐºÐ° ÑÐµÑÐ²Ð¸ÑÐ°."""
+        """°½¾²º° µ²¸°."""
         if not self.running:
-            return {"status": "error", "message": "Ð¡ÐµÑÐ²Ð¸Ñ Ð½Ðµ Ð·Ð°Ð¿ÑÑÐµÐ½"}
+            return {"status": "error", "message": "¡µ²¸ ½µ ·°¿µ½"}
         
         self.running = False
         
         if self.thread:
             self.thread.join(timeout=2)
         
-        self.logger.info("Wake word ÑÐµÑÐ²Ð¸Ñ Ð¾ÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½")
-        return {"status": "ok", "message": "Ð¡ÐµÑÐ²Ð¸Ñ Ð¾ÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½"}
+        self.logger.info("Wake word µ²¸ ¾°½¾²»µ½")
+        return {"status": "ok", "message": "¡µ²¸ ¾°½¾²»µ½"}
 
     def _listen_loop(self):
-        """Ð¦Ð¸ÐºÐ» Ð¿ÑÐ¾ÑÐ»ÑÑÐ¸Ð²Ð°Ð½Ð¸Ñ."""
+        """¦¸º» ¿¾»¸²°½¸."""
         try:
             import speech_recognition as sr
             
             recognizer = sr.Recognizer()
             microphone = sr.Microphone()
             
-            self.logger.info("Wake word: Ð¼Ð¸ÐºÑÐ¾ÑÐ¾Ð½ Ð¸Ð½Ð¸ÑÐ¸Ð°Ð»Ð¸Ð·Ð¸ÑÐ¾Ð²Ð°Ð½")
+            self.logger.info("Wake word: ¼¸º¾¾½ ¸½¸¸°»¸·¸¾²°½")
             
             while self.running:
                 try:
@@ -63,39 +63,39 @@ class WakeWordService:
                         recognizer.adjust_for_ambient_noise(source, duration=0.5)
                         audio = recognizer.listen(source, timeout=1, phrase_time_limit=2)
                     
-                    # Ð Ð°ÑÐ¿Ð¾Ð·Ð½Ð°Ð²Ð°Ð½Ð¸Ðµ
+                    #  °¿¾·½°²°½¸µ
                     try:
                         text = recognizer.recognize_google(audio, language="ru-RU")
                         text_lower = text.lower().strip()
                         
-                        # ÐÑÐ¾Ð²ÐµÑÐºÐ° wake word
+                        # ¾²µº° wake word
                         if self.wake_word in text_lower:
-                            self.logger.info(f"Wake word Ð¾Ð±Ð½Ð°ÑÑÐ¶ÐµÐ½: {text}")
+                            self.logger.info(f"Wake word ¾±½°¶µ½: {text}")
                             
                             if self.callback:
                                 self.callback(text)
                     
                     except sr.UnknownValueError:
-                        pass  # ÐÐµ ÑÐ°ÑÐ¿Ð¾Ð·Ð½Ð°Ð½Ð¾
+                        pass  # µ °¿¾·½°½¾
                     except sr.RequestError as e:
-                        self.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° ÑÐ°ÑÐ¿Ð¾Ð·Ð½Ð°Ð²Ð°Ð½Ð¸Ñ: {e}")
+                        self.logger.error(f"¸±º° °¿¾·½°²°½¸: {e}")
                 
                 except Exception as e:
-                    # Ð¢Ð°Ð¹Ð¼Ð°ÑÑ Ð¸Ð»Ð¸ Ð´ÑÑÐ³Ð°Ñ Ð¾ÑÐ¸Ð±ÐºÐ° - Ð¿ÑÐ¾Ð´Ð¾Ð»Ð¶Ð°ÐµÐ¼
+                    # ¢°¹¼° ¸»¸ ´³° ¾¸±º° - ¿¾´¾»¶°µ¼
                     pass
                 
                 time.sleep(0.1)
         
         except Exception as e:
-            self.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° wake word ÑÐµÑÐ²Ð¸ÑÐ°: {e}")
+            self.logger.error(f"¸±º° wake word µ²¸°: {e}")
 
     def is_running(self) -> bool:
-        """ÐÑÐ¾Ð²ÐµÑÐ¸ÑÑ, Ð·Ð°Ð¿ÑÑÐµÐ½ Ð»Ð¸ ÑÐµÑÐ²Ð¸Ñ."""
+        """¾²µ¸, ·°¿µ½ »¸ µ²¸."""
         return self.running
 
     def set_wake_word(self, wake_word: str) -> Dict:
-        """Ð£ÑÑÐ°Ð½Ð¾Ð²Ð¸ÑÑ wake word."""
+        """£°½¾²¸ wake word."""
         self.wake_word = wake_word.lower().strip()
         self.brain.config.set("voice.wake_word", self.wake_word)
-        self.logger.info(f"Wake word ÑÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½: {self.wake_word}")
+        self.logger.info(f"Wake word °½¾²»µ½: {self.wake_word}")
         return {"status": "ok", "message": f"Wake word: {self.wake_word}"}
