@@ -1,5 +1,5 @@
 """
-Currency Module - Получение курсов валют
+Currency Module - ÐÐ¾Ð»ÑÑÐµÐ½Ð¸Ðµ ÐºÑÑÑÐ¾Ð² Ð²Ð°Ð»ÑÑ
 """
 
 import requests
@@ -8,35 +8,35 @@ import logging
 
 
 class CurrencyModule:
-    """Модуль для получения курсов валют."""
+    """ÐÐ¾Ð´ÑÐ»Ñ Ð´Ð»Ñ Ð¿Ð¾Ð»ÑÑÐµÐ½Ð¸Ñ ÐºÑÑÑÐ¾Ð² Ð²Ð°Ð»ÑÑ."""
 
     def __init__(self, brain):
         self.brain = brain
         self.logger = brain.logger
         self.base_url = "https://api.exchangerate-api.com/v4/latest"
         
-        # Кэш
+        # ÐÑÑ
         self.cache = {}
-        self.cache_timeout = 3600  # 1 час
+        self.cache_timeout = 3600  # 1 ÑÐ°Ñ
 
     def get_rate(self, from_currency: str = "USD", to_currency: str = "RUB") -> Dict:
-        """Получить курс валюты."""
+        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ ÐºÑÑÑ Ð²Ð°Ð»ÑÑÑ."""
         try:
-            # Проверка кэша
+            # ÐÑÐ¾Ð²ÐµÑÐºÐ° ÐºÑÑÐ°
             cache_key = f"rate_{from_currency}_{to_currency}"
             if cache_key in self.cache:
                 import time
                 if time.time() - self.cache[cache_key]["time"] < self.cache_timeout:
                     return self.cache[cache_key]["data"]
             
-            # Запрос к API
+            # ÐÐ°Ð¿ÑÐ¾Ñ Ðº API
             url = f"{self.base_url}/{from_currency}"
             response = requests.get(url, timeout=10)
             response.raise_for_status()
             data = response.json()
             
             if to_currency not in data["rates"]:
-                return {"status": "error", "message": f"Валюта {to_currency} не найдена"}
+                return {"status": "error", "message": f"ÐÐ°Ð»ÑÑÐ° {to_currency} Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½Ð°"}
             
             rate = data["rates"][to_currency]
             
@@ -48,7 +48,7 @@ class CurrencyModule:
                 "date": data["date"]
             }
             
-            # Сохранение в кэш
+            # Ð¡Ð¾ÑÑÐ°Ð½ÐµÐ½Ð¸Ðµ Ð² ÐºÑÑ
             import time
             self.cache[cache_key] = {
                 "data": result,
@@ -58,19 +58,19 @@ class CurrencyModule:
             return result
             
         except Exception as e:
-            self.logger.error(f"Ошибка получения курса: {e}")
+            self.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° Ð¿Ð¾Ð»ÑÑÐµÐ½Ð¸Ñ ÐºÑÑÑÐ°: {e}")
             return {"status": "error", "message": str(e)}
 
     def get_usd_rub(self) -> Dict:
-        """Получить курс USD к RUB."""
+        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ ÐºÑÑÑ USD Ðº RUB."""
         return self.get_rate("USD", "RUB")
 
     def get_eur_rub(self) -> Dict:
-        """Получить курс EUR к RUB."""
+        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ ÐºÑÑÑ EUR Ðº RUB."""
         return self.get_rate("EUR", "RUB")
 
     def get_btc_usd(self) -> Dict:
-        """Получить курс Bitcoin к USD."""
+        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ ÐºÑÑÑ Bitcoin Ðº USD."""
         try:
             url = "https://api.coindesk.com/v1/bpi/currentprice/USD.json"
             response = requests.get(url, timeout=10)
@@ -86,18 +86,18 @@ class CurrencyModule:
                 "rate": round(rate, 2)
             }
         except Exception as e:
-            self.logger.error(f"Ошибка получения курса BTC: {e}")
+            self.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° Ð¿Ð¾Ð»ÑÑÐµÐ½Ð¸Ñ ÐºÑÑÑÐ° BTC: {e}")
             return {"status": "error", "message": str(e)}
 
     def format_rate_message(self, rate: Dict) -> str:
-        """Форматирование курса в сообщение."""
+        """Ð¤Ð¾ÑÐ¼Ð°ÑÐ¸ÑÐ¾Ð²Ð°Ð½Ð¸Ðµ ÐºÑÑÑÐ° Ð² ÑÐ¾Ð¾Ð±ÑÐµÐ½Ð¸Ðµ."""
         if rate["status"] != "ok":
             return rate["message"]
         
-        return f"Курс {rate['from']} к {rate['to']}: {rate['rate']}"
+        return f"ÐÑÑÑ {rate['from']} Ðº {rate['to']}: {rate['rate']}"
 
     def get_multiple_rates(self) -> Dict:
-        """Получить несколько основных курсов."""
+        """ÐÐ¾Ð»ÑÑÐ¸ÑÑ Ð½ÐµÑÐºÐ¾Ð»ÑÐºÐ¾ Ð¾ÑÐ½Ð¾Ð²Ð½ÑÑ ÐºÑÑÑÐ¾Ð²."""
         usd_rub = self.get_usd_rub()
         eur_rub = self.get_eur_rub()
         btc_usd = self.get_btc_usd()
@@ -110,11 +110,11 @@ class CurrencyModule:
         }
 
     def format_multiple_rates_message(self, rates: Dict) -> str:
-        """Форматирование нескольких курсов."""
+        """Ð¤Ð¾ÑÐ¼Ð°ÑÐ¸ÑÐ¾Ð²Ð°Ð½Ð¸Ðµ Ð½ÐµÑÐºÐ¾Ð»ÑÐºÐ¸Ñ ÐºÑÑÑÐ¾Ð²."""
         if rates["status"] != "ok":
-            return "Не удалось получить курсы валют"
+            return "ÐÐµ ÑÐ´Ð°Ð»Ð¾ÑÑ Ð¿Ð¾Ð»ÑÑÐ¸ÑÑ ÐºÑÑÑÑ Ð²Ð°Ð»ÑÑ"
         
-        message = "Курсы валют:\n"
+        message = "ÐÑÑÑÑ Ð²Ð°Ð»ÑÑ:\n"
         if rates["usd_rub"]:
             message += f"USD/RUB: {rates['usd_rub']}\n"
         if rates["eur_rub"]:
