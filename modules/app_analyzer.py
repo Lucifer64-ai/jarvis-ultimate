@@ -1,6 +1,6 @@
 """
-App Analyzer Module - ÐÐ½Ð°Ð»Ð¸Ð· ÑÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½Ð½ÑÑ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ð¹ Ð½Ð° ÐÐ
-JARVIS ÑÐºÐ°Ð½Ð¸ÑÑÐµÑ, Ð¸Ð·ÑÑÐ°ÐµÑ Ð¸ ÑÐ°Ð·Ð±Ð¸ÑÐ°ÐµÑÑÑ Ð² Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸ÑÑ
+App Analyzer Module - ÃÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ· ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ½ÃÃ ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂ¹ ÃÂ½ÃÂ° ÃÃ
+JARVIS ÃÃÂºÃÂ°ÃÂ½ÃÂ¸ÃÃÃÂµÃ, ÃÂ¸ÃÂ·ÃÃÃÂ°ÃÂµÃ ÃÂ¸ ÃÃÂ°ÃÂ·ÃÂ±ÃÂ¸ÃÃÂ°ÃÂµÃÃÃ ÃÂ² ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÃ
 """
 
 import os
@@ -15,22 +15,22 @@ from datetime import datetime
 
 
 class AppAnalyzer:
-    """ÐÐ¾Ð´ÑÐ»Ñ Ð°Ð½Ð°Ð»Ð¸Ð·Ð° Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ð¹ Ð½Ð° ÐÐ."""
+    """ÃÃÂ¾ÃÂ´ÃÃÂ»Ã ÃÂ°ÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ° ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂ¹ ÃÂ½ÃÂ° ÃÃ."""
 
     def __init__(self, brain):
         self.brain = brain
         self.logger = brain.logger
         self.config = brain.config
         
-        # ÐÐ°Ð·Ð° Ð´Ð°Ð½Ð½ÑÑ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ð¹
+        # ÃÃÂ°ÃÂ·ÃÂ° ÃÂ´ÃÂ°ÃÂ½ÃÂ½ÃÃ ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂ¹
         self.apps_db = {}
         self.db_path = Path("data/apps_database.json")
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         
-        # ÐÐ°Ð³ÑÑÐ·ÐºÐ° ÑÑÑÐµÑÑÐ²ÑÑÑÐµÐ¹ ÐÐ
+        # ÃÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ° ÃÃÃÃÂµÃÃÃÂ²ÃÃÃÃÂµÃÂ¹ ÃÃ
         self._load_database()
         
-        # ÐÑÑÐ¸ Ð´Ð»Ñ ÑÐºÐ°Ð½Ð¸ÑÐ¾Ð²Ð°Ð½Ð¸Ñ
+        # ÃÃÃÃÂ¸ ÃÂ´ÃÂ»Ã ÃÃÂºÃÂ°ÃÂ½ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ¸Ã
         self.scan_paths = [
             Path(os.environ.get("PROGRAMFILES", "C:\\Program Files")),
             Path(os.environ.get("PROGRAMFILES(X86)", "C:\\Program Files (x86)")),
@@ -40,10 +40,10 @@ class AppAnalyzer:
             Path(os.environ.get("USERPROFILE", "")),
         ]
         
-        # Ð Ð°ÑÑÐ¸ÑÐµÐ½Ð¸Ñ Ð¸ÑÐ¿Ð¾Ð»Ð½ÑÐµÐ¼ÑÑ ÑÐ°Ð¹Ð»Ð¾Ð²
+        # ÃÂ ÃÂ°ÃÃÃÂ¸ÃÃÂµÃÂ½ÃÂ¸Ã ÃÂ¸ÃÃÂ¿ÃÂ¾ÃÂ»ÃÂ½ÃÃÂµÃÂ¼ÃÃ ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ¾ÃÂ²
         self.executable_extensions = {".exe", ".msi", ".bat", ".cmd", ".ps1", ".com"}
         
-        # Ð Ð°ÑÑÐ¸ÑÐµÐ½Ð¸Ñ Ð´Ð¾ÐºÑÐ¼ÐµÐ½ÑÐ¾Ð² Ð´Ð»Ñ Ð°Ð½Ð°Ð»Ð¸Ð·Ð°
+        # ÃÂ ÃÂ°ÃÃÃÂ¸ÃÃÂµÃÂ½ÃÂ¸Ã ÃÂ´ÃÂ¾ÃÂºÃÃÂ¼ÃÂµÃÂ½ÃÃÂ¾ÃÂ² ÃÂ´ÃÂ»Ã ÃÂ°ÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ°
         self.document_extensions = {
             ".txt", ".md", ".json", ".xml", ".yaml", ".yml",
             ".ini", ".cfg", ".conf", ".log",
@@ -51,37 +51,37 @@ class AppAnalyzer:
             ".py", ".js", ".html", ".css", ".java", ".cpp", ".c", ".h"
         }
         
-        self.logger.info("â ÐÐ¾Ð´ÑÐ»Ñ Ð°Ð½Ð°Ð»Ð¸Ð·Ð° Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ð¹ Ð¸Ð½Ð¸ÑÐ¸Ð°Ð»Ð¸Ð·Ð¸ÑÐ¾Ð²Ð°Ð½")
+        self.logger.info("Ã¢ ÃÃÂ¾ÃÂ´ÃÃÂ»Ã ÃÂ°ÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ° ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂ¹ ÃÂ¸ÃÂ½ÃÂ¸ÃÃÂ¸ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½")
 
     def _load_database(self):
-        """ÐÐ°Ð³ÑÑÐ·ÐºÐ° Ð±Ð°Ð·Ñ Ð´Ð°Ð½Ð½ÑÑ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ð¹."""
+        """ÃÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ° ÃÂ±ÃÂ°ÃÂ·Ã ÃÂ´ÃÂ°ÃÂ½ÃÂ½ÃÃ ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂ¹."""
         try:
             if self.db_path.exists():
                 with open(self.db_path, "r", encoding="utf-8") as f:
                     self.apps_db = json.load(f)
-                self.logger.info(f"ÐÐ°Ð³ÑÑÐ¶ÐµÐ½Ð° ÐÐ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ð¹: {len(self.apps_db)} Ð·Ð°Ð¿Ð¸ÑÐµÐ¹")
+                self.logger.info(f"ÃÃÂ°ÃÂ³ÃÃÃÂ¶ÃÂµÃÂ½ÃÂ° ÃÃ ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂ¹: {len(self.apps_db)} ÃÂ·ÃÂ°ÃÂ¿ÃÂ¸ÃÃÂµÃÂ¹")
             else:
                 self.apps_db = {}
         except Exception as e:
-            self.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ ÐÐ: {e}")
+            self.logger.error(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ³ÃÃÃÂ·ÃÂºÃÂ¸ ÃÃ: {e}")
             self.apps_db = {}
 
     def _save_database(self):
-        """Ð¡Ð¾ÑÑÐ°Ð½ÐµÐ½Ð¸Ðµ Ð±Ð°Ð·Ñ Ð´Ð°Ð½Ð½ÑÑ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ð¹."""
+        """ÃÂ¡ÃÂ¾ÃÃÃÂ°ÃÂ½ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÂ±ÃÂ°ÃÂ·Ã ÃÂ´ÃÂ°ÃÂ½ÃÂ½ÃÃ ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂ¹."""
         try:
             with open(self.db_path, "w", encoding="utf-8") as f:
                 json.dump(self.apps_db, f, ensure_ascii=False, indent=2, default=str)
         except Exception as e:
-            self.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° ÑÐ¾ÑÑÐ°Ð½ÐµÐ½Ð¸Ñ ÐÐ: {e}")
+            self.logger.error(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÃÂ¾ÃÃÃÂ°ÃÂ½ÃÂµÃÂ½ÃÂ¸Ã ÃÃ: {e}")
 
-    # === Ð¡ÐÐÐÐÐ ÐÐÐÐÐÐ ===
+    # === ÃÂ¡ÃÃÃÃÃÂ ÃÃÃÃÃÃ ===
 
     def scan_installed_apps(self) -> Dict:
-        """Ð¡ÐºÐ°Ð½Ð¸ÑÐ¾Ð²Ð°Ð½Ð¸Ðµ ÑÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½Ð½ÑÑ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ð¹ ÑÐµÑÐµÐ· ÑÐµÐµÑÑÑ Windows."""
-        self.logger.info("Ð¡ÐºÐ°Ð½Ð¸ÑÐ¾Ð²Ð°Ð½Ð¸Ðµ ÑÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½Ð½ÑÑ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ð¹...")
+        """ÃÂ¡ÃÂºÃÂ°ÃÂ½ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ¸ÃÂµ ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ½ÃÃ ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂ¹ ÃÃÂµÃÃÂµÃÂ· ÃÃÂµÃÂµÃÃÃ Windows."""
+        self.logger.info("ÃÂ¡ÃÂºÃÂ°ÃÂ½ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ¸ÃÂµ ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ½ÃÃ ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂ¹...")
         apps = []
         
-        # ÐÐ»ÑÑÐ¸ ÑÐµÐµÑÑÑÐ° Ð´Ð»Ñ Ð¿Ð¾Ð¸ÑÐºÐ°
+        # ÃÃÂ»ÃÃÃÂ¸ ÃÃÂµÃÂµÃÃÃÃÂ° ÃÂ´ÃÂ»Ã ÃÂ¿ÃÂ¾ÃÂ¸ÃÃÂºÃÂ°
         registry_keys = [
             (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"),
             (winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"),
@@ -108,9 +108,9 @@ class AppAnalyzer:
                 
                 winreg.CloseKey(key)
             except Exception as e:
-                self.logger.debug(f"ÐÑÐ¸Ð±ÐºÐ° ÑÑÐµÐ½Ð¸Ñ ÑÐµÐµÑÑÑÐ° {path}: {e}")
+                self.logger.debug(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÃÃÂµÃÂ½ÃÂ¸Ã ÃÃÂµÃÂµÃÃÃÃÂ° {path}: {e}")
         
-        # ÐÐ±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ðµ ÐÐ
+        # ÃÃÂ±ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÃ
         for app in apps:
             app_id = app.get("name", "").lower().replace(" ", "_")
             self.apps_db[app_id] = {
@@ -121,7 +121,7 @@ class AppAnalyzer:
         
         self._save_database()
         
-        self.logger.info(f"ÐÐ°Ð¹Ð´ÐµÐ½Ð¾ {len(apps)} ÑÑÑÐ°Ð½Ð¾Ð²Ð»ÐµÐ½Ð½ÑÑ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ð¹")
+        self.logger.info(f"ÃÃÂ°ÃÂ¹ÃÂ´ÃÂµÃÂ½ÃÂ¾ {len(apps)} ÃÃÃÃÂ°ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ½ÃÃ ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂ¹")
         return {
             "status": "ok",
             "count": len(apps),
@@ -129,7 +129,7 @@ class AppAnalyzer:
         }
 
     def _read_registry_app(self, key) -> Optional[Dict]:
-        """Ð§ÑÐµÐ½Ð¸Ðµ Ð¸Ð½ÑÐ¾ÑÐ¼Ð°ÑÐ¸Ð¸ Ð¾ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ð¸ Ð¸Ð· ÑÐµÐµÑÑÑÐ°."""
+        """ÃÂ§ÃÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÂ¸ÃÂ½ÃÃÂ¾ÃÃÂ¼ÃÂ°ÃÃÂ¸ÃÂ¸ ÃÂ¾ ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂ¸ ÃÂ¸ÃÂ· ÃÃÂµÃÂµÃÃÃÃÂ°."""
         try:
             name = winreg.QueryValueEx(key, "DisplayName")[0]
         except (OSError, FileNotFoundError):
@@ -137,7 +137,7 @@ class AppAnalyzer:
         
         app_info = {"name": name}
         
-        # ÐÐ¾Ð¿Ð¾Ð»Ð½Ð¸ÑÐµÐ»ÑÐ½ÑÐµ Ð¿Ð¾Ð»Ñ
+        # ÃÃÂ¾ÃÂ¿ÃÂ¾ÃÂ»ÃÂ½ÃÂ¸ÃÃÂµÃÂ»ÃÃÂ½ÃÃÂµ ÃÂ¿ÃÂ¾ÃÂ»Ã
         fields = {
             "DisplayVersion": "version",
             "Publisher": "publisher",
@@ -160,8 +160,8 @@ class AppAnalyzer:
         return app_info
 
     def scan_executables(self, directory: str = None) -> Dict:
-        """Ð¡ÐºÐ°Ð½Ð¸ÑÐ¾Ð²Ð°Ð½Ð¸Ðµ Ð¸ÑÐ¿Ð¾Ð»Ð½ÑÐµÐ¼ÑÑ ÑÐ°Ð¹Ð»Ð¾Ð² Ð² Ð´Ð¸ÑÐµÐºÑÐ¾ÑÐ¸ÑÑ."""
-        self.logger.info("Ð¡ÐºÐ°Ð½Ð¸ÑÐ¾Ð²Ð°Ð½Ð¸Ðµ Ð¸ÑÐ¿Ð¾Ð»Ð½ÑÐµÐ¼ÑÑ ÑÐ°Ð¹Ð»Ð¾Ð²...")
+        """ÃÂ¡ÃÂºÃÂ°ÃÂ½ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ¸ÃÂµ ÃÂ¸ÃÃÂ¿ÃÂ¾ÃÂ»ÃÂ½ÃÃÂµÃÂ¼ÃÃ ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ¾ÃÂ² ÃÂ² ÃÂ´ÃÂ¸ÃÃÂµÃÂºÃÃÂ¾ÃÃÂ¸ÃÃ."""
+        self.logger.info("ÃÂ¡ÃÂºÃÂ°ÃÂ½ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ¸ÃÂµ ÃÂ¸ÃÃÂ¿ÃÂ¾ÃÂ»ÃÂ½ÃÃÂµÃÂ¼ÃÃ ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ¾ÃÂ²...")
         executables = []
         
         paths_to_scan = [Path(directory)] if directory else self.scan_paths
@@ -179,16 +179,16 @@ class AppAnalyzer:
             except PermissionError:
                 continue
             except Exception as e:
-                self.logger.debug(f"ÐÑÐ¸Ð±ÐºÐ° ÑÐºÐ°Ð½Ð¸ÑÐ¾Ð²Ð°Ð½Ð¸Ñ {scan_path}: {e}")
+                self.logger.debug(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÃÂºÃÂ°ÃÂ½ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ¸Ã {scan_path}: {e}")
         
         return {
             "status": "ok",
             "count": len(executables),
-            "executables": executables[:100]  # ÐÐ³ÑÐ°Ð½Ð¸ÑÐµÐ½Ð¸Ðµ
+            "executables": executables[:100]  # ÃÃÂ³ÃÃÂ°ÃÂ½ÃÂ¸ÃÃÂµÃÂ½ÃÂ¸ÃÂµ
         }
 
     def _analyze_executable(self, path: Path) -> Optional[Dict]:
-        """ÐÐ½Ð°Ð»Ð¸Ð· Ð¸ÑÐ¿Ð¾Ð»Ð½ÑÐµÐ¼Ð¾Ð³Ð¾ ÑÐ°Ð¹Ð»Ð°."""
+        """ÃÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ· ÃÂ¸ÃÃÂ¿ÃÂ¾ÃÂ»ÃÂ½ÃÃÂµÃÂ¼ÃÂ¾ÃÂ³ÃÂ¾ ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ°."""
         try:
             stat = path.stat()
             
@@ -202,7 +202,7 @@ class AppAnalyzer:
                 "modified": datetime.fromtimestamp(stat.st_mtime).isoformat(),
             }
             
-            # ÐÐµÑÑÐ¸Ñ ÑÐ°Ð¹Ð»Ð° (Windows)
+            # ÃÃÂµÃÃÃÂ¸Ã ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ° (Windows)
             try:
                 import win32api
                 version_info = win32api.GetFileVersionInfo(str(path), "\\")
@@ -217,21 +217,21 @@ class AppAnalyzer:
             return info
             
         except Exception as e:
-            self.logger.debug(f"ÐÑÐ¸Ð±ÐºÐ° Ð°Ð½Ð°Ð»Ð¸Ð·Ð° {path}: {e}")
+            self.logger.debug(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ°ÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ° {path}: {e}")
             return None
 
-    # === ÐÐÐÐÐÐ ÐÐ ÐÐÐÐÐÐÐÐ¯ ===
+    # === ÃÃÃÃÃÃ ÃÃÂ ÃÃÃÃÃÃÃÃÂ¯ ===
 
     def analyze_app(self, app_name: str) -> Dict:
-        """ÐÐ»ÑÐ±Ð¾ÐºÐ¸Ð¹ Ð°Ð½Ð°Ð»Ð¸Ð· ÐºÐ¾Ð½ÐºÑÐµÑÐ½Ð¾Ð³Ð¾ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ."""
-        self.logger.info(f"ÐÐ½Ð°Ð»Ð¸Ð· Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ: {app_name}")
+        """ÃÃÂ»ÃÃÂ±ÃÂ¾ÃÂºÃÂ¸ÃÂ¹ ÃÂ°ÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ· ÃÂºÃÂ¾ÃÂ½ÃÂºÃÃÂµÃÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã."""
+        self.logger.info(f"ÃÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ· ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã: {app_name}")
         
         app_id = app_name.lower().replace(" ", "_")
         
-        # ÐÐ¾Ð¸ÑÐº Ð² ÐÐ
+        # ÃÃÂ¾ÃÂ¸ÃÃÂº ÃÂ² ÃÃ
         app_data = self.apps_db.get(app_id)
         if not app_data:
-            # ÐÐ¾Ð¸ÑÐº Ð¿Ð¾ ÑÐ°ÑÑÐ¸ÑÐ½Ð¾Ð¼Ñ ÑÐ¾Ð²Ð¿Ð°Ð´ÐµÐ½Ð¸Ñ
+            # ÃÃÂ¾ÃÂ¸ÃÃÂº ÃÂ¿ÃÂ¾ ÃÃÂ°ÃÃÃÂ¸ÃÃÂ½ÃÂ¾ÃÂ¼Ã ÃÃÂ¾ÃÂ²ÃÂ¿ÃÂ°ÃÂ´ÃÂµÃÂ½ÃÂ¸Ã
             for key, value in self.apps_db.items():
                 if app_name.lower() in key or app_name.lower() in value.get("name", "").lower():
                     app_data = value
@@ -239,38 +239,38 @@ class AppAnalyzer:
                     break
         
         if not app_data:
-            return {"status": "error", "message": f"ÐÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ '{app_name}' Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½Ð¾"}
+            return {"status": "error", "message": f"ÃÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂµ '{app_name}' ÃÂ½ÃÂµ ÃÂ½ÃÂ°ÃÂ¹ÃÂ´ÃÂµÃÂ½ÃÂ¾"}
         
-        # ÐÐ»ÑÐ±Ð¾ÐºÐ¸Ð¹ Ð°Ð½Ð°Ð»Ð¸Ð·
+        # ÃÃÂ»ÃÃÂ±ÃÂ¾ÃÂºÃÂ¸ÃÂ¹ ÃÂ°ÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ·
         analysis = {
             "name": app_data.get("name", app_name),
-            "version": app_data.get("version", "Ð½ÐµÐ¸Ð·Ð²ÐµÑÑÐ½Ð¾"),
-            "publisher": app_data.get("publisher", "Ð½ÐµÐ¸Ð·Ð²ÐµÑÑÐ½Ð¾"),
+            "version": app_data.get("version", "ÃÂ½ÃÂµÃÂ¸ÃÂ·ÃÂ²ÃÂµÃÃÃÂ½ÃÂ¾"),
+            "publisher": app_data.get("publisher", "ÃÂ½ÃÂµÃÂ¸ÃÂ·ÃÂ²ÃÂµÃÃÃÂ½ÃÂ¾"),
             "install_path": app_data.get("install_path", ""),
             "size_kb": app_data.get("size_kb", 0),
-            "install_date": app_data.get("install_date", "Ð½ÐµÐ¸Ð·Ð²ÐµÑÑÐ½Ð¾"),
+            "install_date": app_data.get("install_date", "ÃÂ½ÃÂµÃÂ¸ÃÂ·ÃÂ²ÃÂµÃÃÃÂ½ÃÂ¾"),
         }
         
-        # ÐÐ½Ð°Ð»Ð¸Ð· ÑÐ°Ð¹Ð»Ð¾Ð² Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ
+        # ÃÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ· ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ¾ÃÂ² ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã
         if analysis["install_path"] and Path(analysis["install_path"]).exists():
             analysis["files"] = self._analyze_app_files(Path(analysis["install_path"]))
         
-        # ÐÐ½Ð°Ð»Ð¸Ð· Ð¿ÑÐ¾ÑÐµÑÑÐ¾Ð²
+        # ÃÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ· ÃÂ¿ÃÃÂ¾ÃÃÂµÃÃÃÂ¾ÃÂ²
         analysis["running"] = self._is_app_running(app_name)
         if analysis["running"]:
             analysis["processes"] = self._get_app_processes(app_name)
         
-        # ÐÐ½Ð°Ð»Ð¸Ð· ÑÐµÑÑÑÑÐ¾Ð²
+        # ÃÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ· ÃÃÂµÃÃÃÃÃÂ¾ÃÂ²
         if analysis["running"] and analysis.get("processes"):
             analysis["resource_usage"] = self._get_app_resource_usage(analysis["processes"])
         
-        # ÐÐ°ÑÐµÐ³Ð¾ÑÐ¸Ð·Ð°ÑÐ¸Ñ
+        # ÃÃÂ°ÃÃÂµÃÂ³ÃÂ¾ÃÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸Ã
         analysis["category"] = self._categorize_app(app_name, app_data)
         
-        # ÐÐ¿Ð¸ÑÐ°Ð½Ð¸Ðµ
+        # ÃÃÂ¿ÃÂ¸ÃÃÂ°ÃÂ½ÃÂ¸ÃÂµ
         analysis["description"] = self._generate_app_description(analysis)
         
-        # ÐÐ±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ðµ ÐÐ
+        # ÃÃÂ±ÃÂ½ÃÂ¾ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÃ
         self.apps_db[app_id] = {
             **app_data,
             "analyzed": True,
@@ -282,7 +282,7 @@ class AppAnalyzer:
         return {"status": "ok", "analysis": analysis}
 
     def _analyze_app_files(self, app_path: Path) -> Dict:
-        """ÐÐ½Ð°Ð»Ð¸Ð· ÑÐ°Ð¹Ð»Ð¾Ð² Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ."""
+        """ÃÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ· ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ¾ÃÂ² ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã."""
         files_info = {
             "total_files": 0,
             "total_size_mb": 0,
@@ -311,13 +311,13 @@ class AppAnalyzer:
                         files_info["executables"].append(str(item.relative_to(app_path)))
         
         except Exception as e:
-            self.logger.debug(f"ÐÑÐ¸Ð±ÐºÐ° Ð°Ð½Ð°Ð»Ð¸Ð·Ð° ÑÐ°Ð¹Ð»Ð¾Ð² {app_path}: {e}")
+            self.logger.debug(f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ°ÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ° ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ¾ÃÂ² {app_path}: {e}")
         
         files_info["total_size_mb"] = round(files_info["total_size_mb"], 2)
         return files_info
 
     def _is_app_running(self, app_name: str) -> bool:
-        """ÐÑÐ¾Ð²ÐµÑÐºÐ°, Ð·Ð°Ð¿ÑÑÐµÐ½Ð¾ Ð»Ð¸ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ."""
+        """ÃÃÃÂ¾ÃÂ²ÃÂµÃÃÂºÃÂ°, ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂµÃÂ½ÃÂ¾ ÃÂ»ÃÂ¸ ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂµ."""
         app_lower = app_name.lower()
         for proc in psutil.process_iter(["name"]):
             try:
@@ -328,7 +328,7 @@ class AppAnalyzer:
         return False
 
     def _get_app_processes(self, app_name: str) -> List[Dict]:
-        """ÐÐ¾Ð»ÑÑÐµÐ½Ð¸Ðµ Ð¸Ð½ÑÐ¾ÑÐ¼Ð°ÑÐ¸Ð¸ Ð¾ Ð¿ÑÐ¾ÑÐµÑÑÐ°Ñ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ."""
+        """ÃÃÂ¾ÃÂ»ÃÃÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÂ¸ÃÂ½ÃÃÂ¾ÃÃÂ¼ÃÂ°ÃÃÂ¸ÃÂ¸ ÃÂ¾ ÃÂ¿ÃÃÂ¾ÃÃÂµÃÃÃÂ°Ã ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã."""
         processes = []
         app_lower = app_name.lower()
         
@@ -349,7 +349,7 @@ class AppAnalyzer:
         return processes
 
     def _get_app_resource_usage(self, processes: List[Dict]) -> Dict:
-        """ÐÐ¾Ð»ÑÑÐµÐ½Ð¸Ðµ Ð¸ÑÐ¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°Ð½Ð¸Ñ ÑÐµÑÑÑÑÐ¾Ð² Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸ÐµÐ¼."""
+        """ÃÃÂ¾ÃÂ»ÃÃÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÂ¸ÃÃÂ¿ÃÂ¾ÃÂ»ÃÃÂ·ÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ¸Ã ÃÃÂµÃÃÃÃÃÂ¾ÃÂ² ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂµÃÂ¼."""
         total_cpu = 0.0
         total_memory_mb = 0.0
         
@@ -368,11 +368,11 @@ class AppAnalyzer:
         }
 
     def _categorize_app(self, app_name: str, app_data: Dict) -> str:
-        """ÐÐ°ÑÐµÐ³Ð¾ÑÐ¸Ð·Ð°ÑÐ¸Ñ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ."""
+        """ÃÃÂ°ÃÃÂµÃÂ³ÃÂ¾ÃÃÂ¸ÃÂ·ÃÂ°ÃÃÂ¸Ã ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã."""
         name_lower = app_name.lower()
         
         categories = {
-            "browser": ["chrome", "firefox", "edge", "opera", "brave", "safari", "ÑÐ½Ð´ÐµÐºÑ"],
+            "browser": ["chrome", "firefox", "edge", "opera", "brave", "safari", "ÃÃÂ½ÃÂ´ÃÂµÃÂºÃ"],
             "messenger": ["telegram", "discord", "slack", "whatsapp", "viber", "skype", "teams"],
             "editor": ["code", "vscode", "notepad", "sublime", "atom", "vim", "notepad++"],
             "media": ["vlc", "spotify", "youtube", "netflix", "plex", "kodi", "itunes"],
@@ -391,47 +391,47 @@ class AppAnalyzer:
         return "other"
 
     def _generate_app_description(self, analysis: Dict) -> str:
-        """ÐÐµÐ½ÐµÑÐ°ÑÐ¸Ñ Ð¾Ð¿Ð¸ÑÐ°Ð½Ð¸Ñ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ."""
-        name = analysis.get("name", "ÐÐµÐ¸Ð·Ð²ÐµÑÑÐ½Ð¾Ðµ")
-        version = analysis.get("version", "Ð½ÐµÐ¸Ð·Ð²ÐµÑÑÐ½Ð¾")
-        publisher = analysis.get("publisher", "Ð½ÐµÐ¸Ð·Ð²ÐµÑÑÐ½Ð¾")
+        """ÃÃÂµÃÂ½ÃÂµÃÃÂ°ÃÃÂ¸Ã ÃÂ¾ÃÂ¿ÃÂ¸ÃÃÂ°ÃÂ½ÃÂ¸Ã ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã."""
+        name = analysis.get("name", "ÃÃÂµÃÂ¸ÃÂ·ÃÂ²ÃÂµÃÃÃÂ½ÃÂ¾ÃÂµ")
+        version = analysis.get("version", "ÃÂ½ÃÂµÃÂ¸ÃÂ·ÃÂ²ÃÂµÃÃÃÂ½ÃÂ¾")
+        publisher = analysis.get("publisher", "ÃÂ½ÃÂµÃÂ¸ÃÂ·ÃÂ²ÃÂµÃÃÃÂ½ÃÂ¾")
         category = analysis.get("category", "other")
         
         category_names = {
-            "browser": "Ð²ÐµÐ±-Ð±ÑÐ°ÑÐ·ÐµÑ",
-            "messenger": "Ð¼ÐµÑÑÐµÐ½Ð´Ð¶ÐµÑ",
-            "editor": "ÑÐµÐºÑÑÐ¾Ð²ÑÐ¹ ÑÐµÐ´Ð°ÐºÑÐ¾Ñ / IDE",
-            "media": "Ð¼ÐµÐ´Ð¸Ð°-Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ",
-            "game": "Ð¸Ð³ÑÐ¾Ð²Ð°Ñ Ð¿Ð»Ð°ÑÑÐ¾ÑÐ¼Ð°",
-            "dev": "Ð¸Ð½ÑÑÑÑÐ¼ÐµÐ½Ñ ÑÐ°Ð·ÑÐ°Ð±Ð¾ÑÐºÐ¸",
-            "office": "Ð¾ÑÐ¸ÑÐ½Ð¾Ðµ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ",
-            "security": "ÑÐ¸ÑÑÐµÐ¼Ð° Ð±ÐµÐ·Ð¾Ð¿Ð°ÑÐ½Ð¾ÑÑÐ¸",
-            "system": "ÑÐ¸ÑÑÐµÐ¼Ð½Ð°Ñ ÑÑÐ¸Ð»Ð¸ÑÐ°",
-            "cloud": "Ð¾Ð±Ð»Ð°ÑÐ½Ð¾Ðµ ÑÑÐ°Ð½Ð¸Ð»Ð¸ÑÐµ",
-            "other": "Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ"
+            "browser": "ÃÂ²ÃÂµÃÂ±-ÃÂ±ÃÃÂ°ÃÃÂ·ÃÂµÃ",
+            "messenger": "ÃÂ¼ÃÂµÃÃÃÂµÃÂ½ÃÂ´ÃÂ¶ÃÂµÃ",
+            "editor": "ÃÃÂµÃÂºÃÃÃÂ¾ÃÂ²ÃÃÂ¹ ÃÃÂµÃÂ´ÃÂ°ÃÂºÃÃÂ¾Ã / IDE",
+            "media": "ÃÂ¼ÃÂµÃÂ´ÃÂ¸ÃÂ°-ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂµ",
+            "game": "ÃÂ¸ÃÂ³ÃÃÂ¾ÃÂ²ÃÂ°Ã ÃÂ¿ÃÂ»ÃÂ°ÃÃÃÂ¾ÃÃÂ¼ÃÂ°",
+            "dev": "ÃÂ¸ÃÂ½ÃÃÃÃÃÂ¼ÃÂµÃÂ½Ã ÃÃÂ°ÃÂ·ÃÃÂ°ÃÂ±ÃÂ¾ÃÃÂºÃÂ¸",
+            "office": "ÃÂ¾ÃÃÂ¸ÃÃÂ½ÃÂ¾ÃÂµ ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂµ",
+            "security": "ÃÃÂ¸ÃÃÃÂµÃÂ¼ÃÂ° ÃÂ±ÃÂµÃÂ·ÃÂ¾ÃÂ¿ÃÂ°ÃÃÂ½ÃÂ¾ÃÃÃÂ¸",
+            "system": "ÃÃÂ¸ÃÃÃÂµÃÂ¼ÃÂ½ÃÂ°Ã ÃÃÃÂ¸ÃÂ»ÃÂ¸ÃÃÂ°",
+            "cloud": "ÃÂ¾ÃÂ±ÃÂ»ÃÂ°ÃÃÂ½ÃÂ¾ÃÂµ ÃÃÃÂ°ÃÂ½ÃÂ¸ÃÂ»ÃÂ¸ÃÃÂµ",
+            "other": "ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂµ"
         }
         
-        cat_name = category_names.get(category, "Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ")
+        cat_name = category_names.get(category, "ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂµ")
         
-        desc = f"{name} (Ð²ÐµÑÑÐ¸Ñ {version}) â ÑÑÐ¾ {cat_name} Ð¾Ñ {publisher}."
+        desc = f"{name} (ÃÂ²ÃÂµÃÃÃÂ¸Ã {version}) Ã¢ ÃÃÃÂ¾ {cat_name} ÃÂ¾Ã {publisher}."
         
         if analysis.get("running"):
             usage = analysis.get("resource_usage", {})
-            desc += f" Ð¡ÐµÐ¹ÑÐ°Ñ Ð·Ð°Ð¿ÑÑÐµÐ½Ð¾. CPU: {usage.get('cpu_percent', 0)}%, RAM: {usage.get('memory_mb', 0)} ÐÐ."
+            desc += f" ÃÂ¡ÃÂµÃÂ¹ÃÃÂ°Ã ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂµÃÂ½ÃÂ¾. CPU: {usage.get('cpu_percent', 0)}%, RAM: {usage.get('memory_mb', 0)} ÃÃ."
         
         files = analysis.get("files", {})
         if files.get("total_files"):
-            desc += f" Ð¡Ð¾Ð´ÐµÑÐ¶Ð¸Ñ {files['total_files']} ÑÐ°Ð¹Ð»Ð¾Ð² ({files.get('total_size_mb', 0)} ÐÐ)."
+            desc += f" ÃÂ¡ÃÂ¾ÃÂ´ÃÂµÃÃÂ¶ÃÂ¸Ã {files['total_files']} ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ¾ÃÂ² ({files.get('total_size_mb', 0)} ÃÃ)."
         
         return desc
 
-    # === Ð£ÐÐ ÐÐÐÐÐÐÐ ÐÐ ÐÐÐÐÐÐÐÐ¯ÐÐ ===
+    # === ÃÂ£ÃÃÂ ÃÃÃÃÃÃÃ ÃÃÂ ÃÃÃÃÃÃÃÃÂ¯ÃÃ ===
 
     def launch_app(self, app_name: str) -> Dict:
-        """ÐÐ°Ð¿ÑÑÐº Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ."""
-        self.logger.info(f"ÐÐ°Ð¿ÑÑÐº Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ: {app_name}")
+        """ÃÃÂ°ÃÂ¿ÃÃÃÂº ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã."""
+        self.logger.info(f"ÃÃÂ°ÃÂ¿ÃÃÃÂº ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã: {app_name}")
         
-        # ÐÐ¾Ð¸ÑÐº Ð² ÐÐ
+        # ÃÃÂ¾ÃÂ¸ÃÃÂº ÃÂ² ÃÃ
         app_id = app_name.lower().replace(" ", "_")
         app_data = self.apps_db.get(app_id)
         
@@ -442,41 +442,41 @@ class AppAnalyzer:
                     break
         
         if not app_data:
-            return {"status": "error", "message": f"ÐÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ '{app_name}' Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½Ð¾"}
+            return {"status": "error", "message": f"ÃÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂµ '{app_name}' ÃÂ½ÃÂµ ÃÂ½ÃÂ°ÃÂ¹ÃÂ´ÃÂµÃÂ½ÃÂ¾"}
         
-        # ÐÐ¾Ð¸ÑÐº Ð¸ÑÐ¿Ð¾Ð»Ð½ÑÐµÐ¼Ð¾Ð³Ð¾ ÑÐ°Ð¹Ð»Ð°
+        # ÃÃÂ¾ÃÂ¸ÃÃÂº ÃÂ¸ÃÃÂ¿ÃÂ¾ÃÂ»ÃÂ½ÃÃÂµÃÂ¼ÃÂ¾ÃÂ³ÃÂ¾ ÃÃÂ°ÃÂ¹ÃÂ»ÃÂ°
         exe_path = None
         install_path = app_data.get("install_path", "")
         
         if install_path and Path(install_path).exists():
-            # ÐÐ¾Ð¸ÑÐº Ð¾ÑÐ½Ð¾Ð²Ð½Ð¾Ð³Ð¾ exe
+            # ÃÃÂ¾ÃÂ¸ÃÃÂº ÃÂ¾ÃÃÂ½ÃÂ¾ÃÂ²ÃÂ½ÃÂ¾ÃÂ³ÃÂ¾ exe
             for exe in Path(install_path).rglob("*.exe"):
                 if app_name.lower().split()[0] in exe.stem.lower():
                     exe_path = str(exe)
                     break
             
             if not exe_path:
-                # ÐÐµÑÑÐ¼ Ð¿ÐµÑÐ²ÑÐ¹ exe
+                # ÃÃÂµÃÃÃÂ¼ ÃÂ¿ÃÂµÃÃÂ²ÃÃÂ¹ exe
                 for exe in Path(install_path).rglob("*.exe"):
                     exe_path = str(exe)
                     break
         
         if not exe_path:
-            return {"status": "error", "message": "ÐÑÐ¿Ð¾Ð»Ð½ÑÐµÐ¼ÑÐ¹ ÑÐ°Ð¹Ð» Ð½Ðµ Ð½Ð°Ð¹Ð´ÐµÐ½"}
+            return {"status": "error", "message": "ÃÃÃÂ¿ÃÂ¾ÃÂ»ÃÂ½ÃÃÂµÃÂ¼ÃÃÂ¹ ÃÃÂ°ÃÂ¹ÃÂ» ÃÂ½ÃÂµ ÃÂ½ÃÂ°ÃÂ¹ÃÂ´ÃÂµÃÂ½"}
         
         try:
             subprocess.Popen([exe_path], shell=True)
             return {
                 "status": "ok",
-                "message": f"ÐÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ {app_name} Ð·Ð°Ð¿ÑÑÐµÐ½Ð¾",
+                "message": f"ÃÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂµ {app_name} ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂµÃÂ½ÃÂ¾",
                 "path": exe_path
             }
         except Exception as e:
-            return {"status": "error", "message": f"ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð¿ÑÑÐºÐ°: {e}"}
+            return {"status": "error", "message": f"ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂºÃÂ°: {e}"}
 
     def close_app(self, app_name: str) -> Dict:
-        """ÐÐ°ÐºÑÑÑÐ¸Ðµ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ."""
-        self.logger.info(f"ÐÐ°ÐºÑÑÑÐ¸Ðµ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ: {app_name}")
+        """ÃÃÂ°ÃÂºÃÃÃÃÂ¸ÃÂµ ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã."""
+        self.logger.info(f"ÃÃÂ°ÃÂºÃÃÃÃÂ¸ÃÂµ ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã: {app_name}")
         
         closed = []
         app_lower = app_name.lower()
@@ -493,16 +493,16 @@ class AppAnalyzer:
         if closed:
             return {
                 "status": "ok",
-                "message": f"ÐÐ°ÐºÑÑÑÐ¾ Ð¿ÑÐ¾ÑÐµÑÑÐ¾Ð²: {len(closed)}",
+                "message": f"ÃÃÂ°ÃÂºÃÃÃÃÂ¾ ÃÂ¿ÃÃÂ¾ÃÃÂµÃÃÃÂ¾ÃÂ²: {len(closed)}",
                 "processes": closed
             }
         
-        return {"status": "error", "message": f"ÐÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ '{app_name}' Ð½Ðµ Ð·Ð°Ð¿ÑÑÐµÐ½Ð¾"}
+        return {"status": "error", "message": f"ÃÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂµ '{app_name}' ÃÂ½ÃÂµ ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂµÃÂ½ÃÂ¾"}
 
-    # === ÐÐ¢Ð§ÐÐ¢Ð« ===
+    # === ÃÃÂ¢ÃÂ§ÃÃÂ¢ÃÂ« ===
 
     def get_full_report(self) -> Dict:
-        """ÐÐ¾Ð»Ð½ÑÐ¹ Ð¾ÑÑÑÑ Ð¾ Ð²ÑÐµÑ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸ÑÑ."""
+        """ÃÃÂ¾ÃÂ»ÃÂ½ÃÃÂ¹ ÃÂ¾ÃÃÃÃ ÃÂ¾ ÃÂ²ÃÃÂµÃ ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÃ."""
         if not self.apps_db:
             self.scan_installed_apps()
         
@@ -532,7 +532,7 @@ class AppAnalyzer:
         }
 
     def _get_top_apps_by_size(self, limit: int = 10) -> List[Dict]:
-        """Ð¢Ð¾Ð¿ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ð¹ Ð¿Ð¾ ÑÐ°Ð·Ð¼ÐµÑÑ."""
+        """ÃÂ¢ÃÂ¾ÃÂ¿ ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÂ¹ ÃÂ¿ÃÂ¾ ÃÃÂ°ÃÂ·ÃÂ¼ÃÂµÃÃ."""
         apps_with_size = []
         
         for app_id, app_data in self.apps_db.items():
@@ -548,50 +548,50 @@ class AppAnalyzer:
         return apps_with_size[:limit]
 
     def format_report_message(self, report: Dict) -> str:
-        """Ð¤Ð¾ÑÐ¼Ð°ÑÐ¸ÑÐ¾Ð²Ð°Ð½Ð¸Ðµ Ð¾ÑÑÑÑÐ° Ð² ÑÐ¾Ð¾Ð±ÑÐµÐ½Ð¸Ðµ."""
+        """ÃÂ¤ÃÂ¾ÃÃÂ¼ÃÂ°ÃÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ¸ÃÂµ ÃÂ¾ÃÃÃÃÃÂ° ÃÂ² ÃÃÂ¾ÃÂ¾ÃÂ±ÃÃÂµÃÂ½ÃÂ¸ÃÂµ."""
         if report["status"] != "ok":
-            return "ÐÐµ ÑÐ´Ð°Ð»Ð¾ÑÑ Ð¿Ð¾Ð»ÑÑÐ¸ÑÑ Ð¾ÑÑÑÑ"
+            return "ÃÃÂµ ÃÃÂ´ÃÂ°ÃÂ»ÃÂ¾ÃÃ ÃÂ¿ÃÂ¾ÃÂ»ÃÃÃÂ¸ÃÃ ÃÂ¾ÃÃÃÃ"
         
-        msg = f"ð ÐÑÑÑÑ Ð¿Ð¾ Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸ÑÐ¼:\n\n"
-        msg += f"ÐÑÐµÐ³Ð¾: {report['total_apps']}\n"
-        msg += f"ÐÑÐ¾Ð°Ð½Ð°Ð»Ð¸Ð·Ð¸ÑÐ¾Ð²Ð°Ð½Ð¾: {report['analyzed']}\n"
-        msg += f"ÐÐ°Ð¿ÑÑÐµÐ½Ð¾ ÑÐµÐ¹ÑÐ°Ñ: {report['running']}\n"
-        msg += f"ÐÐ±ÑÐ¸Ð¹ ÑÐ°Ð·Ð¼ÐµÑ: {report['total_size_mb']} ÐÐ\n\n"
+        msg = f"Ã° ÃÃÃÃÃ ÃÂ¿ÃÂ¾ ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸ÃÃÂ¼:\n\n"
+        msg += f"ÃÃÃÂµÃÂ³ÃÂ¾: {report['total_apps']}\n"
+        msg += f"ÃÃÃÂ¾ÃÂ°ÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ¾: {report['analyzed']}\n"
+        msg += f"ÃÃÂ°ÃÂ¿ÃÃÃÂµÃÂ½ÃÂ¾ ÃÃÂµÃÂ¹ÃÃÂ°Ã: {report['running']}\n"
+        msg += f"ÃÃÂ±ÃÃÂ¸ÃÂ¹ ÃÃÂ°ÃÂ·ÃÂ¼ÃÂµÃ: {report['total_size_mb']} ÃÃ\n\n"
         
-        msg += "ÐÐ°ÑÐµÐ³Ð¾ÑÐ¸Ð¸:\n"
+        msg += "ÃÃÂ°ÃÃÂµÃÂ³ÃÂ¾ÃÃÂ¸ÃÂ¸:\n"
         for cat, count in sorted(report["categories"].items(), key=lambda x: x[1], reverse=True):
-            msg += f"  â¢ {cat}: {count}\n"
+            msg += f"  Ã¢Â¢ {cat}: {count}\n"
         
         if report.get("top_by_size"):
-            msg += "\nÐ¢Ð¾Ð¿ Ð¿Ð¾ ÑÐ°Ð·Ð¼ÐµÑÑ:\n"
+            msg += "\nÃÂ¢ÃÂ¾ÃÂ¿ ÃÂ¿ÃÂ¾ ÃÃÂ°ÃÂ·ÃÂ¼ÃÂµÃÃ:\n"
             for app in report["top_by_size"][:5]:
-                msg += f"  â¢ {app['name']} â {app['size_mb']} ÐÐ\n"
+                msg += f"  Ã¢Â¢ {app['name']} Ã¢ {app['size_mb']} ÃÃ\n"
         
         return msg
 
     def format_analysis_message(self, analysis: Dict) -> str:
-        """Ð¤Ð¾ÑÐ¼Ð°ÑÐ¸ÑÐ¾Ð²Ð°Ð½Ð¸Ðµ Ð°Ð½Ð°Ð»Ð¸Ð·Ð° Ð¿ÑÐ¸Ð»Ð¾Ð¶ÐµÐ½Ð¸Ñ."""
+        """ÃÂ¤ÃÂ¾ÃÃÂ¼ÃÂ°ÃÃÂ¸ÃÃÂ¾ÃÂ²ÃÂ°ÃÂ½ÃÂ¸ÃÂµ ÃÂ°ÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ° ÃÂ¿ÃÃÂ¸ÃÂ»ÃÂ¾ÃÂ¶ÃÂµÃÂ½ÃÂ¸Ã."""
         if analysis.get("status") != "ok":
-            return analysis.get("message", "ÐÑÐ¸Ð±ÐºÐ° Ð°Ð½Ð°Ð»Ð¸Ð·Ð°")
+            return analysis.get("message", "ÃÃÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ°ÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ·ÃÂ°")
         
         a = analysis["analysis"]
-        msg = f"ð ÐÐ½Ð°Ð»Ð¸Ð·: {a['name']}\n\n"
+        msg = f"Ã° ÃÃÂ½ÃÂ°ÃÂ»ÃÂ¸ÃÂ·: {a['name']}\n\n"
         msg += f"{a['description']}\n\n"
-        msg += f"ÐÐµÑÑÐ¸Ñ: {a['version']}\n"
-        msg += f"ÐÐ·Ð´Ð°ÑÐµÐ»Ñ: {a['publisher']}\n"
-        msg += f"ÐÐ°ÑÐµÐ³Ð¾ÑÐ¸Ñ: {a['category']}\n"
+        msg += f"ÃÃÂµÃÃÃÂ¸Ã: {a['version']}\n"
+        msg += f"ÃÃÂ·ÃÂ´ÃÂ°ÃÃÂµÃÂ»Ã: {a['publisher']}\n"
+        msg += f"ÃÃÂ°ÃÃÂµÃÂ³ÃÂ¾ÃÃÂ¸Ã: {a['category']}\n"
         
         if a.get("running"):
             usage = a.get("resource_usage", {})
-            msg += f"\nâ¡ ÐÐ°Ð¿ÑÑÐµÐ½Ð¾:\n"
+            msg += f"\nÃ¢Â¡ ÃÃÂ°ÃÂ¿ÃÃÃÂµÃÂ½ÃÂ¾:\n"
             msg += f"  CPU: {usage.get('cpu_percent', 0)}%\n"
-            msg += f"  RAM: {usage.get('memory_mb', 0)} ÐÐ\n"
-            msg += f"  ÐÑÐ¾ÑÐµÑÑÑ: {usage.get('process_count', 0)}\n"
+            msg += f"  RAM: {usage.get('memory_mb', 0)} ÃÃ\n"
+            msg += f"  ÃÃÃÂ¾ÃÃÂµÃÃÃ: {usage.get('process_count', 0)}\n"
         else:
-            msg += "\nâ¸ ÐÐµ Ð·Ð°Ð¿ÑÑÐµÐ½Ð¾\n"
+            msg += "\nÃ¢Â¸ ÃÃÂµ ÃÂ·ÃÂ°ÃÂ¿ÃÃÃÂµÃÂ½ÃÂ¾\n"
         
         files = a.get("files", {})
         if files.get("total_files"):
-            msg += f"\nð Ð¤Ð°Ð¹Ð»Ñ: {files['total_files']} ({files.get('total_size_mb', 0)} ÐÐ)\n"
+            msg += f"\nÃ° ÃÂ¤ÃÂ°ÃÂ¹ÃÂ»Ã: {files['total_files']} ({files.get('total_size_mb', 0)} ÃÃ)\n"
         
         return msg
