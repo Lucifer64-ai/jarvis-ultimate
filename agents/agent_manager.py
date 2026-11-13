@@ -4,9 +4,12 @@ JARVIS - Agent Manager
 """
 
 from typing import Dict, List, Optional, Any
+from .base_agent import BaseAgent
 from .web_developer import WebDeveloperAgent
 from .programmer import ProgrammerAgent
 from .data_analyst import DataAnalystAgent
+from .designer import DesignerAgent
+from .devops import DevOpsAgent
 
 
 class AgentManager:
@@ -21,6 +24,8 @@ class AgentManager:
         self.register_agent(WebDeveloperAgent())
         self.register_agent(ProgrammerAgent())
         self.register_agent(DataAnalystAgent())
+        self.register_agent(DesignerAgent())
+        self.register_agent(DevOpsAgent())
 
     def register_agent(self, agent):
         """Зарегистрировать нового агента."""
