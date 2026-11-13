@@ -1,5 +1,5 @@
 """
-ÐÐµÐ½ÐµÐ´Ð¶ÐµÑ Ð¿Ð»Ð°Ð³Ð¸Ð½Ð¾Ð² JARVIS
+ÃÂÃÂµÃÂ½ÃÂµÃÂ´ÃÂ¶ÃÂµÃÂ ÃÂ¿ÃÂ»ÃÂ°ÃÂ³ÃÂ¸ÃÂ½ÃÂ¾ÃÂ² JARVIS
 """
 
 import importlib
@@ -9,7 +9,7 @@ from typing import Dict, List, Optional
 
 
 class PluginManager:
-    """ÐÐ°Ð³ÑÑÐ·ÐºÐ° Ð¸ ÑÐ¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð¿Ð»Ð°Ð³Ð¸Ð½Ð°Ð¼Ð¸."""
+    """ÃÂÃÂ°ÃÂ³ÃÂÃÂÃÂ·ÃÂºÃÂ° ÃÂ¸ ÃÂÃÂ¿ÃÂÃÂ°ÃÂ²ÃÂ»ÃÂµÃÂ½ÃÂ¸ÃÂµ ÃÂ¿ÃÂ»ÃÂ°ÃÂ³ÃÂ¸ÃÂ½ÃÂ°ÃÂ¼ÃÂ¸."""
 
     def __init__(self, brain):
         self.brain = brain
@@ -44,17 +44,17 @@ class PluginManager:
             if hasattr(module, "setup"):
                 plugin = module.setup(self.brain)
                 self.loaded[name] = plugin
-                self.brain.logger.info(f"ÐÐ»Ð°Ð³Ð¸Ð½ '{name}' Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½")
+                self.brain.logger.info(f"ÃÂÃÂ»ÃÂ°ÃÂ³ÃÂ¸ÃÂ½ '{name}' ÃÂ·ÃÂ°ÃÂ³ÃÂÃÂÃÂ¶ÃÂµÃÂ½")
                 return {"status": "ok", "name": name}
             else:
-                return {"status": "error", "message": "ÐÐ»Ð°Ð³Ð¸Ð½ Ð½Ðµ Ð¸Ð¼ÐµÐµÑ ÑÑÐ½ÐºÑÐ¸Ð¸ setup()"}
+                return {"status": "error", "message": "ÃÂÃÂ»ÃÂ°ÃÂ³ÃÂ¸ÃÂ½ ÃÂ½ÃÂµ ÃÂ¸ÃÂ¼ÃÂµÃÂµÃÂ ÃÂÃÂÃÂ½ÃÂºÃÂÃÂ¸ÃÂ¸ setup()"}
         except Exception as e:
-            self.brain.logger.error(f"ÐÑÐ¸Ð±ÐºÐ° Ð·Ð°Ð³ÑÑÐ·ÐºÐ¸ Ð¿Ð»Ð°Ð³Ð¸Ð½Ð° {name}: {e}")
+            self.brain.logger.error(f"ÃÂÃÂÃÂ¸ÃÂ±ÃÂºÃÂ° ÃÂ·ÃÂ°ÃÂ³ÃÂÃÂÃÂ·ÃÂºÃÂ¸ ÃÂ¿ÃÂ»ÃÂ°ÃÂ³ÃÂ¸ÃÂ½ÃÂ° {name}: {e}")
             return {"status": "error", "message": str(e)}
 
 
     def load_plugins(self) -> List[Dict]:
-        """Загрузить все обнаруженные плагины."""
+        """ÐÐ°Ð³ÑÑÐ·Ð¸ÑÑ Ð²ÑÐµ Ð¾Ð±Ð½Ð°ÑÑÐ¶ÐµÐ½Ð½ÑÐµ Ð¿Ð»Ð°Ð³Ð¸Ð½Ñ."""
         results = []
         plugins = self.discover_plugins()
         for name in plugins:
@@ -69,7 +69,7 @@ class PluginManager:
                 plugin.shutdown()
             del self.loaded[name]
             return {"status": "ok"}
-        return {"status": "error", "message": "ÐÐ»Ð°Ð³Ð¸Ð½ Ð½Ðµ Ð·Ð°Ð³ÑÑÐ¶ÐµÐ½"}
+        return {"status": "error", "message": "ÃÂÃÂ»ÃÂ°ÃÂ³ÃÂ¸ÃÂ½ ÃÂ½ÃÂµ ÃÂ·ÃÂ°ÃÂ³ÃÂÃÂÃÂ¶ÃÂµÃÂ½"}
 
     def list_plugins(self) -> List[Dict]:
         available = self.discover_plugins()
